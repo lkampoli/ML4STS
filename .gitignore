@@ -1,5 +1,7 @@
 # Pdf files
 *.pdf
+*.csv
+*.txt
 
 # Dataset
 TransportCoeffsRegression/data/dataset_lite.csv
