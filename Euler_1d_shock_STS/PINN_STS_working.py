@@ -1154,9 +1154,9 @@ if __name__ == "__main__":
     # layers is a vector of all the node in each of the neural network layers
     # First value, 1 respresents the input layer with 1 parameter (x) while
     # last value 100 is the number of outputs desired
-    layers = [1, 10, 25, 15, 100]
-    #layers = [1, 20, 20, 20, 20, 20, 20, 20, 100]
-    #layers = [1, 40, 40, 40, 40, 100]
+    #layers = [1, 10, 25, 15, 100]
+    #layers = [1, 20, 20, 20, 20, 20, 20, 20, 20, 20, 100]
+    layers = [1, 40, 40, 40, 40, 100]
 
     # Load Data
     # The Matlab generated data was stored in file name 'dataset_STS.txt', which
@@ -2170,15 +2170,15 @@ R47_pred_sb = sc_R47.inverse_transform(R47_pred)
 Rat_pred_sb = sc_Rat.inverse_transform(Rat_pred)
 
 # Plot Nci
-#plt.plot(x_test_sb, nci_pred_sb[:,1:46:2], 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
-#plt.plot(x_test_sb, nci_test_sb[:,1:46:2], 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Molecular Number Density')
-#plt.xlabel('X []')
-#plt.ylabel('$n_{ci}$ $[]$')
-##plt.legend()
-#plt.tight_layout()
-#savefig('./figures/Nci', crop = False)
-#plt.show()
+plt.plot(x_test_sb, nci_pred_sb[:,1:46:2], 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+plt.plot(x_test_sb, nci_test_sb[:,1:46:2], 'o', color='red',   label='Exact', markersize=4)
+plt.title('Comparison of NN and Exact solution for Molecular Number Density')
+plt.xlabel('X []')
+plt.ylabel('$n_{ci}$ $[]$')
+#plt.legend()
+plt.tight_layout()
+savefig('./figures/Nci', crop = False)
+plt.show()
 
 # Plot Nat
 plt.plot(x_test_sb, nat_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
@@ -2236,15 +2236,15 @@ savefig('./figures/E', crop = False)
 plt.show()
 
 # Plot Rci
-#plt.plot(x_test_sb, Rci_pred_sb[:,1:46:2], 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
-#plt.plot(x_test_sb, Rci_test_sb[:,1:46:2], 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for $R_{ci}$')
-#plt.xlabel('X []')
-#plt.ylabel('$R_{ci}$ $[]$')
-##plt.legend()
-#plt.tight_layout()
-#savefig('./figures/Rci', crop = False)
-#plt.show()
+plt.plot(x_test_sb, Rci_pred_sb[:,1:46:2], 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+plt.plot(x_test_sb, Rci_test_sb[:,1:46:2], 'o', color='red',   label='Exact', markersize=4)
+plt.title('Comparison of NN and Exact solution for $R_{ci}$')
+plt.xlabel('X []')
+plt.ylabel('$R_{ci}$ $[]$')
+#plt.legend()
+plt.tight_layout()
+savefig('./figures/Rci', crop = False)
+plt.show()
 
 # Plot Rat
 plt.plot(x_test_sb, Rat_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
