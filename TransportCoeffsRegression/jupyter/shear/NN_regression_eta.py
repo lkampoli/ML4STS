@@ -24,8 +24,6 @@
 # https://colab.research.google.com/drive/1J8ZTI2UIJCwml2nrLVu8Gg0GXEz-7ZK0#scrollTo=CHSMp0zJwKRc
 # https://machinelearningmastery.com/how-to-make-classification-and-regression-predictions-for-deep-learning-models-in-keras/
 
-import time
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -45,6 +43,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from IPython.display import clear_output
 from livelossplot import PlotLossesKeras
+from time import time
 from keras.callbacks import TensorBoard
 from tensorflow.keras.callbacks import EarlyStopping
 from keras.utils.vis_utils import plot_model
@@ -62,7 +61,7 @@ os.chdir(path)
 os.getcwd()
 
 # Variables
-dataset=np.loadtxt("../data/dataset_lite.csv", delimiter=",")
+dataset=np.loadtxt("../../data/dataset_lite.csv", delimiter=",")
 x=dataset[:,0:2]
 # Change to 2, 3, 4 for shear, bulk and conductivity, respectively.
 y=dataset[:,2] # 0: X, 1: T, 2: shear, 3: bulk, 4: conductivity
@@ -106,7 +105,7 @@ yscale=scaler_y.transform(y)
 
 # The data is then split into training and test data
 #X_train, X_test, y_train, y_test = train_test_split(xscale, yscale)
-X_train, X_test, y_train, y_test = train_test_split(xscale, yscale, test_size=0.25, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(xscale, yscale, test_size=0.2, random_state=42)
 
 # returns a compiled model identical to the saved one
 #model = load_model('shear_model.h5')
@@ -126,12 +125,18 @@ model = Sequential()
 # Create a TensorBoard instance with the path to the logs directory
 #tensorboard = TensorBoard(log_dir='logs/{}'.format(time()))
 
-model.add(Dense(50, input_dim=2, kernel_initializer='normal', activation='relu')) # Input
-model.add(Dense(50, kernel_initializer='normal', activation='relu'))              # Hidden 1
-model.add(Dense(50, kernel_initializer='normal', activation='relu'))              # Hidden 2
-model.add(Dense(50, kernel_initializer='normal', activation='relu'))              # Hidden 3
-#model.add(Dense(50, kernel_initializer='normal', activation='relu'))              # Hidden 4
-model.add(Dense(1, activation='linear'))                                          # Output
+# The Input Layer
+model.add(Dense(20, input_dim=2, kernel_initializer='normal', activation='relu')) # Hidden 1
+
+# The Hidden Layers
+model.add(Dense(20, kernel_initializer='normal', activation='relu'))              # Hidden 2
+#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
+#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
+#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
+
+# The Output Layer
+model.add(Dense(1, activation='linear'))                                           # Output
+
 model.summary()
 #plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
@@ -172,15 +177,9 @@ model.compile(loss='mse', optimizer='adam', metrics=['mse', 'mae', 'mape', 'msle
 #monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=5, verbose=1, mode='auto', restore_best_weights=True)
 
 # Train model
-t0 = time.time()
-history = model.fit(X_train, y_train, epochs=100, batch_size=50, verbose=1, validation_data=(X_test, y_test))
-NN_fit = time.time() - t0
-print("NN complexity and bandwidth selected and model fitted in %.3f s" % NN_fit)
-
 # The validation_split set to 0.2, 80% of the training data is used to test the model, while the remaining 20% is used for testing.
-#history = model.fit(X_train, y_train, epochs=50, batch_size=20, verbose=2, validation_data=(X_test, y_test))
-###history = model.fit(X_train, y_train, epochs=50, batch_size=20, verbose=2, validation_data=(X_test, y_test), callbacks=[PlotLossesKeras()])
 #history = model.fit(X_train, y_train, epochs=100, batch_size=20, verbose=2, validation_split=0.2, callbacks=[tensorboard])
+history = model.fit(X_train, y_train, epochs=50, batch_size=20, verbose=2, validation_data=(X_test, y_test), callbacks=[PlotLossesKeras()])
 #history = model.fit(X_train, y_train, validation_data=(X_test, y_test), callbacks=[monitor], verbose=2, batch_size=10, epochs=100)
 #history = model.fit(X_train, y_train, epochs=100, batch_size=10, verbose=0, validation_split=0.2, callbacks=[PlotLossesKeras()])
 #history = model.fit(X_train, y_train, epochs=100, batch_size=10, verbose=0, validation_split=0.2, callbacks=[tensorboard])
@@ -236,10 +235,7 @@ plt.savefig("MSLE.pdf", dpi=150)
 plt.show()
 
 # Predict
-t0 = time.time()
 pred = model.predict(X_test)
-NN_predict = time.time() - t0
-print("NN prediction for %d inputs in %.3f s" % (X_test.shape[0], NN_predict))
 
 score = metrics.mean_squared_error(pred, y_test)
 print("Final score (MSE): {}".format(score))
@@ -290,21 +286,10 @@ def chart_regression(pred, y, sort=True):
 chart_regression(pred.flatten(), y_test)
 
 # Come back to dimensional data for meaningful plotting
-x_test_dim = scaler_x.inverse_transform(X_test)
-y_test_dim = scaler_y.inverse_transform(y_test)
-y_pred_dim = scaler_y.inverse_transform(pred)
+#x_test_dim = scaler_x.inverse_transform(X_test)
+#y_test_dim = scaler_y.inverse_transform(y_test)
+#y_pred_dim = scaler_y.inverse_transform(pred)
 #chart_dim_regression(y_pred_dim.flatten(), y_test_dim, x_test_dim[:,0])
-
-plt.scatter(x_test_dim[:,1], y_test_dim[:], s=0.5, label='KAPPA')
-plt.scatter(x_test_dim[:,1], y_pred_dim[:], s=0.5, color='black', label='predicted')
-plt.title(' Shear viscosity ')
-plt.ylabel(r'$\eta$ [Pa·s]')
-plt.xlabel('T [K] ')
-plt.legend()
-plt.tight_layout()
-plt.savefig("dim_regression0.pdf", dpi=150, crop='false')
-plt.show()
-
 
 # Pick up a single value ...
 Xnew = np.array([[0.9, 1000],  [0.9, 5000], [0.9, 10000], [0.9, 15000], [0.9, 20000], [0.9, 25000],

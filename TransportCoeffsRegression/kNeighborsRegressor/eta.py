@@ -1,6 +1,5 @@
 # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html
 # https://scikit-learn.org/stable/auto_examples/neighbors/plot_regression.html#sphx-glr-auto-examples-neighbors-plot-regression-py
-#
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -56,7 +55,7 @@ neigh.fit(x_train, y_train)
 # prediction on test samples
 y_pred = neigh.predict(x_test)
 
-#neigh.kneighbors(x_test, return_distance=True)
+print(neigh.kneighbors(x_test, return_distance=True))
 
 # Calculate metrics
 # https://stackoverflow.com/questions/50789508/random-forest-regression-how-do-i-analyse-its-performance-python-sklearn
