@@ -30,8 +30,8 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
 
-from sklearn import kernel_ridge
-from sklearn.kernel_ridge import KernelRidge
+#from sklearn import kernel_ridge
+#from sklearn.kernel_ridge import KernelRidge
 
 #from sklearn.gaussian_process import GaussianProcessRegressor
 #from sklearn.gaussian_process.kernels import WhiteKernel, ExpSineSquared, DotProduct, RBF, RationalQuadratic, ConstantKernel
@@ -143,7 +143,7 @@ hyper_params = [{'n_estimators': (10, 100, 1000),
 
 est=ensemble.RandomForestRegressor()
 
-grid_clf = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+grid_clf = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=0, n_jobs=n_jobs, scoring='r2')
 
 #rf = RandomForestRegressor(n_estimators = 100, random_state = 42)
 
