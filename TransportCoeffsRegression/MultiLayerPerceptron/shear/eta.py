@@ -20,30 +20,14 @@ from sklearn import metrics
 from sklearn.metrics import *
 from sklearn import preprocessing
 
-#from sklearn.svm import SVR
-
-#from sklearn.pipeline import make_pipeline
-
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
-#from sklearn.linear_model import LinearRegression, SGDRegressor
 
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
 
 from sklearn import kernel_ridge
 from sklearn.kernel_ridge import KernelRidge
 
-#from sklearn.gaussian_process import GaussianProcessRegressor
-#from sklearn.gaussian_process.kernels import WhiteKernel, ExpSineSquared, DotProduct, RBF, RationalQuadratic, ConstantKernel
-
-#from sklearn.tree import DecisionTreeRegressor
-
-#from sklearn.ensemble import RandomForestRegressor
-
-#from sklearn.neighbors import KNeighborsRegressor
-#from sklearn.neighbors import RadiusNeighborsRegressor
-
-import xgboost
+#import xgboost
 from sklearn.neural_network import MLPRegressor
 
 n_jobs = 1
@@ -158,11 +142,21 @@ print('Testing Labels Shape:', y_test.shape)
 # MPL
 hyper_params = [
     {
-        'activation' : ('logistic', 'tanh', 'relu',),
+        #'activation' : ('logistic', 'tanh', 'relu',),
+        'activation' : ('tanh', 'relu',),
         'solver' : ('lbfgs','adam','sgd',),
         'learning_rate' : ('constant', 'invscaling', 'adaptive',),
+        'nesterovs_momentum': (True, False,),
     },
 ]
+
+#params = [{'solver': 'sgd', 'learning_rate': 'constant', 'momentum': 0, 'learning_rate_init': 0.2},
+#          {'solver': 'sgd', 'learning_rate': 'constant', 'momentum': .9, 'nesterovs_momentum': False, 'learning_rate_init': 0.2},
+#          {'solver': 'sgd', 'learning_rate': 'constant', 'momentum': .9, 'nesterovs_momentum': True, 'learning_rate_init': 0.2},
+#          {'solver': 'sgd', 'learning_rate': 'invscaling', 'momentum': 0, 'learning_rate_init': 0.2},
+#          {'solver': 'sgd', 'learning_rate': 'invscaling', 'momentum': .9, 'nesterovs_momentum': True, 'learning_rate_init': 0.2},
+#          {'solver': 'sgd', 'learning_rate': 'invscaling', 'momentum': .9, 'nesterovs_momentum': False, 'learning_rate_init': 0.2},
+#          {'solver': 'adam', 'learning_rate_init': 0.01}]
 
 est=MLPRegressor()
 
@@ -314,17 +308,17 @@ mlp = MLPRegressor(activation=best_activation, solver=best_solver, learning_rate
 t0 = time.time()
 mlp.fit(x_train, y_train.ravel())
 mlp_fit = time.time() - t0
-print("KR complexity and bandwidth selected and model fitted in %.3f s" % mlp_fit)
+print("MLP complexity and bandwidth selected and model fitted in %.6f s" % mlp_fit)
 
 t0 = time.time()
 y_mlp = mlp.predict(x_test)
 mlp_predict = time.time() - t0
-print("MLP prediction for %d inputs in %.3f s" % (x_test.shape[0], mlp_predict))
+print("MLP prediction for %d inputs in %.6f s" % (x_test.shape[0], mlp_predict))
 
 # open a file to append
 outF = open("output.txt", "a")
-print("MLP complexity and bandwidth selected and model fitted in %.3f s" % mlp_fit, file=outF)
-print("MLP prediction for %d inputs in %.3f s" % (x_test.shape[0], mlp_predict),file=outF)
+print("MLP complexity and bandwidth selected and model fitted in %.6f s" % mlp_fit, file=outF)
+print("MLP prediction for %d inputs in %.6f s" % (x_test.shape[0], mlp_predict),file=outF)
 print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_mlp), file=outF)
 print('Mean Squared Error (MSE):', metrics.mean_squared_error(y_test, y_mlp), file=outF)
 print('Root Mean Squared Error (RMSE):', np.sqrt(metrics.mean_squared_error(y_test, y_mlp)), file=outF)
@@ -354,3 +348,15 @@ plt.tight_layout()
 plt.savefig("eta_MLP.pdf", dpi=150, crop='false')
 plt.show()
 
+print('Computing partial dependence plots...')
+tic = time()
+# We don't compute the 2-way PDP (5, 1) here, because it is a lot slower
+# with the brute method.
+features = ['MolarFraction', 'Temperature']
+plot_partial_dependence(est, x_train, features,
+                        n_jobs=1, grid_resolution=20)
+print("done in {:.6f}s".format(time() - tic))
+fig = plt.gcf()
+fig.suptitle('Partial dependence of shear viscosity on\n'
+             'temperature and species molar fraction')
+fig.subplots_adjust(hspace=0.3)
