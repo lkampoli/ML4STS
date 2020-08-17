@@ -1,0 +1,59 @@
+[33mcommit c1b2db377b2b0cc06787300bff9dcbde9d318060[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Sat Aug 15 14:03:56 2020 +0300
+
+    added README.md
+
+[33mcommit e5b6385c5ec2ffc1751f40646cca0df999263869[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Sat Aug 15 12:08:43 2020 +0300
+
+    added communication fortran/python for MLP
+
+[33mcommit 68c94298be588f32c61a72eaca7b68dde9263bed[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Fri Aug 14 20:19:33 2020 +0300
+
+    added systematical comparison template
+
+[33mcommit 23938e28a378d15474e2f34802d8a45e1bd01e4c[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Thu Aug 13 22:43:52 2020 +0300
+
+    fixed all regression methods and compared
+
+[33mcommit 58a4172ca264c9d72c3bb4121c5701ba8338e0f7[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Wed Aug 12 23:34:26 2020 +0300
+
+    add kNeighborsRegressor
+
+[33mcommit 4a6675769063aecf22588a429b78ae442d712787[m
+Author: lcampoli <l.kampoli@spbu.ru>
+Date:   Wed Aug 12 18:05:53 2020 +0300
+
+    added GP, KR, RF, SVM regressors (only RF works well for now)
+
+[33mcommit d222775aa41e0e218c9a1cf7b4080b021b5c4a28[m
+Author: lk <l.kampoli@spbu.ru>
+Date:   Mon Aug 10 14:17:09 2020 +0300
+
+    mod README
+
+[33mcommit 08dbb4f31a897a234abc25a50d1e182118bd5196[m
+Author: lk <l.kampoli@spbu.ru>
+Date:   Mon Aug 10 14:11:58 2020 +0300
+
+    added RelaxationCoeffsRegression
+
+[33mcommit 0cc25618eb8ba96f3334bd0241a69ae675b606e0[m
+Author: lk <l.kampoli@spbu.ru>
+Date:   Mon Aug 10 09:54:31 2020 +0300
+
+    added working folders
+
+[33mcommit c4910f63c18569e2fd3dd6bc7e28fa4278225543[m
+Author: Lorenzo Campoli <l.kampoli@spbu.ru>
+Date:   Fri Aug 7 17:21:38 2020 +0300
+
+    Initial commit
