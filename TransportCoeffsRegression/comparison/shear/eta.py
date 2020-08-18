@@ -36,18 +36,6 @@ y=dataset[:,2] # 0: X, 1: T, 2: shear, 3: bulk, 4: conductivity
 #plt.ylabel(r'$\eta$')
 #plt.show()
 
-#plt.scatter(x[:,1], dataset[:,3], s=0.5)
-#plt.title('Bulk viscosity')
-#plt.xlabel('T [K]')
-#plt.ylabel(r'$\zeta$')
-#plt.show()
-
-#plt.scatter(x[:,1], dataset[:,4], s=0.5)
-#plt.title('Thermal conductivity')
-#plt.xlabel('T [K]')
-#plt.ylabel(r'$\lambda$')
-#plt.show()
-
 y=np.reshape(y, (-1,1))
 sc_x = StandardScaler()
 sc_y = StandardScaler()
@@ -80,16 +68,6 @@ t0 = time.time()
 kr.fit(x_train, y_train.ravel())
 kr_fit = time.time() - t0
 print("KR complexity and bandwidth selected and model fitted in %.6f s" % kr_fit)
-
-# Predict
-#t0 = time.time()
-#y_kr = kr.predict(x_test)
-#kr_predict = time.time() - t0
-#print("KR prediction for %d inputs in %.6f s" % (x_test.shape[0], kr_predict))
-
-#print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_kr))
-#print('Mean Squared Error (MSE):', metrics.mean_squared_error(y_test, y_kr))
-#print('Root Mean Squared Error (RMSE):', np.sqrt(metrics.mean_squared_error(y_test, y_kr)))
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(kr.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(kr.predict(x_train)))
@@ -176,16 +154,6 @@ t0 = time.time()
 rf.fit(x_train, y_train.ravel())
 rf_fit = time.time() - t0
 print("RF complexity and bandwidth selected and model fitted in %.6f s" % rf_fit)
-
-# Predict
-#t0 = time.time()
-#y_rf = rf.predict(x_test)
-#rf_predict = time.time() - t0
-#print("RF prediction for %d inputs in %.3f s" % (x_test.shape[0], rf_predict))
-
-#print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_rf))
-#print('Mean Squared Error (MSE):', metrics.mean_squared_error(y_test, y_rf))
-#print('Root Mean Squared Error (RMSE):', np.sqrt(metrics.mean_squared_error(y_test, y_rf)))
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(rf.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(rf.predict(x_train)))
@@ -274,16 +242,6 @@ t0 = time.time()
 kn.fit(x_train, y_train.ravel())
 kn_fit = time.time() - t0
 print("KN complexity and bandwidth selected and model fitted in %.6f s" % kn_fit)
-
-# Predict
-#t0 = time.time()
-#y_kn = kn.predict(x_test)
-#kn_predict = time.time() - t0
-#print("KN prediction for %d inputs in %.6f s" % (x_test.shape[0], kn_predict))
-
-#print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_kn))
-#print('Mean Squared Error (MSE):', metrics.mean_squared_error(y_test, y_kn))
-#print('Root Mean Squared Error (RMSE):', np.sqrt(metrics.mean_squared_error(y_test, y_kn)))
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(kn.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(kn.predict(x_train)))
@@ -374,12 +332,6 @@ svr.fit(x_train, y_train.ravel())
 svr_fit = time.time() - t0
 print("SVR complexity and bandwidth selected and model fitted in %.6f s" % svr_fit)
 
-# Predict
-#t0 = time.time()
-#y_svr = svr.predict(x_test)
-#svr_predict = time.time() - t0
-#print("SVR prediction for %d inputs in %.6f s" % (x_test.shape[0], svr_predict))
-
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(svr.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(svr.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(svr.predict(x_train)))
@@ -460,8 +412,8 @@ hyper_params = [
         'activation' : ('logistic', 'tanh', 'relu',),
         'solver' : ('lbfgs','adam','sgd',),
         'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-        #'hidden_layer_sizes': [(50, 50), (100,100), (150,150), (200,200),],
-        #'early_stopping': (True, False),
+#        'hidden_layer_sizes': [(50,50), (100,100), (150,150), (200,200),],
+#        'early_stopping': (True, False),
     },
 ]
 
@@ -473,12 +425,6 @@ t0 = time.time()
 mlp.fit(x_train, y_train.ravel())
 mlp_fit = time.time() - t0
 print("MLP complexity and bandwidth selected and model fitted in %.6f s" % mlp_fit)
-
-# Predict
-#t0 = time.time()
-#y_mlp = svr.predict(x_test)
-#mlp_predict = time.time() - t0
-#print("MLP prediction for %d inputs in %.6f s" % (x_test.shape[0], mlp_predict))
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(mlp.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(mlp.predict(x_train)))
@@ -549,27 +495,27 @@ y_mlp_dim = sc_y.inverse_transform(y_mlp)
 
 ### GP ###
 
-from sklearn import gaussian_process 
+from sklearn import gaussian_process
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import WhiteKernel, ExpSineSquared, DotProduct, RBF, RationalQuadratic, ConstantKernel, Matern
 
 hyper_params = [{#'n_restarts_optimizer': (0,1,10,100,),
                  #'alpha': (1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3,),
-                 'kernel': (1.0 * RBF(1.0), 
+                 'kernel': (1.0 * RBF(1.0),
                             #ConstantKernel(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2)),
                             #ExpSineSquared(1.0, 5.0, periodicity_bounds=(1e-2, 1e1)),
                             #DotProduct() + WhiteKernel(),
                             #ConstantKernel(0.1, (0.01, 10.0)) * (DotProduct(sigma_0=1.0, sigma_0_bounds=(0.1, 10.0)) ** 2),
                             #1.0 * Matern(length_scale=1.0, length_scale_bounds=(1e-1, 10.0), nu=1.5),
-                            #1.0 * RationalQuadratic(length_scale=1.0, alpha=0.1), 
+                            #1.0 * RationalQuadratic(length_scale=1.0, alpha=0.1),
                             #1.0 * RBF(length_scale=1.0, length_scale_bounds=(1e-1, 10.0)),
-                            #1.0 * ExpSineSquared(length_scale=1.0, periodicity=3.0,                                     
-                            #                     length_scale_bounds=(0.1, 10.0),       
+                            #1.0 * ExpSineSquared(length_scale=1.0, periodicity=3.0,
+                            #                     length_scale_bounds=(0.1, 10.0),
                             #                     periodicity_bounds=(1.0, 10.0)),
                            ),}]
 
 
-est = gaussian_process.GaussianProcessRegressor()                                                                                   
+est = gaussian_process.GaussianProcessRegressor()
 gp = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 # Train
@@ -577,12 +523,6 @@ t0 = time.time()
 gp.fit(x_train, y_train.ravel())
 gp_fit = time.time() - t0
 print("GP complexity and bandwidth selected and model fitted in %.6f s" % gp_fit)
-
-# Predict
-#t0 = time.time()
-#y_mlp = svr.predict(x_test)
-#mlp_predict = time.time() - t0
-#print("MLP prediction for %d inputs in %.6f s" % (x_test.shape[0], mlp_predict))
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gp.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gp.predict(x_train)))
@@ -611,17 +551,17 @@ out_text = '\t'.join(['gp',
 print(out_text)
 sys.stdout.flush()
 
-best_kernel = gp.best_params_['kernel']                                                                                             
-#best_alpha = gp.best_params_['alpha']                                                                                               
-#best_n_restarts_optimizer = gp.best_params_['n_restarts_optimizer']                                                                 
-#best_gamma = gp.best_params_['gamma']                                                                                              
-#best_C = gp.best_params_['C']                                                                                                      
+best_kernel = gp.best_params_['kernel']
+#best_alpha = gp.best_params_['alpha']
+#best_n_restarts_optimizer = gp.best_params_['n_restarts_optimizer']
+#best_gamma = gp.best_params_['gamma']
+#best_C = gp.best_params_['C']
 #best_epsilon = gp.best_params_['epsilon']
-    
+
 outF = open("GP.txt", "w")
-print('best_kernel = ', best_kernel, file=outF)                                                                                    
-#print('best_alpha = ', best_alpha, file=outF)                                                                                      
-#print('best_n_restarts_optimizer = ', best_n_restarts_optimizer, file=outF)                                                        
+print('best_kernel = ', best_kernel, file=outF)
+#print('best_alpha = ', best_alpha, file=outF)
+#print('best_n_restarts_optimizer = ', best_n_restarts_optimizer, file=outF)
 outF.close()
 
 #gp = GaussianProcessRegressor(kernel=best_kernel, alpha=best_alpha, n_restarts_optimizer=best_n_restarts_optimizer)
@@ -660,24 +600,23 @@ y_gp_dim = sc_y.inverse_transform(y_gp)
 x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 
-plt.scatter(x_test_dim[:,1], y_test_dim[:], s=5, c='red', marker='o', label='KAPPA')
-#plt.scatter(x_test_dim[:,1], y_svr_dim[:], s=1, facecolors='none', edgecolors='k', marker='p', label='Support Vector Machine')
-#plt.scatter(x_test_dim[:,1], y_kr_dim[:],  s=1, facecolors='none', edgecolors='k', marker='p', label='Kernel Ridge')
-#plt.scatter(x_test_dim[:,1], y_rf_dim[:],  s=1, facecolors='none', edgecolors='k', marker='p', label='Random Forest')
-#plt.scatter(x_test_dim[:,1], y_kn_dim[:],  s=1, facecolors='none', edgecolors='k', marker='p', label='k-Nearest Neighbour')
-#plt.scatter(x_test_dim[:,1], y_mlp_dim[:], s=1, facecolors='none', edgecolors='k', marker='p', label='Multi-layer Perceptron')
-plt.scatter(x_test_dim[:,1], y_gp_dim[:],  s=1, facecolors='none', edgecolors='k', marker='p', label='Gaussian Process')
+plt.scatter(x_test_dim[:,1], y_test_dim[:], s=5, c='k', marker='o', label='KAPPA')
+plt.scatter(x_test_dim[:,1], y_svr_dim[:], s=1, facecolors='none', edgecolors='r', marker='p', label='Support Vector Machine')
+plt.scatter(x_test_dim[:,1], y_kr_dim[:],  s=1, facecolors='none', edgecolors='b', marker='p', label='Kernel Ridge')
+plt.scatter(x_test_dim[:,1], y_rf_dim[:],  s=1, facecolors='none', edgecolors='g', marker='p', label='Random Forest')
+plt.scatter(x_test_dim[:,1], y_kn_dim[:],  s=1, facecolors='none', edgecolors='y', marker='p', label='k-Nearest Neighbour')
+plt.scatter(x_test_dim[:,1], y_mlp_dim[:], s=1, facecolors='none', edgecolors='m', marker='p', label='Multi-layer Perceptron')
+plt.scatter(x_test_dim[:,1], y_gp_dim[:],  s=1, facecolors='none', edgecolors='c', marker='p', label='Gaussian Process')
 plt.title('Shear viscosity regression')
 plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-#plt.savefig("eta.pdf",     dpi=150, crop='false')
+plt.savefig("eta.pdf",     dpi=150, crop='false')
 #plt.savefig("eta_SVR.pdf", dpi=150, crop='false')
 #plt.savefig("eta_KR.pdf",  dpi=150, crop='false')
 #plt.savefig("eta_RF.pdf",  dpi=150, crop='false')
 #plt.savefig("eta_KN.pdf",  dpi=150, crop='false')
 #plt.savefig("eta_MLP.pdf", dpi=150, crop='false')
-plt.savefig("eta_GP.pdf", dpi=150, crop='false')
+#plt.savefig("eta_GP.pdf", dpi=150, crop='false')
 plt.show()
-
