@@ -16,7 +16,16 @@ from sklearn.metrics import *
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
-from sklearn.neural_network import MLPRegressor
+#from sklearn import kernel_ridge
+#from sklearn.kernel_ridge import KernelRidge
+#from sklearn.neighbors import KNeighborsRegressor
+#from sklearn.neighbors import RadiusNeighborsRegressor
+#from sklearn import neighbors
+#from sklearn.neighbors import NearestNeighbors
+#from sklearn import ensemble
+#from sklearn.ensemble import RandomForestRegressor
+#from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.linear_model import SGDRegressor
 
 n_jobs = 1
 trial  = 1
@@ -96,31 +105,37 @@ print('Testing Labels Shape:', y_test.shape)
 #                 'warm_start': (True, False,),
 #                 'criterion': ('mse', 'mae',),
 #                 'max_depth': (1,10,100,None,),
-#                 'max_leaf_nodes': (1,10,100,),
-#                 'min_samples_split': (0.1,0.25,0.5,0.75,1.0,),
+#                 'max_leaf_nodes': (2,10,100,),
+#                 'min_samples_split': (2,10,100,), #0.1,0.25,0.5,0.75,1.0,),
 #                 'min_samples_leaf': (1,10,100,),
 #}]
 
-# Support Vector Machines
-#hyper_params = [{'kernel': ('poly', 'rbf',), 'gamma': ('scale', 'auto',),
-#                 'C': (1e-2, 1e-1, 1e0, 1e1, 1e2,), 'epsilon': (1e-2, 1e-1, 1e0, 1e1, 1e2,), }]
-
-# MultiLayerPerceptron
+# SGD
 hyper_params = [{
-        'hidden_layer_sizes': (10, 20, 30, 40, 50, 100, 150, 200,),
-        'activation' : ('tanh', 'relu',),
-        'solver' : ('lbfgs','adam','sgd',),
-        'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-        'nesterovs_momentum': (True, False,),
-},]
+#                 'n_estimators': (10, 100, 1000,),
+#                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+#                 'max_features': ('sqrt','log2','auto', None,),
+#                 'max_samples': (1,10,100,1000,),
+#                 'bootstrap': (True, False,),
+#                 'oob_score': (True, False,),
+#                 'warm_start': (True, False,),
+#                 'criterion': ('mse', 'mae',),
+#                 'max_depth': (1,10,100,None,),
+#                 'max_leaf_nodes': (2,10,100,),
+#                 'min_samples_split': (2,10,100,), #0.1,0.25,0.5,0.75,1.0,),
+#                 'min_samples_leaf': (1,10,100,),
+                 'penalty': ('l2', 'l1', 'elasticnet'),
+                 'loss': ('squared_loss', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'),
+#                 random_state=69,
+#                 early_stopping=True,
+}]
 
 #est=ensemble.RandomForestRegressor()
 #est=kernel_ridge.KernelRidge()
 #est=neighbors.NearestNeighbors()
 #est=neighbors.KNeighborsRegressor()
 #est=ensemble.ExtraTreesRegressor()
-#est=svm.SVR()
-est=MLPRegressor()
+est=SGDRegressor()
 
 gs = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
@@ -187,18 +202,10 @@ sys.stdout.flush()
 #best_min_samples_leaf = gs.best_params_['min_samples_leaf']
 #best_max_leaf_nodes = gs.best_params_['max_leaf_nodes']
 
-# SVR
-#best_kernel = gs.best_params_['kernel']
-#best_gamma = gs.best_params_['gamma']
-#best_C = gs.best_params_['C']
-#best_epsilon = gs.best_params_['epsilon']
+# SGD
+best_loss = gs.best_params_['loss']
+best_penalty = gs.best_params_['penalty']
 
-# MLP
-best_hidden_layer_sizes = gs.best_params_['hidden_layer_sizes']
-best_activation = gs.best_params_['activation']
-best_solver = gs.best_params_['solver']
-best_learning_rate = gs.best_params_['learning_rate']
-best_nesterovs_momentum = gs.best_params_['nesterovs_momentum']
 
 outF = open("output.txt", "w")
 #print('best_algorithm = ', best_algorithm, file=outF)
@@ -214,7 +221,7 @@ outF = open("output.txt", "w")
 #print('best_n_estimators = ', best_n_estimators, file=outF)
 #print('best_min_weight_fraction_leaf = ', best_min_weight_fraction_leaf, file=outF)
 #print('best_max_features = ', best_max_features, file=outF)
-#
+
 #print('best_n_estimators = ', best_n_estimators, file=outF)
 #print('best_min_weight_fraction_leaf = ', best_min_weight_fraction_leaf, file=outF)
 #print('best_max_features = ', best_max_features, file=outF)
@@ -225,19 +232,11 @@ outF = open("output.txt", "w")
 #print('best_max_depth = ', best_max_depth, file=outF)
 #print('best_min_samples_split = ', best_min_samples_split, file=outF)
 #print('best_min_samples_leaf = ', best_min_samples_leaf, file=outF)
-#print('best_min_samples_leaf = ', best_min_samples_leaf, file=outF)
+#ddprint('best_max_samples = ', best_max_samples, file=outF)
 #print('best_max_leaf_nodes = ', best_max_leaf_nodes, file=outF)
 #
-#print('best_kernel = ', best_kernel, file=outF)
-#print('best_gamma = ', best_gamma, file=outF)
-#print('best_C = ', best_C, file=outF)
-#print('best_epsilon = ', best_epsilon, file=outF)
-#
-print('best_hidden_layer_sizes = ', best_hidden_layer_sizes, file=outF)
-print('best_activation = ', best_activation, file=outF)
-print('best_solver = ', best_solver, file=outF)
-print('best_learning_rate = ', best_learning_rate, file=outF)
-print('best_nesterovs_momentum = ', best_nesterovs_momentum, file=outF)
+print('best_loss = ', best_loss, file=outF)
+print('best_penalty = ', best_penalty, file=outF)
 outF.close()
 
 #regr = KNeighborsRegressor(n_neighbors=best_n_neighbors, algorithm=best_algorithm,
@@ -256,15 +255,16 @@ outF.close()
 #                           oob_score=best_oob_score,
 #                           warm_start=best_warm_start,
 #                           criterion=best_criterion,
+#                           max_samples=best_max_samples,
 #                           max_depth=best_max_depth,
 #                           max_leaf_nodes=best_max_leaf_nodes,
 #                           min_samples_split=best_min_samples_split,
 #                           min_samples_leaf=best_min_samples_leaf)
 #
-#regr = SVR(kernel=best_kernel, epsilon=best_epsilon, C=best_C, gamma=best_gamma)
-#
-regr = MLPRegressor(hidden_layer_sizes=best_hidden_layer_sizes, activation=best_activation, solver=best_solver,
-                    learning_rate=best_learning_rate, nesterovs_momentum=best_nesterovs_momentum, max_iter=1000)
+regr = SGDRegressor(loss=best_loss,
+                    penalty=best_penalty,
+                    )
+
 
 t0 = time.time()
 regr.fit(x_train, y_train.ravel())
@@ -293,13 +293,43 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
-plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='Multi-layer Perceptron')
-#plt.title('Relaxation term $R_{ci}$ regression')
-plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
+#plt.scatter(x_test_dim[:,1], y_test_dim[:], s=5, c='red',     marker='o', label='KAPPA')
+#plt.scatter(x_test_dim[:,1], y_kn_dim[:],   s=2, c='magenta', marker='d', label='k-Nearest Neighbour')
+plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='KAPPA')
+plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='SGD')
+plt.title('regression ...')
+plt.ylabel('Rci')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("regression_MLP.eps", dpi=150, crop='false')
-plt.savefig("regression_MLP.pdf", dpi=150, crop='false')
+plt.savefig("regression.pdf", dpi=150, crop='false')
 plt.show()
+
+
+#Xnew = np.array([[6750], [6800], [6850],[6900], [6950],
+#                 [7000], [7050],[7100], [7150], [7200], [7300], [7400], [7500], [7600], [7700], [7800], [7900],
+#                 [8000], [8100], [8200], [8300], [8400], [8500], [8600], [8700], [8800], [8900],
+#                 [9000], [9100], [9200], [9300], [9400], [9500], [9600], [9700], [9800], [9900],
+#                 [10000], [10100], [10200], [10300], [10400], [10500], [10757]])
+#
+#Xnew = scaler_x.transform(Xnew)
+#ynew = model.predict(Xnew)
+#
+## Invert normalize
+#ynew = scaler_y.inverse_transform(ynew)
+#Xnew = scaler_x.inverse_transform(Xnew)
+## show the inputs and predicted outputs
+#for i in range(len(Xnew)):
+#    print("X=%s, Predicted=%s" % (Xnew[i], ynew[i]))
+#
+#print(x.min(), x.max())
+#
+#plt.scatter(x[:], y[:], s=15, facecolor='red', label='MATLAB')
+#plt.plot(Xnew[:], ynew[:], 'o', color='black', label='predicted', linewidth=2, markersize=5, fillstyle='none')
+#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
+#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
+#plt.xlabel('T [K] ')
+#plt.legend()
+#plt.tight_layout()
+#plt.savefig("dim_regression.pdf", dpi=150, crop='false')
+#plt.show()

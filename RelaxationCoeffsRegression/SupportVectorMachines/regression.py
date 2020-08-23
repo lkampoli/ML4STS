@@ -16,19 +16,12 @@ from sklearn.metrics import *
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
-from sklearn import kernel_ridge
-from sklearn.kernel_ridge import KernelRidge
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neighbors import RadiusNeighborsRegressor
-from sklearn import neighbors
-from sklearn.neighbors import NearestNeighbors
-from sklearn import ensemble
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.ensemble import ExtraTreesRegressor
 from sklearn import svm
 from sklearn.svm import SVR
+from joblib import dump, load
+import pickle
 
-n_jobs = 1
+n_jobs = -1
 trial  = 1
 
 dataset=np.loadtxt("../data/datarelax.txt")
@@ -112,8 +105,12 @@ print('Testing Labels Shape:', y_test.shape)
 #}]
 
 # Support Vector Machines
-hyper_params = [{'kernel': ('poly', 'rbf',), 'gamma': ('scale', 'auto',),
-                 'C': (1e-2, 1e-1, 1e0, 1e1, 1e2,), 'epsilon': (1e-2, 1e-1, 1e0, 1e1, 1e2,), }]
+hyper_params = [{'kernel': ('poly', 'rbf',),
+                 'gamma': ('scale', 'auto',),
+                 'C': (1e-2, 1e-1, 1e0, 1e1, 1e2,),
+                 'epsilon': (1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4),
+                 'coef0': (0.0, 0.25, 0.5, 0.75, 1.0,),
+                 }]
 
 #est=ensemble.RandomForestRegressor()
 #est=kernel_ridge.KernelRidge()
@@ -122,12 +119,15 @@ hyper_params = [{'kernel': ('poly', 'rbf',), 'gamma': ('scale', 'auto',),
 #est=ensemble.ExtraTreesRegressor()
 est=svm.SVR()
 
-gs = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 t0 = time.time()
 gs.fit(x_train, y_train.ravel())
 runtime = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
+
+# save the model to disk
+dump(gs, 'model.sav')
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
@@ -136,10 +136,24 @@ train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y
 
 test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('MSLE is {}'.format(test_score_msle))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
+
+print(gs.cv_results_)
+print(gs.best_params_)
 
 out_text = '\t'.join(['regression',
                       str(trial),
@@ -192,6 +206,7 @@ best_kernel = gs.best_params_['kernel']
 best_gamma = gs.best_params_['gamma']
 best_C = gs.best_params_['C']
 best_epsilon = gs.best_params_['epsilon']
+best_coef0 = gs.best_params_['coef0']
 
 outF = open("output.txt", "w")
 #print('best_algorithm = ', best_algorithm, file=outF)
@@ -225,6 +240,7 @@ print('best_kernel = ', best_kernel, file=outF)
 print('best_gamma = ', best_gamma, file=outF)
 print('best_C = ', best_C, file=outF)
 print('best_epsilon = ', best_epsilon, file=outF)
+print('best_coef0 = ', best_coef0, file=outF)
 outF.close()
 
 #regr = KNeighborsRegressor(n_neighbors=best_n_neighbors, algorithm=best_algorithm,
@@ -248,7 +264,11 @@ outF.close()
 #                           min_samples_split=best_min_samples_split,
 #                           min_samples_leaf=best_min_samples_leaf)
 #
-regr = SVR(kernel=best_kernel, epsilon=best_epsilon, C=best_C, gamma=best_gamma)
+regr = SVR(kernel=best_kernel,
+           epsilon=best_epsilon,
+           C=best_C,
+           gamma=best_gamma,
+           coef0=best_coef0)
 
 t0 = time.time()
 regr.fit(x_train, y_train.ravel())
@@ -277,43 +297,13 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
-#plt.scatter(x_test_dim[:,1], y_test_dim[:], s=5, c='red',     marker='o', label='KAPPA')
-#plt.scatter(x_test_dim[:,1], y_kn_dim[:],   s=2, c='magenta', marker='d', label='k-Nearest Neighbour')
-plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='KAPPA')
-plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='SVR')
-plt.title('Relaxation term $R_{ci}$ regression with SVR')
-plt.ylabel('$R_{ci}$')
+plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='Matlab')
+plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='SupportVectorMachine')
+#plt.title('Relaxation term $R_{ci}$ regression')
+plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
+plt.savefig("regression_SVR.eps", dpi=150, crop='false')
 plt.savefig("regression_SVR.pdf", dpi=150, crop='false')
 plt.show()
-
-
-#Xnew = np.array([[6750], [6800], [6850],[6900], [6950],
-#                 [7000], [7050],[7100], [7150], [7200], [7300], [7400], [7500], [7600], [7700], [7800], [7900],
-#                 [8000], [8100], [8200], [8300], [8400], [8500], [8600], [8700], [8800], [8900],
-#                 [9000], [9100], [9200], [9300], [9400], [9500], [9600], [9700], [9800], [9900],
-#                 [10000], [10100], [10200], [10300], [10400], [10500], [10757]])
-#
-#Xnew = scaler_x.transform(Xnew)
-#ynew = model.predict(Xnew)
-#
-## Invert normalize
-#ynew = scaler_y.inverse_transform(ynew)
-#Xnew = scaler_x.inverse_transform(Xnew)
-## show the inputs and predicted outputs
-#for i in range(len(Xnew)):
-#    print("X=%s, Predicted=%s" % (Xnew[i], ynew[i]))
-#
-#print(x.min(), x.max())
-#
-#plt.scatter(x[:], y[:], s=15, facecolor='red', label='MATLAB')
-#plt.plot(Xnew[:], ynew[:], 'o', color='black', label='predicted', linewidth=2, markersize=5, fillstyle='none')
-#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-#plt.xlabel('T [K] ')
-#plt.legend()
-#plt.tight_layout()
-#plt.savefig("dim_regression.pdf", dpi=150, crop='false')
-#plt.show()

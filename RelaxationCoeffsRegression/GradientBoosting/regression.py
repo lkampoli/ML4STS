@@ -16,17 +16,7 @@ from sklearn.metrics import *
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
-#from sklearn import kernel_ridge
-#from sklearn.kernel_ridge import KernelRidge
-#from sklearn.neighbors import KNeighborsRegressor
-#from sklearn.neighbors import RadiusNeighborsRegressor
-#from sklearn import neighbors
-#from sklearn.neighbors import NearestNeighbors
 from sklearn import ensemble
-#from sklearn.ensemble import RandomForestRegressor
-#from sklearn.ensemble import ExtraTreesRegressor
-#from sklearn import svm
-#from sklearn.svm import SVR
 from sklearn.ensemble import GradientBoostingRegressor
 
 n_jobs = 1
@@ -325,43 +315,13 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
-#plt.scatter(x_test_dim[:,1], y_test_dim[:], s=5, c='red',     marker='o', label='KAPPA')
-#plt.scatter(x_test_dim[:,1], y_kn_dim[:],   s=2, c='magenta', marker='d', label='k-Nearest Neighbour')
-plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='KAPPA')
-plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='GB')
-plt.title('Relaxation term $R_{ci}$ regression with GB')
-plt.ylabel('$R_{ci}$')
+plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='Matlab')
+plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='GradientBoosting')
+#plt.title('Relaxation term $R_{ci}$ regression')
+plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
+plt.savefig("regression_GB.eps", dpi=150, crop='false')
 plt.savefig("regression_GB.pdf", dpi=150, crop='false')
 plt.show()
-
-
-#Xnew = np.array([[6750], [6800], [6850],[6900], [6950],
-#                 [7000], [7050],[7100], [7150], [7200], [7300], [7400], [7500], [7600], [7700], [7800], [7900],
-#                 [8000], [8100], [8200], [8300], [8400], [8500], [8600], [8700], [8800], [8900],
-#                 [9000], [9100], [9200], [9300], [9400], [9500], [9600], [9700], [9800], [9900],
-#                 [10000], [10100], [10200], [10300], [10400], [10500], [10757]])
-#
-#Xnew = scaler_x.transform(Xnew)
-#ynew = model.predict(Xnew)
-#
-## Invert normalize
-#ynew = scaler_y.inverse_transform(ynew)
-#Xnew = scaler_x.inverse_transform(Xnew)
-## show the inputs and predicted outputs
-#for i in range(len(Xnew)):
-#    print("X=%s, Predicted=%s" % (Xnew[i], ynew[i]))
-#
-#print(x.min(), x.max())
-#
-#plt.scatter(x[:], y[:], s=15, facecolor='red', label='MATLAB')
-#plt.plot(Xnew[:], ynew[:], 'o', color='black', label='predicted', linewidth=2, markersize=5, fillstyle='none')
-#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-#plt.xlabel('T [K] ')
-#plt.legend()
-#plt.tight_layout()
-#plt.savefig("dim_regression.pdf", dpi=150, crop='false')
-#plt.show()
