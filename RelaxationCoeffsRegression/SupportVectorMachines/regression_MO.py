@@ -21,61 +21,25 @@ from sklearn.svm import SVR
 from joblib import dump, load
 import pickle
 from sklearn.multioutput import MultiOutputRegressor
+from sklearn.multioutput import RegressorChain
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import RepeatedKFold
 from sklearn.pipeline import Pipeline
+from numpy import mean
+from numpy import std
+from numpy import absolute
 
 n_jobs = 1
 trial  = 1
 
 dataset=np.loadtxt("../data/datarelax.txt")
 
-# ... only for plotting
-#dataset=np.loadtxt("../data/datarelax.txt")
-#x=dataset[:,0:1]   # Temperatures
-#y=dataset[:,1:50]  # Rci (relaxation source terms)
-
-#for i in range (2,48):
-#    plt.scatter(dataset[:,0:1], dataset[:,i], s=0.5, label=i)
-
-#plt.title('$R_{ci}$ for $N_2/N$')
-#plt.xlabel('T [K]')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-##plt.legend()
-#plt.tight_layout()
-#plt.savefig("relaxation_source_terms.pdf")
-#plt.show()
-
-# Here, I learn one specific level of R_ci spanning all temperatures
 x=dataset[:,0:1]  # Temperatures
-y=dataset[:,9:10] # Rci (relaxation source terms)
-
-# Here, I fix the temperature and learn all levels of R_ci
-#x=dataset[150,0:1]   # Temperatures
-#y=dataset[150,1:50]  # Rci (relaxation source terms)
-
-# TODO: Here, I want to learn all T and all Rci alltogether
-#x=dataset[:,0:1]   # Temperatures
-#y=dataset[:,1:50]  # Rci (relaxation source terms)
-
-# 2D Plot
-#plt.scatter(x, y, s=0.5)
-#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
-#plt.xlabel('T [K]')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-#plt.tight_layout()
-#plt.savefig("relaxation_source_terms.pdf")
-#plt.show()
-
-#y=np.reshape(y, (-1,1))
-#sc_x = StandardScaler()
-#sc_y = StandardScaler()
-#X = sc_x.fit_transform(x)
-#Y = sc_y.fit_transform(y)
+y=dataset[:,1:50] # Rci (relaxation source terms)
 
 #x_train, x_test, y_train, y_test = train_test_split(X, Y, train_size=0.75, test_size=0.25, random_state=42)
 #x_train_sc, x_test_sc, y_train_sc, y_test_sc = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=42)
 x_train_sc, x_test_sc, y_train_sc, y_test_sc = train_test_split(x, y, train_size=0.80, test_size=0.20, random_state=42)
-
-#y   = np.reshape(y, (-1,1))
 
 sc_x = StandardScaler()
 sc_y = StandardScaler()
@@ -109,38 +73,51 @@ hyper_params = [{
                  }]
 
 est = svm.SVR()
-print(est)
+regr = MultiOutputRegressor(estimator=est)
+#regr = RegressorChain(base_estimator=est)
 
-gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+#gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+
+# define the evaluation procedure
+cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+
+# evaluate the model and collect the scores
+n_scores = cross_val_score(regr, x_train, y_train, scoring='neg_mean_absolute_error', cv=cv, n_jobs=-1)
+#scores = cross_val_score(regr, x_train, y_train, scoring='accuracy', cv=cv, n_jobs=-1)
+
+# force the scores to be positive
+n_scores = absolute(n_scores)
+
+# summarize performance
+print('MAE: %.6f (%.6f)' % (mean(n_scores), std(n_scores)))
+#print('Accuracy: %.6f (%.6f)' % (mean(scores), std(scores)))
 
 t0 = time.time()
-gs.fit(x_train, y_train.ravel())
+gs.fit(x_train, y_train)
 runtime = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 
 # save the model to disk
-dump(gs, 'model_SVR.sav')
+dump(gs, 'model_MO_SVR.sav')
 
-train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#
+#test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 
-test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-#test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-
-print("The model performance for testing set")
-print("--------------------------------------")
-print('MAE is {}'.format(test_score_mae))
-print('MSE is {}'.format(test_score_mse))
-#print('MSLE is {}'.format(test_score_msle))
-print('EVS is {}'.format(test_score_evs))
-print('ME is {}'.format(test_score_me))
-print('R2 score is {}'.format(test_score_r2))
+#print("The model performance for testing set")
+#print("--------------------------------------")
+#print('MAE is {}'.format(test_score_mae))
+#print('MSE is {}'.format(test_score_mse))
+#print('EVS is {}'.format(test_score_evs))
+#print('ME is {}'.format(test_score_me))
+#print('R2 score is {}'.format(test_score_r2))
 
 #feature_importances = gs.best_estimator_.feature_importances_
 #print(feature_importances)
@@ -302,3 +279,31 @@ plt.tight_layout()
 plt.savefig("regression_SVR.eps", dpi=150, crop='false')
 plt.savefig("regression_SVR.pdf", dpi=150, crop='false')
 plt.show()
+
+
+
+#from sklearn.multioutput import MultiOutputRegressor
+#from sklearn.svm import SVR
+#from sklearn.model_selection import GridSearchCV
+#from sklearn.pipeline import Pipeline
+#
+#pipe_svr = Pipeline([('scl', StandardScaler()),
+#        ('reg', MultiOutputRegressor(SVR()))])
+#
+#grid_param_svr = {
+#    'reg__estimator__C': [0.1,1,10]
+#}
+#
+#gs_svr = (GridSearchCV(estimator=pipe_svr,
+#                      param_grid=grid_param_svr,
+#                      cv=2,
+#                      scoring = 'neg_mean_squared_error',
+#                      n_jobs = -1))
+#
+#gs_svr = gs_svr.fit(X_train,y_train)
+#gs_svr.best_estimator_
+#
+#Pipeline(steps=[('scl', StandardScaler(copy=True, with_mean=True, with_std=True)),
+#('reg', MultiOutputRegressor(estimator=SVR(C=10, cache_size=200,
+# coef0=0.0, degree=3, epsilon=0.1, gamma='auto', kernel='rbf', max_iter=-1,
+# shrinking=True, tol=0.001, verbose=False), n_jobs=1))])

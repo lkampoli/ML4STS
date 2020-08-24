@@ -20,6 +20,8 @@ from sklearn import ensemble
 from sklearn.ensemble import RandomForestRegressor
 from joblib import dump, load
 import pickle
+from sklearn.multioutput import MultiOutputRegressor
+from sklearn.pipeline import Pipeline
 
 n_jobs = -1
 trial  = 1
@@ -63,29 +65,32 @@ y=dataset[:,9:10]  # Rci (relaxation source terms)
 #plt.savefig("relaxation_source_terms.pdf")
 #plt.show()
 
-y=np.reshape(y, (-1,1))
+#y=np.reshape(y, (-1,1))
+#sc_x = StandardScaler()
+#sc_y = StandardScaler()
+#X = sc_x.fit_transform(x)
+#Y = sc_y.fit_transform(y)
+
+#x_train, x_test, y_train, y_test = train_test_split(X, Y, train_size=0.75, test_size=0.25, random_state=42)
+x_train_sc, x_test_sc, y_train_sc, y_test_sc = train_test_split(x, y, train_size=0.80, test_size=0.20, random_state=42)
+
 sc_x = StandardScaler()
 sc_y = StandardScaler()
-X = sc_x.fit_transform(x)
-Y = sc_y.fit_transform(y)
 
-x_train, x_test, y_train, y_test = train_test_split(X, Y, train_size=0.75, test_size=0.25, random_state=42)
+x_train = sc_x.fit_transform(x_train_sc)
+y_train = sc_y.fit_transform(y_train_sc)
+x_test  = sc_x.fit_transform(x_test_sc)
+y_test  = sc_y.fit_transform(y_test_sc)
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:', y_train.shape)
 print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
-# KernelRidge
-#hyper_params = [{'kernel': ('poly','rbf',), 'alpha': (1e-4,1e-2,0.1,1,10,), 'gamma': (0.01,0.1,1,10,100,),}]
-
-# k-kearest neighbor
-#hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute',), 'n_neighbors': (1,2,3,4,5,6,7,8,9,10,),
-#                 'leaf_size': (1, 10, 20, 30, 100,), 'weights': ('uniform', 'distance',), 'p': (1,2,),}]
-
 # Random Forest
 hyper_params = [{
-                 'n_estimators': (1, 10, 100, 1000, 10000),
+                 'n_estimators': (1, 10, 100, 1000,),
+                 #'n_estimators': (1, 10, 100, 1000, 10000),
                  'min_weight_fraction_leaf': (0.0, 0.01, 0.02,),
                  #'min_weight_fraction_leaf': (0.0, 0.25, 0.5, 0.75, 0.9),
                  'max_features': ('auto','sqrt','log2'),
@@ -95,13 +100,9 @@ hyper_params = [{
                   #'warm_start': (True, False),
                   #'min_impurity_decrease': (0.1, 0.25, 0.5. 0.75, 0.9,),
                   #'max_leaf_nodes': (1, 10, 100, 1000,),
-                  #'
 }]
 
 est=ensemble.RandomForestRegressor()
-#est=kernel_ridge.KernelRidge()
-#est=neighbors.NearestNeighbors()
-#est=neighbors.KNeighborsRegressor()
 
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 

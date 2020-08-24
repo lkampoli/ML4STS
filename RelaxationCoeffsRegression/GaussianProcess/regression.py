@@ -303,7 +303,7 @@ y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='Matlab')
 plt.scatter(x_test_dim, y_regr_dim, s=2, c='k', marker='d', label='GaussianProcess')
-plt.title('Relaxation term $R_{ci}$ regression')
+#plt.title('Relaxation term $R_{ci}$ regression')
 plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')
 plt.legend()
