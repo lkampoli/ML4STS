@@ -23,65 +23,37 @@ from sklearn.neighbors import NearestNeighbors
 import pickle
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.pipeline import Pipeline
+from joblib import dump, load
 
 n_jobs = -1
 trial  = 1
 
-dataset=np.loadtxt("../data/datarelax.txt")
-
-# ... only for plotting
 #dataset=np.loadtxt("../data/datarelax.txt")
-#x=dataset[:,0:1]   # Temperatures
-#y=dataset[:,1:50]  # Rci (relaxation source terms)
+dataset=np.loadtxt("../data/datasetDR.txt")
+#dataset=np.loadtxt("../data/datasetVT.txt")
+#dataset=np.loadtxt("../data/datasetVV.txt")
 
-#for i in range (2,48):
-#    plt.scatter(dataset[:,0:1], dataset[:,i], s=0.5, label=i)
+x = dataset[:,2:3]   # 0: x [m], 1: t [s], 2: T [K]
+y = dataset[:,9:10]  # Rci (relaxation source terms)
 
-#plt.title('$R_{ci}$ for $N_2/N$')
-#plt.xlabel('T [K]')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-##plt.legend()
-#plt.tight_layout()
-#plt.savefig("relaxation_source_terms.pdf")
-#plt.show()
-
-# Here, I learn one specific level of R_ci spanning all temperatures
-x=dataset[:,0:1]   # Temperatures
-y=dataset[:,9:10]  # Rci (relaxation source terms)
-
-# Here, I fix the temperature and learn all levels of R_ci
-#x=dataset[150,0:1]   # Temperatures
-#y=dataset[150,1:50]  # Rci (relaxation source terms)
-
-# TODO: Here, I want to learn all T and all Rci alltogether
-#x=dataset[:,0:1]   # Temperatures
-#y=dataset[:,1:50]  # Rci (relaxation source terms)
-
-# 2D Plot
-#plt.scatter(x, y, s=0.5)
-#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
-#plt.xlabel('T [K]')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-#plt.tight_layout()
-#plt.savefig("relaxation_source_terms.pdf")
-#plt.show()
-
-#y=np.reshape(y, (-1,1))
-#sc_x = StandardScaler()
-#sc_y = StandardScaler()
-#X = sc_x.fit_transform(x)
-#Y = sc_y.fit_transform(y)
-
-#x_train, x_test, y_train, y_test = train_test_split(X, Y, train_size=0.75, test_size=0.25, random_state=42)
-x_train_sc, x_test_sc, y_train_sc, y_test_sc = train_test_split(x, y, train_size=0.80, test_size=0.20, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
 sc_x = StandardScaler()
 sc_y = StandardScaler()
 
-x_train = sc_x.fit_transform(x_train_sc)
-y_train = sc_y.fit_transform(y_train_sc)
-x_test  = sc_x.fit_transform(x_test_sc)
-y_test  = sc_y.fit_transform(y_test_sc)
+# fit scaler
+sc_x.fit(x_train)
+# transform training datasetx
+x_train = sc_x.transform(x_train)
+# transform test dataset
+x_test = sc_x.transform(x_test)
+
+# fit scaler on training dataset
+sc_y.fit(y_train)
+# transform training dataset
+y_train = sc_y.transform(y_train)
+# transform test dataset
+y_test = sc_y.transform(y_test)
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:', y_train.shape)
@@ -96,7 +68,6 @@ hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute',),
                  'p': (1,2,),}]
 
 est=neighbors.KNeighborsRegressor()
-
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 t0 = time.time()
@@ -178,8 +149,8 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_kn_dim   = sc_y.inverse_transform(y_kn)
 
-plt.scatter(x_test_dim, y_test_dim, s=5, c='r', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_kn_dim,   s=2, c='k', marker='d', label='k-Nearest Neighbour')
+plt.scatter(x_test_dim, y_test_dim, s=2, c='k', marker='o', label='Matlab')
+plt.scatter(x_test_dim, y_kn_dim,   s=2, c='r', marker='+', label='k-Nearest Neighbour')
 #plt.title(''Relaxation term $R_{ci}$ regression')
 plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')
@@ -188,3 +159,6 @@ plt.tight_layout()
 plt.savefig("regression_kNN.eps", dpi=150, crop='false')
 plt.savefig("regression_kNN.pdf", dpi=150, crop='false')
 plt.show()
+
+# save the model to disk
+dump(gs, 'model_kNN.sav')
