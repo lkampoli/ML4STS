@@ -16,12 +16,6 @@ from sklearn.metrics import *
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve, cross_val_score
-from sklearn import kernel_ridge
-from sklearn.kernel_ridge import KernelRidge
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neighbors import RadiusNeighborsRegressor
-from sklearn import neighbors
-from sklearn.neighbors import NearestNeighbors
 from sklearn import ensemble
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import ExtraTreesRegressor
@@ -72,7 +66,8 @@ hyper_params = [{'n_estimators': (10, 100, 1000,),
 #                 'oob_score': (True, False,),
 #                 'warm_start': (True, False,),
 #                 'criterion': ('mse', 'mae',),
-                 'max_depth': (1,10,100,None,),
+                 #'max_depth': (1,10,100,None,),
+                 'max_depth': (None,),
                  'max_leaf_nodes': (2,10,100,),
                  'min_samples_split': (2,10,100,), #0.1,0.25,0.5,0.75,1.0,),
                  'min_samples_leaf': (1,10,100,),
@@ -95,6 +90,15 @@ test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 

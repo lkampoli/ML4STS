@@ -21,7 +21,7 @@ from sklearn.svm import SVR
 from joblib import dump, load
 import pickle
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")

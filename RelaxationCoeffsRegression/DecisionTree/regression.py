@@ -20,7 +20,7 @@ from sklearn.tree import DecisionTreeRegressor
 import pickle
 from joblib import dump, load
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")

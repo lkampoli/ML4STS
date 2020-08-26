@@ -24,7 +24,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import KFold
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
@@ -86,6 +86,15 @@ test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 
@@ -112,6 +121,7 @@ outF = open("output.txt", "w")
 print('best_kernel = ', best_kernel, file=outF)
 print('best_alpha = ', best_alpha, file=outF)
 print('best_gamma = ', best_gamma, file=outF)
+print('R2 score is {}'.format(test_score_r2))
 outF.close()
 
 regr = KernelRidge(kernel=best_kernel, gamma=best_gamma, alpha=best_alpha)
@@ -138,6 +148,7 @@ outF.close()
 print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_regr))
 print('Mean Squared Error (MSE):', metrics.mean_squared_error(y_test, y_regr))
 print('Root Mean Squared Error (RMSE):', np.sqrt(metrics.mean_squared_error(y_test, y_regr)))
+
 
 x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)

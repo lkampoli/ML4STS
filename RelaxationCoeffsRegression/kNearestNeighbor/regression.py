@@ -25,7 +25,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.pipeline import Pipeline
 from joblib import dump, load
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
@@ -84,6 +84,15 @@ test_score_mse = mean_squared_error(      sc_y.inverse_transform(y_test), sc_y.i
 test_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs = explained_variance_score(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me  = max_error(               sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2  = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 
@@ -114,6 +123,7 @@ print('best_n_neighbors = ', best_n_neighbors, file=outF)
 print('best_leaf_size = ', best_leaf_size, file=outF)
 print('best_weights = ', best_weights, file=outF)
 print('best_p = ', best_p, file=outF)
+print('R2 score is {}'.format(test_score_r2))
 outF.close()
 
 kn = KNeighborsRegressor(n_neighbors=best_n_neighbors,
