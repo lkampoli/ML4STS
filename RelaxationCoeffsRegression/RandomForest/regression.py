@@ -21,7 +21,7 @@ from sklearn.ensemble import RandomForestRegressor
 from joblib import dump, load
 import pickle
 
-n_jobs = 1
+n_jobs = -1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
@@ -58,19 +58,17 @@ print('Testing Labels Shape:', y_test.shape)
 
 # Random Forest
 hyper_params = [{
-                 'n_estimators': (1, 10, 100, 1000,),
-                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5, 0.75, 0.9),
-                 'max_features': ('auto','sqrt','log2'),
-                 'criterion': ('mse', 'mae'),
-                  #'max_samples': (0.1, 0.25, 0.5, 0.75, 0.9,),
-                  #'bootstrap': (True, False),
-                  #'warm_start': (True, False),
-                  #'min_impurity_decrease': (0.1, 0.25, 0.5. 0.75, 0.9,),
-                  #'max_leaf_nodes': (1, 10, 100, 1000,),
+                 'n_estimators': (10, 100, 1000,),
+                 'min_weight_fraction_leaf': (0.0, 0.1,), # 0.2, 0.3, 0.4, 0.5,),
+                 'max_features': ('auto','sqrt','log2',),
+                 'criterion': ('mse','mae',),
+                 'min_samples_leaf': (10,), #(1, 2 ,3, 4, 5, 10, 100,),
+                 'bootstrap': (True, False,),
+                 'warm_start': (False, True,),
+                 'min_impurity_decrease': (0.1, 0.2, 0.3), # 0.5, 0.75, 0.9,),
 }]
 
 est=ensemble.RandomForestRegressor()
-
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 t0 = time.time()
@@ -120,18 +118,30 @@ best_n_estimators = gs.best_params_['n_estimators']
 best_min_weight_fraction_leaf = gs.best_params_['min_weight_fraction_leaf']
 best_max_features = gs.best_params_['max_features']
 best_criterion = gs.best_params_['criterion']
+best_min_samples_leaf = gs.best_params_['min_samples_leaf']
+best_bootstrap = gs.best_params_['bootstrap']
+best_warm_start = gs.best_params_['warm_start']
+best_min_impurity_decrease = gs.best_params_['min_impurity_decrease']
 
 outF = open("output.txt", "w")
 print('best_n_estimators = ', best_n_estimators, file=outF)
 print('best_min_weight_fraction_leaf = ', best_min_weight_fraction_leaf, file=outF)
 print('best_max_features = ', best_max_features, file=outF)
 print('best_criterion = ', best_criterion, file=outF)
+print('best_min_impurity_decrease = ', best_min_impurity_decrease, file=outF)
+print('best_warm_start = ', best_warm_start, file=outF)
+print('best_min_samples_leaf = ', best_min_samples_leaf, file=outF)
+print('best_bootstrap = ', best_bootstrap, file=outF)
 outF.close()
 
 regr = RandomForestRegressor(n_estimators=best_n_estimators,
                              min_weight_fraction_leaf=best_min_weight_fraction_leaf,
                              max_features=best_max_features,
                              criterion=best_criterion,
+                             min_impurity_decrease=best_min_impurity_decrease,
+                             warm_start=best_warm_start,
+                             min_samples_leaf=best_min_samples_leaf,
+                             bootstrap=best_bootstrap,
                              random_state=69)
 
 t0 = time.time()

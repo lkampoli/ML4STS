@@ -30,9 +30,9 @@ n_jobs = -1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
-dataset=np.loadtxt("../data/datasetDR.txt")
+#dataset=np.loadtxt("../data/datasetDR.txt")
 #dataset=np.loadtxt("../data/datasetVT.txt")
-#dataset=np.loadtxt("../data/datasetVV.txt")
+dataset=np.loadtxt("../data/datasetVV.txt")
 
 x = dataset[:,2:3]  # 0: x [m], 1: t [s], 2: T [K]
 y = dataset[:,3:51] # Rci (relaxation source terms)
@@ -112,9 +112,15 @@ plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K]')
 plt.legend()
 plt.tight_layout()
-plt.savefig("regression_MO_kNN_DR.eps", dpi=150, crop='false')
-plt.savefig("regression_MO_kNN_DR.pdf", dpi=150, crop='false')
+#plt.savefig("regression_MO_kNN_DR.eps", dpi=150, crop='false')
+#plt.savefig("regression_MO_kNN_DR.pdf", dpi=150, crop='false')
+#plt.savefig("regression_MO_kNN_VT.eps", dpi=150, crop='false')
+#plt.savefig("regression_MO_kNN_VT.pdf", dpi=150, crop='false')
+plt.savefig("regression_MO_kNN_VV.eps", dpi=150, crop='false')
+plt.savefig("regression_MO_kNN_VV.pdf", dpi=150, crop='false')
 plt.show()
 
 # save the model to disk
+#dump(regr, 'model_MO_RF_DR.sav')
+#dump(regr, 'model_MO_RF_VT.sav')
 #dump(regr, 'model_MO_RF_VV.sav')

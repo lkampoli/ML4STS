@@ -21,7 +21,7 @@ from sklearn.svm import SVR
 from joblib import dump, load
 import pickle
 
-n_jobs = 1
+n_jobs = -1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
@@ -61,9 +61,12 @@ print('Testing Labels Shape:', y_test.shape)
 hyper_params = [{
                  'kernel': ('poly', 'rbf',),
                  'gamma': ('scale', 'auto',),
-                 'C': (1e0, 1e1, 1e2, 1e3,),
-                 'epsilon': (1e-3, 1e-2, 1e-1, 1e0, 1e1,),
-                 'coef0': (0.0, 0.1, 0.2,),
+                 'C': (1e2,),
+                 #'C': (1e0, 1e1, 1e2, 1e3,),
+                 'epsilon': (1e-2, 1e-1,),
+                 #'epsilon': (1e-3, 1e-2, 1e-1, 1e0, 1e1,),
+                 'coef0': (0.0,),
+                 #'coef0': (0.0, 0.1, 0.2,),
                  }]
 
 est = svm.SVR()

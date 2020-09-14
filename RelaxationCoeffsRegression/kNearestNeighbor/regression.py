@@ -73,7 +73,7 @@ gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs,
 t0 = time.time()
 gs.fit(x_train, y_train.ravel())
 runtime = time.time() - t0
-print("kNN complexity and bandwidth selected and model fitted in %.3f s" % runtime)
+print("kNN complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))

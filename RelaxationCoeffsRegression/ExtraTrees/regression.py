@@ -22,7 +22,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 from joblib import dump, load
 import pickle
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 #dataset=np.loadtxt("../data/datarelax.txt")
@@ -58,8 +58,9 @@ print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
 # Extra Trees
-hyper_params = [{'n_estimators': (10, 100, 1000,),
-                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+hyper_params = [{'n_estimators': (1000,2000,3000),
+                 #'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+                 'min_weight_fraction_leaf': (0.0,),
 #                 'max_features': ('sqrt','log2','auto', None,),
 #                 'max_samples': (1,10,100,1000,),
 #                 'bootstrap': (True, False,),
@@ -68,9 +69,10 @@ hyper_params = [{'n_estimators': (10, 100, 1000,),
 #                 'criterion': ('mse', 'mae',),
                  #'max_depth': (1,10,100,None,),
                  'max_depth': (None,),
-                 'max_leaf_nodes': (2,10,100,),
-                 'min_samples_split': (2,10,100,), #0.1,0.25,0.5,0.75,1.0,),
-                 'min_samples_leaf': (1,10,100,),
+                 'max_leaf_nodes': (200,300,400,500,),
+                 'min_samples_split': (10,),
+                 'min_samples_leaf': (1,),
+                 #'min_samples_leaf': (1,10,100,),
 }]
 
 est=ensemble.ExtraTreesRegressor()

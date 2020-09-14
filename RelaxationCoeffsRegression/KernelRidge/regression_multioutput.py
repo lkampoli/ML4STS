@@ -93,7 +93,13 @@ plt.legend()
 plt.tight_layout()
 plt.savefig("regression_MO_KR_DR.eps", dpi=150, crop='false')
 plt.savefig("regression_MO_KR_DR.pdf", dpi=150, crop='false')
+#plt.savefig("regression_MO_KR_VT.eps", dpi=150, crop='false')
+#plt.savefig("regression_MO_KR_VT.pdf", dpi=150, crop='false')
+#plt.savefig("regression_MO_KR_VV.eps", dpi=150, crop='false')
+#plt.savefig("regression_MO_KR_VV.pdf", dpi=150, crop='false')
 plt.show()
 
 # save the model to disk
+#dump(regr, 'model_MO_KR_DR.sav')
+#dump(regr, 'model_MO_KR_VT.sav')
 #dump(regr, 'model_MO_KR_VV.sav')

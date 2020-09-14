@@ -57,17 +57,19 @@ print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
 # GradientBoosting
-hyper_params = [{'n_estimators': (10, 100, 1000,),
-                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
-#                 'max_features': ('sqrt','log2','auto', None,),
-#                 'warm_start': (True, False,),
-#                 'criterion': ('friedman_mse', 'mse', 'mae',),
-#                 'max_depth': (1,10,100,None,),
-                 'min_samples_split': (2,5,10,100,), #0.1,0.25,0.5,0.75,1.0,),
-                 'min_samples_leaf': (2,5,10,100,),
-                 'loss': ('ls', 'lad', 'huber', 'quantile',),
-                 # 'subsample':
-                 # 'learning_rate':
+hyper_params = [{
+                 'n_estimators': (10, 100, 1000,),
+                 'min_weight_fraction_leaf': (0.0, 0.1, 0.2, 0.3,),
+                 'max_features': ('auto',),
+                 #'max_features': ('sqrt','log2','auto', None,),
+                 'warm_start': (False,),
+                 'criterion': ('friedman_mse', 'mse', 'mae',),
+                 #'max_depth': (1,10,100,None,),
+                 'max_depth': (None,),
+                 'min_samples_split': (2,5,10,),
+                 'min_samples_leaf': (2,5,10,),
+                 'loss': ('ls',),
+                 #'loss': ('ls', 'lad', 'huber', 'quantile',),
 }]
 
 est=ensemble.GradientBoostingRegressor()
@@ -87,6 +89,15 @@ test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 
@@ -107,10 +118,10 @@ sys.stdout.flush()
 
 best_n_estimators = gs.best_params_['n_estimators']
 best_min_weight_fraction_leaf = gs.best_params_['min_weight_fraction_leaf']
-#best_max_features = gs.best_params_['max_features']
-#best_warm_start = gs.best_params_['warm_start']
-#best_criterion = gs.best_params_['criterion']
-#best_max_depth = gs.best_params_['max_depth']
+best_max_features = gs.best_params_['max_features']
+best_warm_start = gs.best_params_['warm_start']
+best_criterion = gs.best_params_['criterion']
+best_max_depth = gs.best_params_['max_depth']
 best_min_samples_split = gs.best_params_['min_samples_split']
 best_loss = gs.best_params_['loss']
 best_min_samples_leaf = gs.best_params_['min_samples_leaf']
@@ -118,10 +129,10 @@ best_min_samples_leaf = gs.best_params_['min_samples_leaf']
 outF = open("output.txt", "w")
 print('best_n_estimators = ', best_n_estimators, file=outF)
 print('best_min_weight_fraction_leaf = ', best_min_weight_fraction_leaf, file=outF)
-#print('best_max_features = ', best_max_features, file=outF)
-#print('best_warm_start = ', best_warm_start, file=outF)
-#print('best_criterion = ', best_criterion, file=outF)
-#print('best_max_depth = ', best_max_depth, file=outF)
+print('best_max_features = ', best_max_features, file=outF)
+print('best_warm_start = ', best_warm_start, file=outF)
+print('best_criterion = ', best_criterion, file=outF)
+print('best_max_depth = ', best_max_depth, file=outF)
 print('best_min_samples_split = ', best_min_samples_split, file=outF)
 print('best_min_samples_leaf = ', best_min_samples_leaf, file=outF)
 print('best_loss = ', best_loss, file=outF)
@@ -129,10 +140,10 @@ outF.close()
 
 regr = GradientBoostingRegressor(n_estimators=best_n_estimators,
                                  min_weight_fraction_leaf=best_min_weight_fraction_leaf,
-#                                 max_features=best_max_features,
-#                                 warm_start=best_warm_start,
-#                                 criterion=best_criterion,
-#                                 max_depth=best_max_depth,
+                                 max_features=best_max_features,
+                                 warm_start=best_warm_start,
+                                 criterion=best_criterion,
+                                 max_depth=best_max_depth,
                                  loss=best_loss,
                                  min_samples_split=best_min_samples_split,
                                  min_samples_leaf=best_min_samples_leaf
@@ -165,8 +176,8 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
-plt.scatter(x_test_dim, y_test_dim, s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim, s=2, c='r', marker='+', label='GradientBoosting')
+plt.scatter(x_test_dim, y_test_dim, s=5, c='k', marker='o', label='Matlab')
+plt.scatter(x_test_dim, y_regr_dim, s=5, c='r', marker='+', label='GradientBoosting')
 #plt.title('Relaxation term $R_{ci}$ regression')
 plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')

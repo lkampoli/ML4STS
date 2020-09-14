@@ -58,15 +58,17 @@ print('Testing Labels Shape:', y_test.shape)
 
 # MultiLayerPerceptron
 hyper_params = [{
-         #'hidden_layer_sizes': (10, 20, 30, 40, 50, 100, 150, 200,),
-        'hidden_layer_sizes': (50,),
-        'activation' : ('tanh', 'relu',),
-        'solver' : ('lbfgs','adam','sgd',),
+         'hidden_layer_sizes': (10, 50, 100, 150, 200,),
+        #'activation' : ('tanh', 'relu',),
+        'activation' : ('tanh',),
+        'solver' : ('lbfgs',),
+        #'solver' : ('lbfgs','adam','sgd',),
         'learning_rate' : ('constant', 'invscaling', 'adaptive',),
+        #'learning_rate' : ('adaptive',),
         'nesterovs_momentum': (True, False,),
         'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
         'warm_start': (True, False,),
-        'early_stopping': (True,),
+        'early_stopping': (True, False,),
         'max_iter': (1000,)
 },]
 
@@ -87,6 +89,15 @@ test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 
@@ -164,8 +175,8 @@ x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
-plt.scatter(x_test_dim, y_test_dim, s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim, s=2, c='r', marker='+', label='Multi-layer Perceptron')
+plt.scatter(x_test_dim, y_test_dim, s=5, c='k', marker='o', label='Matlab')
+plt.scatter(x_test_dim, y_regr_dim, s=5, c='r', marker='+', label='Multi-layer Perceptron')
 #plt.title('Relaxation term $R_{ci}$ regression')
 plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')

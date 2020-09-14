@@ -5,19 +5,12 @@ sys.path.insert(0, '../../../Utilities/')
 from plotting import newfig, savefig
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-#import matplotlib.gridspec as gridspec
-#from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 import operator
 import itertools
 from sklearn import metrics
-#from sklearn.metrics import *
-#from sklearn import preprocessing
-from sklearn.preprocessing import StandardScaler#, MinMaxScaler
-from sklearn.model_selection import train_test_split, GridSearchCV#, learning_curve, cross_val_score
-#from sklearn import kernel_ridge
-#from sklearn.kernel_ridge import KernelRidge
-#import xgboost
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neural_network import MLPRegressor
 
 Xin = sys.argv[1]
@@ -145,7 +138,10 @@ from joblib import dump, load
 dump(mlp, 'mlp.joblib')
 # mlp = load('mlp.joblib')
 
-Xinput = np.array([[float(Xin), int(Tin)]])
+# To input a vector of values:
+# * read a file with a list of (Xin, Tin) values
+# * convert the list to a numpy array and reshape it as [-1,2] if necessary
+Xinput = np.array([[float(Xin), int(Tin)]]) #[:,2]
 print(Xinput)
 Xinput = sc_x.transform(Xinput)
 print(Xinput)

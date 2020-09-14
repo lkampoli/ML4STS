@@ -57,10 +57,12 @@ print('Training Labels Shape:', y_train.shape)
 print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
-hyper_params = [{'alpha': (1e-2, 1e-1, 1e0, 1e1, 1e2,),
-                 'n_restarts_optimizer': (0,1,10,100,),
-                 'kernel': (DotProduct() + WhiteKernel(),),
-                 #'kernel': (ConstantKernel(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2)),),
+hyper_params = [{'alpha': (1e-10,),
+                 #'alpha': (1e-2, 1e-1, 1e0, 1e1, 1e2,),
+                 #'n_restarts_optimizer': (0,1,10,100,),
+                 'n_restarts_optimizer': (0,),
+                 #'kernel': (DotProduct() + WhiteKernel(),),
+                 'kernel': (ConstantKernel(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2)),),
                  }]
 
 #                 'kernel': ([1.0 * RBF(length_scale=1.0, length_scale_bounds=(1e-1, 10.0)),
@@ -96,6 +98,15 @@ test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print("The model performance for testing set")
+print("--------------------------------------")
+print('MAE is {}'.format(test_score_mae))
+print('MSE is {}'.format(test_score_mse))
+print('EVS is {}'.format(test_score_evs))
+print('ME is {}'.format(test_score_me))
+print('R2 score is {}'.format(test_score_r2))
 
 sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
 

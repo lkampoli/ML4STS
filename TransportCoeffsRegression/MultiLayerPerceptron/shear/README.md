@@ -28,5 +28,5 @@ and read/write the output to screen.
 
 @TODO:
 
-* speed-up the communicationm possibly avoiding read/write phase
-* avoid database loading at each prediction
+* Speed-up the communication possibly avoiding read/write phase
+* Avoid database loading at each prediction -- STATUS: done!

@@ -15,7 +15,7 @@ from sklearn import metrics
 from sklearn.metrics import *
 from sklearn import preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, GridSearchCV, learning_curve
 from sklearn import kernel_ridge
 from sklearn.kernel_ridge import KernelRidge
 from joblib import dump, load
@@ -161,9 +161,68 @@ plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("regression_KR.eps", dpi=150, crop='false')
-plt.savefig("regression_KR.pdf", dpi=150, crop='false')
+#plt.savefig("regression_KR.eps", dpi=150, crop='false')
+#plt.savefig("regression_KR.pdf", dpi=150, crop='false')
+plt.show()
+
+## Look at the results
+#gs_ind = gs.best_estimator_.support_
+##plt.scatter(x[gs_ind], y[gs_ind], c='r', s=50, label='KR',   zorder=2, edgecolors=(0, 0, 0))
+#plt.scatter(x_test_dim, y_test_dim, c='k',       label='data', zorder=1, edgecolors=(0, 0, 0))
+#plt.plot(x_test_dim, y_regr_dim, c='r', label='KR (fit: %.6fs, predict: %.6fs)' % (regr_fit, regr_predict))
+##plt.plot(X_plot, y_kr, c='g', label='KRR (fit: %.3fs, predict: %.3fs)' % (regr_fit, regr_predict))
+#plt.xlabel('data')
+#plt.ylabel('target')
+##plt.title('SVR versus Kernel Ridge')
+#plt.legend()
+
+# Visualize learning curves
+plt.figure()
+#svr = SVR(kernel='rbf', C=1e1, gamma=0.1)
+#kr = KernelRidge(kernel='rbf', alpha=0.1, gamma=0.1)
+#train_sizes, train_scores_svr, test_scores_svr = \
+#    learning_curve(svr, X[:100], y[:100], train_sizes=np.linspace(0.1, 1, 10),
+#                   scoring="neg_mean_squared_error", cv=10)
+train_sizes_abs, train_scores_kr, test_scores_kr, fit_times, score_times = learning_curve(regr,
+                                                                                          x_train, #x_test_dim,
+                                                                                          y_train, #y_test_dim,
+                                                                                          train_sizes=np.linspace(0.1, 1, 10),
+                                                                                          scoring="neg_mean_squared_error",
+                                                                                          cv=10,
+                                                                                          return_times=True)
+train_scores_mean = np.mean(train_scores, axis = 1)
+train_scores_std  = np.std(train_scores,  axis = 1)
+test_scores_mean  = np.mean(test_scores,  axis = 1)
+test_scores_std   = np.std(test_scores,   axis = 1)
+fit_times_mean    = np.mean(fit_times,    axis = 1)
+fit_times_std     = np.std(fit_times,     axis = 1)
+
+#plt.plot(train_sizes, -test_scores_svr.mean(1), 'o-', color="r", label="SVR")
+plt.plot(train_sizes, -test_scores_kr.mean(1), 'o-', color="g", label="KRR")
+plt.xlabel("Train size")
+plt.ylabel("Mean Squared Error")
+plt.title('Learning curves')
+plt.legend(loc="best")
+plt.show()
+
+fig, axes = plt.subplots(3, 1, figsize=(10, 15))
+
+#X, y = load_digits(return_X_y=True)
+
+#title = "Learning Curves (Naive Bayes)"
+# Cross validation with 100 iterations to get smoother mean test and train
+# score curves, each time with 20% data randomly selected as a validation set.
+#cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+
+#estimator = GaussianNB()
+#plot_learning_curve(estimator, title, X, y, axes=axes[:, 0], ylim=(0.7, 1.01), cv=cv, n_jobs=4)
+
+title = r"Learning Curves (SVM, RBF kernel, $\gamma=0.001$)"
+# SVC is more expensive so we do a lower number of CV iterations:
+#cv = ShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+#estimator = SVC(gamma=0.001)
+plot_learning_curve(regr, title, x_train, y_train, axes=axes[:, 1], ylim=(0.7, 1.01), cv=10, n_jobs=-1)
 plt.show()
 
 # save the model to disk
-dump(gs, 'model_KR.sav')
+#dump(gs, 'model_KR.sav')
