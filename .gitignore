@@ -1,6 +1,6 @@
 # Pdf files
 *.pdf
-*.csv
+#*.csv
 *.txt
 
 # Dataset
