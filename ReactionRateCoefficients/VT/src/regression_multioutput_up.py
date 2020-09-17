@@ -17,9 +17,16 @@ from sklearn.neighbors import KNeighborsRegressor
 
 n_jobs = -1
 
-dataset_T = np.loadtxt("../data/N2-N2/up/Temperatures.csv")
-dataset_k = np.loadtxt("../data/N2-N2/up/VT_RATES-N2-N2-vt_up.csv")
-dataset   = "VT_RATES-N2-N2_up"
+dataset = sys.argv[1]
+folder  = dataset[9:14]
+process = dataset[18:22]
+
+print(dataset)
+print(folder)
+print(process)
+
+dataset_T = np.loadtxt("../data/N2-N2/down/Temperatures.csv")
+dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
 
 x = dataset_T.reshape(-1,1)
 y = dataset_k[:,:]
@@ -84,15 +91,15 @@ plt.scatter(x_test_dim, y_regr_dim[:,25], s=2, c='y', marker='+', label='k-Neare
 
 plt.scatter(x_test_dim, y_test_dim[:,30], s=2, c='k', marker='o', label='Matlab')
 plt.scatter(x_test_dim, y_regr_dim[:,30], s=2, c='b', marker='+', label='k-NearestNeighbour, i=30')
-
-plt.scatter(x_test_dim, y_test_dim[:,35], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='k-NearestNeighbour, i=35')
-
-plt.scatter(x_test_dim, y_test_dim[:,40], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,40], s=2, c='grey', marker='+', label='k-NearestNeighbour, i=40')
-
-plt.scatter(x_test_dim, y_test_dim[:,45], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,45], s=2, c='orange', marker='+', label='k-NearestNeighbour, i=45')
+#
+#plt.scatter(x_test_dim, y_test_dim[:,35], s=2, c='k', marker='o', label='Matlab')
+#plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='k-NearestNeighbour, i=35')
+#
+#plt.scatter(x_test_dim, y_test_dim[:,40], s=2, c='k', marker='o', label='Matlab')
+#plt.scatter(x_test_dim, y_regr_dim[:,40], s=2, c='grey', marker='+', label='k-NearestNeighbour, i=40')
+#
+#plt.scatter(x_test_dim, y_test_dim[:,45], s=2, c='k', marker='o', label='Matlab')
+#plt.scatter(x_test_dim, y_regr_dim[:,45], s=2, c='orange', marker='+', label='k-NearestNeighbour, i=45')
 
 #plt.title('Relaxation term $R_{ci}$ regression')
 plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
@@ -100,7 +107,7 @@ plt.xlabel('T [K]')
 plt.legend()
 plt.tight_layout()
 plt.savefig('../pdf/regression_MO_kNN_'+dataset+'.pdf', dpi=150, crop='false')
-plt.show()
+#plt.show()
 
 # save the model to disk
 dump(regr, '../model/model_MO_kNN_'+dataset+'.sav')

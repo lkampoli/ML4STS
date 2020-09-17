@@ -1,0 +1,173 @@
+#!/bin/bash
+
+cd src
+
+declare -a dataset_down=('ZR_N2_RATES-N2(i)+O_=_NO(0)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(1)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(2)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(3)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(4)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(5)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(6)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(7)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(8)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(9)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(10)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(11)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(12)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(13)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(14)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(15)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(16)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(17)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(18)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(19)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(20)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(21)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(22)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(23)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(24)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(25)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(26)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(27)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(28)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(29)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(30)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(31)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(32)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(33)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(34)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(35)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(36)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(37)+N'\
+                         'ZR_N2_RATES-N2(i)+O_=_NO(38)+N'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(0)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(1)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(2)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(3)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(4)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(5)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(6)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(7)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(8)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(9)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(10)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(11)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(12)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(13)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(14)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(15)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(16)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(17)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(18)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(19)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(20)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(21)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(22)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(23)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(24)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(25)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(26)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(27)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(28)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(29)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(30)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(31)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(32)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(33)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(34)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(35)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(36)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(37)+O'\
+                         'ZR_O2_RATES-O2(i)+N_=_NO(38)+O' )
+
+declare -a dataset_up=('ZR_N2_RATES-NO(0)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(1)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(2)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(3)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(4)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(5)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(6)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(7)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(8)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(9)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(10)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(11)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(12)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(13)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(14)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(15)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(16)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(17)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(18)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(19)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(20)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(21)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(22)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(23)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(24)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(25)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(26)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(27)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(28)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(29)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(30)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(31)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(32)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(33)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(34)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(35)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(36)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(37)+N_=_N2(i)+O'\
+                       'ZR_N2_RATES-NO(38)+N_=_N2(i)+O'\
+                       'ZR_O2_RATES-NO(0)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(1)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(2)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(3)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(4)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(5)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(6)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(7)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(8)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(9)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(10)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(11)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(12)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(13)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(14)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(15)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(16)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(17)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(18)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(19)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(20)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(21)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(22)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(23)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(24)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(25)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(26)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(27)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(28)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(29)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(30)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(31)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(32)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(33)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(34)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(35)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(36)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(37)+O_=_O2(i)+N'\
+                       'ZR_O2_RATES-NO(38)+O_=_O2(i)+N' )
+
+for i in "${dataset_down[@]}";
+do
+  python3 regression_multioutput_down.py $i
+done
+
+for i in "${dataset_up[@]}";
+do
+  python3 regression_multioutput_up.py $i
+done
+
+cd ..
