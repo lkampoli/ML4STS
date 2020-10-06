@@ -1,40 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 import dask.array as da
 
-
-# In[2]:
-
-
 import dask.dataframe as dd
-
-
-# In[3]:
-
 
 from dask.diagnostics import ProgressBar
 ProgressBar().register()
 
-
-# In[10]:
-
-
 from dask.distributed import Client
 client = Client()  # start distributed scheduler locally.  Launch dashboard
 
-
-# In[4]:
-
-
 from joblib import parallel_backend
-
-
-# In[17]:
-
 
 # Import database
 import numpy as np
@@ -49,10 +26,6 @@ import pandas as pd
 #y = df[:,7:]  # D_cidk upper triangular matrix (Dij | j=>i)
 #dataset.head()
 
-
-# In[8]:
-
-
 df.head(10)
 #import h5py
 #import xarray as xr
@@ -62,23 +35,16 @@ import time
 #filename
 #target = os.path.join('data', 'accounts.h5')
 #target
-get_ipython().magic("time df.to_hdf('myh4file.h5', ' ')")
 df_hdf = dd.read_hdf('myh4file.h5', ' ')
 df_hdf.head()
 
 #f = h5py.File(os.path.join('.', 'myh4file.h5'), mode='r')
 
-
-# In[40]:
-
-
-#!/usr/bin/env python
-
 import time
 import sys
 sys.path.insert(0, '../../../Utilities/')
 
-#from plotting import newfig, savefig
+from plotting import newfig, savefig
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -110,13 +76,6 @@ from sklearn.multioutput import MultiOutputRegressor
 n_jobs = 1
 trial  = 1
 
-#print(x.shape)
-#print(y.shape)
-
-
-# In[ ]:
-
-
 # The data is then split into training and test data
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
@@ -131,8 +90,8 @@ sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
 y_test  = sc_y.transform(y_test)
 
-dump(sc_x, open('../scaler/scaler_x_MO_MD.pkl', 'wb'))
-dump(sc_y, open('../scaler/scaler_y_MO_MD.pkl', 'wb'))
+dump(sc_x, open('../scaler/scaler_x_MD.pkl', 'wb'))
+dump(sc_y, open('../scaler/scaler_y_MD.pkl', 'wb'))
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:', y_train.shape)
@@ -173,9 +132,8 @@ plt.ylabel(' ')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("../pdf/regression_MO_MD.pdf", dpi=150, crop='false')
+plt.savefig("../pdf/regression_MD.pdf", dpi=150, crop='false')
 plt.show()
 
 # save the model to disk
-dump(regr, '../model/model_MO_MD.sav')
-
+dump(regr, '../model/model_MD.sav')
