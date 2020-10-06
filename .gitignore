@@ -3,6 +3,8 @@
 #*.csv
 *.txt
 
+ML4STS/*
+
 # Dataset
 TransportCoeffsRegression/data/dataset_lite.csv
 TransportCoeffsRegression/data/dataset_MD_10000K.csv
