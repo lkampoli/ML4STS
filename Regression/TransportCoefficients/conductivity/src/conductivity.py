@@ -46,7 +46,7 @@ from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
 
-n_jobs = 1
+n_jobs = -1
 trial  = 1
 
 # Import database
@@ -60,8 +60,8 @@ with open('../../../Data/TCs_air5.txt') as f:
     dataset = np.loadtxt(lines, skiprows=1)
 
 #dataset = np.loadtxt("../../../Data/TCs_air5.txt")
-x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
-y = dataset[:,7:8] # shear
+x = dataset[:,0:7]  # T, P, x_N2, x_O2, x_NO, x_N, x_O
+y = dataset[:,9:10] # conductivity
 
 # The data is then split into training and test data
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
@@ -77,8 +77,8 @@ sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
 y_test  = sc_y.transform(y_test)
 
-dump(sc_x, open('../scaler/scaler_x_shear.pkl', 'wb'))
-dump(sc_y, open('../scaler/scaler_y_shear.pkl', 'wb'))
+dump(sc_x, open('../scaler/scaler_x_conductivity.pkl', 'wb'))
+dump(sc_y, open('../scaler/scaler_y_conductivity.pkl', 'wb'))
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:',   y_train.shape)
@@ -130,12 +130,12 @@ out_text = '\t'.join(['regression',
                       str(train_score_mae),
                       str(train_score_evs),
                       str(train_score_me),
-#                      str(train_score_msle),
+#                     str(train_score_msle),
                       str(test_score_mse),
                       str(test_score_mae),
                       str(test_score_evs),
                       str(test_score_me),
-#                      str(test_score_msle),
+#                     str(test_score_msle),
                       str(runtime)])
 print(out_text)
 sys.stdout.flush()
@@ -144,7 +144,7 @@ best_criterion = gs.best_params_['criterion']
 best_splitter  = gs.best_params_['splitter']
 best_max_features = gs.best_params_['max_features']
 
-outF = open("output_shear.txt", "w")
+outF = open("output_conductivity.txt", "w")
 print('best_criterion = ', best_criterion, file=outF)
 print('best_splitter = ', best_splitter, file=outF)
 print('best_max_features = ', best_max_features, file=outF)
@@ -171,7 +171,7 @@ plt.title("Feature importances")
 features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
 plt.bar(features, importance)
 #plt.bar([x for x in range(len(importance))], importance)
-plt.savefig("../pdf/importance_shear.pdf", dpi=150, crop='false')
+plt.savefig("../pdf/importance_conductivity.pdf", dpi=150, crop='false')
 plt.show()
 plt.close()
 
@@ -181,7 +181,7 @@ regr_predict = time.time() - t0
 print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
 
 # open a file to append
-outF = open("output_shear.txt", "a")
+outF = open("output_conductivity.txt", "a")
 print("Complexity and bandwidth selected and model fitted in %.6f s" % regr_fit, file=outF)
 print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict),file=outF)
 print('Mean Absolute Error (MAE):', metrics.mean_absolute_error(y_test, y_regr), file=outF)
@@ -199,14 +199,14 @@ y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim[:,0], y_test_dim[:], s=5, c='k', marker='o', label='KAPPA')
 plt.scatter(x_test_dim[:,0], y_regr_dim[:], s=2.5, c='r', marker='o', label='DecisionTree')
-#plt.title('Shear viscosity regression with kNN')
-plt.ylabel(r'$\eta$ [Pa·s]')
+#plt.title('conductivity viscosity regression with kNN')
+#plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("../pdf/shear.pdf", dpi=150, crop='false')
+plt.savefig("../pdf/conductivity.pdf", dpi=150, crop='false')
 plt.show()
 plt.close()
 
 # save the model to disk
-dump(gs, '../model/model_shear.sav')
+dump(gs, '../model/model_conductivity.sav')
