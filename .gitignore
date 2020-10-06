@@ -4,6 +4,7 @@
 *.txt
 
 ML4STS/*
+OLDREPO/*
 
 # Dataset
 TransportCoeffsRegression/data/dataset_lite.csv
