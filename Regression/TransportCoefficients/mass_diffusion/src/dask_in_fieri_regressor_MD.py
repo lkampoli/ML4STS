@@ -36,11 +36,26 @@ from sklearn.tree import DecisionTreeRegressor
 
 from sklearn.multioutput import MultiOutputRegressor
 
-n_jobs = -1
+n_jobs = 1
 trial  = 1
 
 import bz2
 from shutil import copyfileobj
+
+#
+import dask
+
+import dask.dataframe as dd
+from dask.distributed import Client
+client = Client(processes=False, threads_per_worker=2, n_workers=2, memory_limit='2GB')
+client
+
+df = dd.read_csv("../../../Data/TCs_air5.txt", blocksize=1e6)
+
+df.npartitions
+
+df.visualize(size="7,5!")
+
 
 #df = pd.read_fwf("../../../Data/TCs_air5.txt")
 #print(df)
@@ -206,137 +221,11 @@ def reduce_mem_usage(df):
 #print(df)
 
 #incremental_dataframe = pd.read_fwf("../../../Data/TCs_air5.txt", chunksize=100) # Number of lines to read.
-incremental_dataframe = pd.read_fwf("../../../Data/tester.txt", chunksize=46800/100) # Number of lines to read.
-#incremental_dataframe = pd.read_fwf("../../../Data/bigtester.txt", chunksize=100) # Number of lines to read.
 #print(incremental_dataframe)
 #idf = pd.DataFrame(incremental_dataframe).to_numpy()
-#idf = pd.DataFrame(incremental_dataframe)
-#print(incremental_dataframe)
-
-# https://www.datacamp.com/community/tutorials/xgboost-in-python
-import xgboost as xgb
-
-# For saving regressor for next use.
-lgb_estimator = None
-xgb_estimator = None
-estimator     = None
-
-# First three are for incremental learning:
-xgb_params = {
-    'update':'refresh',
-    'process_type': 'update',
-    'refresh_leaf': True,
-    'silent': False,
-}
-
-hyper_params = [{'criterion': ('mse', 'friedman_mse', 'mae'),
-                 'splitter': ('best', 'random'),
-                 'max_features': ('auto', 'sqrt', 'log2'),
-}]
-
-import gc
-
-for df in incremental_dataframe:
-
-    data = pd.DataFrame(df).to_numpy()
-    #print(data)
-
-    #x = df.iloc[:,0:7].values
-    #y = df.iloc[:,7:].values
-    x = data[:,0:7]
-    y = data[:,7:]
-
-    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
-
-    sc_x = StandardScaler()
-    sc_y = StandardScaler()
-
-    sc_x.fit(x_train)
-    x_train = sc_x.fit_transform(x_train)
-    x_test  = sc_x.fit_transform(x_test)
-
-    sc_y.fit(y_train)
-    y_train = sc_y.transform(y_train)
-    y_test  = sc_y.transform(y_test)
-
-    # https://www.programcreek.com/python/example/99828/xgboost.DMatrix
-    #xgb_model = xgb.train(xgb_params,
-    #                      dtrain=xgb.DMatrix(xtrain, ytrain),
-    #                      evals=(xgb.DMatrix(xtest, ytest),"Valid")),
-    #                      xgb_model = xgb_estimator)
-
-    est = DecisionTreeRegressor()
-    gs  = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
-
-    t0 = time.time()
-    gs.fit(x_train, y_train)
-    runtime = time.time() - t0
-    print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
-
-    train_score_mse = mean_squared_error(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-    train_score_mae = mean_absolute_error(sc_y.inverse_transform(y_train),sc_y.inverse_transform(gs.predict(x_train)))
-    train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-    #train_score_me  = max_error(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-    #train_score_msle = mean_squared_log_error(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-
-    test_score_mse = mean_squared_error(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-    test_score_mae = mean_absolute_error(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-    test_score_evs = explained_variance_score(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-    #test_score_me  = max_error(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-    #test_score_msle = mean_squared_log_error(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-    test_score_r2  = r2_score(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-
-    print("The model performance for testing set")
-    print("--------------------------------------")
-    print('MAE is {}'.format(test_score_mae))
-    print('MSE is {}'.format(test_score_mse))
-    print('EVS is {}'.format(test_score_evs))
-    #print('ME is {}'.format(test_score_me))
-    print('R2 score is {}'.format(test_score_r2))
-
-    sorted_grid_params = sorted(gs.best_params_.items(), key=operator.itemgetter(0))
-    #print(gs.best_params_)
-
-    out_text = '\t'.join(['regression',
-                          str(trial),
-                          str(sorted_grid_params).replace('\n',','),
-                          str(train_score_mse),
-                          str(train_score_mae),
-                          str(train_score_evs),
-    #                     str(train_score_me),
-    #                     str(train_score_msle),
-                          str(test_score_mse),
-                          str(test_score_mae),
-                          str(test_score_evs),
-    #                     str(test_score_me),
-    #                     str(test_score_msle),
-                          str(runtime)])
-    print(out_text)
-    sys.stdout.flush()
-
-    best_criterion = gs.best_params_['criterion']
-    best_splitter  = gs.best_params_['splitter']
-    best_max_features = gs.best_params_['max_features']
-
-    outF = open("output_TD.txt", "a")
-    print('####################################', file=outF)
-    print(out_text, file=outF)
-    print('best_criterion = ', best_criterion, file=outF)
-    print('best_splitter = ', best_splitter, file=outF)
-    print('best_max_features = ', best_max_features, file=outF)
-    print('MAE is {}'.format(test_score_mae), file=outF)
-    print('MSE is {}'.format(test_score_mse), file=outF)
-    print('EVS is {}'.format(test_score_evs), file=outF)
-    #print('ME is {}'.format(test_score_me),  file=outF)
-    print('R2 score is {}'.format(test_score_r2), file=outF)
-    print('####################################', file=outF)
-    outF.close()
-
-    del df, x_train, y_train, x_test, y_test
-    # https://www.programcreek.com/python/example/549/gc.collect
-    gc.collect()
-
-#for df in idf:
+#print(idf)
+#
+#for df in incremental_dataframe:
 #    print(0)
 
 # http://pandas-docs.github.io/pandas-docs-travis/user_guide/io.html#io-perf
@@ -414,91 +303,91 @@ def test_parquet_read():
 #data = pd.read_fwf('../../../Data/TCs_air5.txt')
 #df = pd.DataFrame(data)
 
-start_time = time.time()
-test_hdf_fixed_write(df)
-print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_fixed_write(df)
-print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
-
 #start_time = time.time()
-#test_sql_write(df)
-#print("test_sql_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_fixed_write(df)
-print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_fixed_write_compress(df)
-print("test_hdf_fixed_write_compress --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_table_write(df)
-print("test_hdf_table_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_table_write_compress(df)
-print("test_hdf_table_write_compress --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_csv_write(df)
-print("test_csv_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_feather_write(df)
-print("test_feather_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_pickle_write(df)
-print("test_pickle_write --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_pickle_write_compress(df)
-print("test_pickle_write_compress --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_parquet_write(df)
-print("test_parquet_write --- %s seconds ---" % (time.time() - start_time))
-
+#test_hdf_fixed_write(df)
+#print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_fixed_write(df)
+#print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
+#
+##start_time = time.time()
+##test_sql_write(df)
+##print("test_sql_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_fixed_write(df)
+#print("test_hdf_fixed_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_fixed_write_compress(df)
+#print("test_hdf_fixed_write_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_table_write(df)
+#print("test_hdf_table_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_table_write_compress(df)
+#print("test_hdf_table_write_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_csv_write(df)
+#print("test_csv_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_feather_write(df)
+#print("test_feather_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_pickle_write(df)
+#print("test_pickle_write --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_pickle_write_compress(df)
+#print("test_pickle_write_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_parquet_write(df)
+#print("test_parquet_write --- %s seconds ---" % (time.time() - start_time))
+#
 # Read
-
+#
 #start_time = time.time()
 #test_sql_read()
 #print("test_sql_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_fixed_read()
-print("test_hdf_fixed_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_fixed_read_compress()
-print("test_hdf_fixed_read_compress --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_table_read()
-print("test_hdf_table_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_hdf_table_read_compress()
-print("test_hdf_table_read_compress --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_csv_read()
-print("test_csv_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_feather_read()
-print("test_feather_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_pickle_read()
-print("test_pickle_read --- %s seconds ---" % (time.time() - start_time))
-
-start_time = time.time()
-test_pickle_read_compress()
-print("test_pickle_read_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_fixed_read()
+#print("test_hdf_fixed_read --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_fixed_read_compress()
+#print("test_hdf_fixed_read_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_table_read()
+#print("test_hdf_table_read --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_hdf_table_read_compress()
+#print("test_hdf_table_read_compress --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_csv_read()
+#print("test_csv_read --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_feather_read()
+#print("test_feather_read --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_pickle_read()
+#print("test_pickle_read --- %s seconds ---" % (time.time() - start_time))
+#
+#start_time = time.time()
+#test_pickle_read_compress()
+#print("test_pickle_read_compress --- %s seconds ---" % (time.time() - start_time))
 
 ## The data is then split into training and test data
 #x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
