@@ -1,4 +1,8 @@
 
+### https://scikit-learn.org/dev/auto_examples/applications/plot_out_of_core_classification.html#example-applications-plot-out-of-core-classification-py
+### https://www.programcreek.com/python/example/99242/sklearn.linear_model.SGDRegressor
+### https://tomaugspurger.github.io/scalable-ml-02.html
+
 # Import database
 import numpy as np
 import pandas as pd
@@ -206,12 +210,10 @@ def reduce_mem_usage(df):
 #print(df)
 
 #incremental_dataframe = pd.read_fwf("../../../Data/TCs_air5.txt", chunksize=100) # Number of lines to read.
-incremental_dataframe = pd.read_fwf("../../../Data/tester.txt", chunksize=46800/100) # Number of lines to read.
-#incremental_dataframe = pd.read_fwf("../../../Data/bigtester.txt", chunksize=100) # Number of lines to read.
-#print(incremental_dataframe)
+#incremental_dataframe = pd.read_fwf("../../../Data/tester.txt", chunksize=46800/100) # Number of lines to read.
+incremental_dataframe = pd.read_fwf("../../../Data/bigtester.txt", chunksize=11400/100) # Number of lines to read.
 #idf = pd.DataFrame(incremental_dataframe).to_numpy()
-#idf = pd.DataFrame(incremental_dataframe)
-#print(incremental_dataframe)
+#print(idf.shape)
 
 # https://www.datacamp.com/community/tutorials/xgboost-in-python
 import xgboost as xgb
@@ -246,6 +248,11 @@ for df in incremental_dataframe:
     x = data[:,0:7]
     y = data[:,7:]
 
+    print(x.shape)
+    print(y.shape)
+    print(x)
+    print(y)
+
     x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
     sc_x = StandardScaler()
@@ -258,6 +265,9 @@ for df in incremental_dataframe:
     sc_y.fit(y_train)
     y_train = sc_y.transform(y_train)
     y_test  = sc_y.transform(y_test)
+
+    print(x_train)
+    print(y_train)
 
     # https://www.programcreek.com/python/example/99828/xgboost.DMatrix
     #xgb_model = xgb.train(xgb_params,
