@@ -2,7 +2,9 @@
 
 ## Useful Links
 https://machinelearningmastery.com/multi-output-regression-models-with-python/
+
 https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
+
 https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
 ## Changelog
@@ -25,3 +27,12 @@ In order to use ML in CFD solver, it is necessary to develop an interface. Sever
 
 ## Dataset generation
 ...
+
+
+
+# Classification
+It is necessary?
+
+
+# Detection
+For shock-fitting

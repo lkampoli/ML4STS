@@ -12,6 +12,8 @@ TransportCoeffsRegression/data/dataset_MD_10000K.csv
 TransportCoeffsRegression/data/dataset_MD.csv
 TransportCoeffsRegression/data/dataset_TD.csv
 
+Classification/Data/*
+
 Euler_1d_shock_STS/data/dataset_STS.txt
 Euler_1d_shock_STS/data/datashock1d001.txt
 Euler_1d_shock_STS/data/datashock1dlite.txt
@@ -19,3 +21,4 @@ Euler_1d_shock_STS/data/datashock1d.txt
 
 /home/lk/Public/ML4STS/Regression/Data/TCs_air5_MD.txt
 /home/lk/Public/ML4STS/Regression/Data/TCs_air5.txt
+/Regression/Data/*
