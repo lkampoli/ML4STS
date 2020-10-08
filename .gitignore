@@ -6,6 +6,13 @@
 *.sav
 *.pkl
 *.ipynb_checkpoints
+*. h5
+*.hdf
+*.parquet
+*.feather
+*.compress
+*.o
+*.pyc
 #
 OLDREPO/*
 #
