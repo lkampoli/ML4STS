@@ -15,6 +15,7 @@ TransportCoeffsRegression/data/dataset_TD.csv
 Classification/Data/*
 
 /Euler_1d_shock_STS/data/.*txt
+/Euler_1d_shock_STS/figures/.*eps
 #Euler_1d_shock_STS/data/dataset_STS.txt
 #Euler_1d_shock_STS/data/datashock1d001.txt
 #Euler_1d_shock_STS/data/datashock1dlite.txt
