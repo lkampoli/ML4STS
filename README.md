@@ -20,6 +20,15 @@ Assuming an available python3 version, the following packages are necessary:
 * [pandas](https://pandas.pydata.org/)
 * [scipy](https://www.scipy.org/)
 
+## Description
+Here below a brief description of the repository directories is given.
+
+### Euler_1d_shock_STS
+In this directory, I try to solve the full system of Euler equations for a one-dimensional reacting shock flow.
+The directory contains both the `.py` and `.ipynb` files, for convenience, but they are the same.
+The `PINN.py` deals with the solution of the Euler equations without STS.
+The `PINN_STS.py` deals with the solution of the Euler equations with STS.
+
 ## Useful Links
 https://machinelearningmastery.com/multi-output-regression-models-with-python/
 

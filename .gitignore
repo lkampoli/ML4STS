@@ -6,7 +6,7 @@
 *.sav
 *.pkl
 *.ipynb_checkpoints
-*. h5
+*.h5
 *.hdf
 *.parquet
 *.feather
