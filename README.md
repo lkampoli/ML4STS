@@ -1,4 +1,24 @@
-# Regression of Transport coefficients for the State-to-State approach
+# :warning: :construction: Repository under construction
+
+# Machine Learning for State-to-State
+This project aims at investigating the usage of machine learning algorithms (MLAs) for the solution of high-speed (viscous and inviscid, reacting and non-reacting) non-equilibrium flows according to the state-to-state (STS) formulation. Several machine learning methods, including neural networks (NNs) will be considered. In this framework, the following tasks have been identified:
+
+* Regression of transport coefficients
+* Regression of chemical reaction rate coefficients
+* Coupling of machine learning with CFD solver
+* Solution of Euler and Navier-Stokes equations with NN
+
+# Requisites
+Assuming an available python3 version, the following packages are necessary:
+* [scikit-learn](https://scikit-learn.org/stable/)
+* [keras](https://keras.io/)
+* [tensorflow](https://www.tensorflow.org/)
+* [pytorch](https://pytorch.org/)
+* [cffi](https://cffi.readthedocs.io/en/latest/)
+* [dask](https://dask.org/)
+* [matplotlib](https://matplotlib.org/)
+* [pandas](https://pandas.pydata.org/)
+* [scipy](https://www.scipy.org/)
 
 ## Useful Links
 https://machinelearningmastery.com/multi-output-regression-models-with-python/
@@ -7,32 +27,17 @@ https://machinelearningmastery.com/deep-learning-models-for-multi-output-regress
 
 https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
-## Changelog
-* The name of the regressors have been changed, omitting the MO (for MultiOutput) because
-  the majority of the used algoritmhs natively support MultiOutput and so there so no need
-  to explicitely invoke it.
-* The best solution to deal with bigger-than-RAM datasets is to use [Dask](https://dask.org/),
-  even better if used on clusters.
+## Copyrights
+ML4STS is an open source project, it is distributed under the GPL v3. Anyone is interest to use, to develop or to contribute to ML4STS is welcome. 
+Take a look at the contributing guidelines for starting to contribute to the project.
 
-## Coupling CFD and ML
-In the present case, we aim at coupling the modern Fortran solver SPARK with the best performing
-machine learning pre-trained algorithm.
+## Bibliography
+[1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
 
-In order to use ML in CFD solver, it is necessary to develop an interface. Several, option exist:
+[2] Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Vanderplas, J. (2011). Scikit-learn: Machine learning in Python. the Journal of machine Learning research, 12, 2825-2830.
 
-* execute_command()
-* cython
-* CFFI
-* ...
+[3] Géron, A. (2019). Hands-on machine learning with Scikit-Learn, Keras, and TensorFlow: Concepts, tools, and techniques to build intelligent systems. O'Reilly Media.
 
-## Dataset generation
-...
+[4] Chollet, F. (2017). Deep Learning with Python.
 
-
-
-# Classification
-It is necessary?
-
-
-# Detection
-For shock-fitting
+[5] VanderPlas, J. (2016). Python data science handbook: Essential tools for working with data. " O'Reilly Media, Inc.".
