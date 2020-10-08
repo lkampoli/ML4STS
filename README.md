@@ -10,9 +10,9 @@ This project aims at investigating the usage of machine learning algorithms (MLA
 
 # Requisites
 Assuming an available python3 version, the following packages are necessary:
-* [scikit-learn](https://scikit-learn.org/stable/)
+* [scikit-learn 0.23](https://scikit-learn.org/stable/)
 * [keras](https://keras.io/)
-* [tensorflow](https://www.tensorflow.org/)
+* [tensorflow 1.14.0](https://www.tensorflow.org/)
 * [pytorch](https://pytorch.org/)
 * [cffi](https://cffi.readthedocs.io/en/latest/)
 * [dask](https://dask.org/)
@@ -28,7 +28,7 @@ https://machinelearningmastery.com/deep-learning-models-for-multi-output-regress
 https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
 ## Copyrights
-ML4STS is an open source project, it is distributed under the GPL v3. Anyone is interest to use, to develop or to contribute to ML4STS is welcome. 
+ML4STS is an open source project, it is distributed under the GPL v3. Anyone is interest to use, to develop or to contribute to ML4STS is welcome.
 Take a look at the contributing guidelines for starting to contribute to the project.
 
 ## Bibliography
@@ -41,3 +41,5 @@ Take a look at the contributing guidelines for starting to contribute to the pro
 [4] Chollet, F. (2017). Deep Learning with Python.
 
 [5] VanderPlas, J. (2016). Python data science handbook: Essential tools for working with data. " O'Reilly Media, Inc.".
+
+[6] Mao, Z., Jagtap, A. D., & Karniadakis, G. E. (2020). Physics-informed neural networks for high-speed flows. Computer Methods in Applied Mechanics and Engineering, 360, 112789.
