@@ -20,27 +20,27 @@ Assuming an available python3 version, the following packages are necessary:
 * [pandas](https://pandas.pydata.org/)
 * [scipy](https://www.scipy.org/)
 
-## Description
+# Description
 Here below a brief description of the repository directories is given.
 
-### Euler_1d_shock_STS
+## Euler_1d_shock_STS
 In this directory, I try to solve the full system of Euler equations for a one-dimensional reacting shock flow.
 The directory contains both the `.py` and `.ipynb` files, for convenience, but they are the same.
 The `PINN.py` deals with the solution of the Euler equations without STS.
 The `PINN_STS.py` deals with the solution of the Euler equations with STS.
 
-## Useful Links
+# Useful Links
 https://machinelearningmastery.com/multi-output-regression-models-with-python/
 
 https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
 
 https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
-## Copyrights
+# Copyrights
 ML4STS is an open source project, it is distributed under the GPL v3. Anyone is interest to use, to develop or to contribute to ML4STS is welcome.
 Take a look at the contributing guidelines for starting to contribute to the project.
 
-## Bibliography
+# Bibliography
 [1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
 
 [2] Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Vanderplas, J. (2011). Scikit-learn: Machine learning in Python. the Journal of machine Learning research, 12, 2825-2830.
