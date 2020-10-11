@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# https://stackoverflow.com/questions/45074698/how-to-pass-elegantly-sklearns-gridseachcvs-best-parameters-to-another-model
-# https://medium.com/@alexstrebeck/training-and-testing-machine-learning-models-e1f27dc9b3cb
-
 import time
 import sys
 sys.path.insert(0, '../../../../../Utilities/')
@@ -29,8 +26,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV, KFold, cross
 
 from sklearn.inspection import permutation_importance
 
-from sklearn import ensemble
-from sklearn.ensemble import ExtraTreesRegressor
+from sklearn import neighbors
+from sklearn.neighbors import KNeighborsRegressor
 
 from joblib import dump, load
 import pickle
@@ -77,26 +74,14 @@ print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
 # Extra Trees
-hyper_params = [{'n_estimators': (1, 100,),
-                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
-                 'max_features': ('sqrt','log2','auto', None,),
-                 'max_samples': (1,10,100,1000,),
-                 'bootstrap': (True, False,),
-                 'oob_score': (True, False,),
-                 'warm_start': (True, False,),
-                 'criterion': ('mse', 'mae',),
-                 'max_depth': (1,10,100,None,),
-                 'max_leaf_nodes': (2, 100,),
-                 'min_samples_split': (10,),
-                 'min_samples_leaf': (1,10,100,),
-}]
+hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto',),
+                 'n_neighbors': (1, 2, 3, 4, 5, 6, 7, 8, 9, 10,),
+                 'leaf_size': (1, 10, 20, 30, 100,),
+                 'weights': ('uniform', 'distance',),
+                 'p': (1, 2,),}]
 
-est=ensemble.ExtraTreesRegressor()
+est=neighbors.KNeighborsRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
-
-#cross_val = KFold(n_splits=3, random_state=69)
-#score = cross_val_score(est, x_train, y_train.ravel(), cv=cross_val, scoring='r2')
-#print("Mean R2 Score: ", score.mean())
 
 t0 = time.time()
 gs.fit(x_train, y_train.ravel())
@@ -177,7 +162,7 @@ y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim[:,0], y_test_dim[:], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim[:,0], y_regr_dim[:], s=2, c='r', marker='+', label='ExtraTrees')
+plt.scatter(x_test_dim[:,0], y_regr_dim[:], s=2, c='r', marker='+', label='KNeighbors')
 plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')
 plt.legend()
@@ -188,5 +173,3 @@ plt.close()
 
 # save the model to disk
 dump(gs, 'model_shear.sav')
-
-# https://stackoverflow.com/questions/37161563/how-to-graph-grid-scores-from-gridsearchcv

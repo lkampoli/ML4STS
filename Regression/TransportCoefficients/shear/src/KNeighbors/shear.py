@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# https://towardsdatascience.com/explaining-feature-importance-by-example-of-a-random-forest-d9166011959e
+# https://machinelearningmastery.com/feature-selection-with-real-and-categorical-data/
+
 import time
 import sys
 sys.path.insert(0, '../../../../../Utilities/')
@@ -38,6 +41,11 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.neighbors import RadiusNeighborsRegressor
 from sklearn.neighbors import NearestNeighbors
 #
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_regression
+from sklearn.feature_selection import RFE
+
+from sklearn.decomposition import PCA
 
 n_jobs = 1
 trial  = 1
@@ -56,8 +64,40 @@ with open('../../../../Data/TCs_air5.txt') as f:
 x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
 y = dataset[:,7:8] # shear
 
+# create the PCA instance
+pca = PCA(2)
+
+# fit on data
+pca.fit(x)
+
+# access values and vectors
+print(pca.components_)
+print(pca.explained_variance_)
+
+# transform data
+xPCA = pca.transform(x)
+print(xPCA)
+print(xPCA.shape)
+
 # The data is then split into training and test data
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
+
+# define feature selection
+fs = SelectKBest(score_func=f_regression, k=7)
+
+# apply feature selection
+x_selected = fs.fit_transform(x, y)
+print(x_selected.shape)
+
+# define RFE
+#rfe = RFE(estimator=DecisionTreeClassifier(), n_features_to_select=5)
+#
+# fit RFE
+#rfe.fit(X, y)
+#
+# summarize all features
+#for i in range(X.shape[1]):
+#	print('Column: %d, Selected=%s, Rank: %d' % (i, rfe.support_[i], rfe.ranking_[i]))
 
 sc_x = StandardScaler()
 sc_y = StandardScaler()
@@ -70,6 +110,7 @@ sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
 y_test  = sc_y.transform(y_test)
 
+
 dump(sc_x, open('../../scaler/scaler_x_shear.pkl', 'wb'))
 dump(sc_y, open('../../scaler/scaler_y_shear.pkl', 'wb'))
 
@@ -78,9 +119,15 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-hyper_params = [{'algorithm': ('auto', 'ball_tree', 'kd_tree', 'brute',),
-                 'n_neighbors': (1,2,3,4,5,6,7,8,9,10,),
-                 'leaf_size': (1, 10, 25, 50, 75, 100,),
+#hyper_params = [{'algorithm': ('auto', 'ball_tree', 'kd_tree', 'brute',),
+#                 'n_neighbors': (1,2,3,4,5,6,7,8,9,10,),
+#                 'leaf_size': (1, 10, 25, 50, 75, 100,),
+#                 'weights': ('uniform', 'distance',),
+#                 'p': (1,2,),
+#}]
+hyper_params = [{'algorithm': ('auto',),
+                 'n_neighbors': (1,10,),
+                 'leaf_size': (1, 100,),
                  'weights': ('uniform', 'distance',),
                  'p': (1,2,),
 }]
@@ -134,11 +181,11 @@ out_text = '\t'.join(['regression',
 print(out_text)
 sys.stdout.flush()
 
-best_algorithm = grid_clf.best_params_['algorithm']
-best_n_neighbors = grid_clf.best_params_['n_neighbors']
-best_leaf_size = grid_clf.best_params_['leaf_size']
-best_weights = grid_clf.best_params_['weights']
-best_p = grid_clf.best_params_['p']
+best_algorithm = gs.best_params_['algorithm']
+best_n_neighbors = gs.best_params_['n_neighbors']
+best_leaf_size = gs.best_params_['leaf_size']
+best_weights = gs.best_params_['weights']
+best_p = gs.best_params_['p']
 
 outF = open("output_shear.txt", "w")
 print('best_algorithm = ', best_algorithm, file=outF)
@@ -159,20 +206,38 @@ regr.fit(x_train, y_train.ravel())
 regr_fit = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % regr_fit)
 
-importance = regr.feature_importances_
+#print('R^2 Training Score: {:.2f} \nOOB Score: {:.2f} \nR^2 Validation Score: {:.2f}'.format(regr.score(x_train, y_train.ravel()),
+#                                                                                            regr.oob_score_,
+#                                                                                             regr.score(x_test, y_test.ravel())))
+
+#importance = regr.feature_importances_
+#
+## summarize feature importance
+#for i,v in enumerate(importance):
+#	print('Feature: %0d, Score: %.5f' % (i,v))
+#
+## plot feature importance
+#plt.title("Feature importances")
+#features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
+#plt.bar(features, importance)
+##plt.bar([x for x in range(len(importance))], importance)
+#plt.savefig("../../pdf/importance_shear.pdf", dpi=150, crop='false')
+#plt.show()
+#plt.close()
+
+# perform permutation importance
+results = permutation_importance(regr, x_train, y_train, scoring='neg_mean_squared_error')
+
+# get importance
+importance = results.importances_mean
 
 # summarize feature importance
 for i,v in enumerate(importance):
 	print('Feature: %0d, Score: %.5f' % (i,v))
 
 # plot feature importance
-plt.title("Feature importances")
-features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
-plt.bar(features, importance)
-#plt.bar([x for x in range(len(importance))], importance)
-plt.savefig("../../pdf/importance_shear.pdf", dpi=150, crop='false')
+plt.bar([x for x in range(len(importance))], importance)
 plt.show()
-plt.close()
 
 t0 = time.time()
 y_regr = regr.predict(x_test)

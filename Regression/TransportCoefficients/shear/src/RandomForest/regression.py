@@ -31,6 +31,7 @@ from sklearn.inspection import permutation_importance
 
 from sklearn import ensemble
 from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 from joblib import dump, load
 import pickle
@@ -76,27 +77,22 @@ print('Training Labels Shape:', y_train.shape)
 print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
-# Extra Trees
-hyper_params = [{'n_estimators': (1, 100,),
+hyper_params = [{'n_estimators': (1, 50, 100, 500,),
                  'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
-                 'max_features': ('sqrt','log2','auto', None,),
-                 'max_samples': (1,10,100,1000,),
+                 'max_features': ('sqrt', 'log2', 'auto',),
                  'bootstrap': (True, False,),
                  'oob_score': (True, False,),
                  'warm_start': (True, False,),
                  'criterion': ('mse', 'mae',),
-                 'max_depth': (1,10,100,None,),
+                 'max_depth': (1, 10, 100, None,),
                  'max_leaf_nodes': (2, 100,),
-                 'min_samples_split': (10,),
-                 'min_samples_leaf': (1,10,100,),
+                 'min_samples_split': (2, 5, 10,),
+                 'min_impurity_decrease': (0.1, 0.2, 0.3, 0.5,),
+                 'min_samples_leaf': (1, 10, 100,),
 }]
 
-est=ensemble.ExtraTreesRegressor()
+est=ensemble.RandomForestRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
-
-#cross_val = KFold(n_splits=3, random_state=69)
-#score = cross_val_score(est, x_train, y_train.ravel(), cv=cross_val, scoring='r2')
-#print("Mean R2 Score: ", score.mean())
 
 t0 = time.time()
 gs.fit(x_train, y_train.ravel())
@@ -149,7 +145,7 @@ y_regr = regr.predict(x_test)
 regr_predict = time.time() - t0
 print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
 
-with open('output.txt', 'w') as f:
+with open('output.log', 'w') as f:
     print("Training time: %.6f s" % regr_fit, file=f)
     print("Prediction time: %.6f s" % regr_predict, file=f)
     print(" ", file=f)

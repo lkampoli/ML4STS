@@ -1,0 +1,21 @@
+Training time: 476.216120 s
+Prediction time: 3.213626 s
+ 
+The model performance for training set
+--------------------------------------
+MAE is 0.00020751508013342425
+MSE is 7.489360038736045e-08
+EVS is 0.9999953070638563
+ME is 0.0015233524156080258
+R2 score is 0.9999953069503063
+ 
+The model performance for testing set
+--------------------------------------
+MAE is 0.00022155791848220177
+MSE is 8.638299548848444e-08
+EVS is 0.9999946412597613
+ME is 0.0015233524156080258
+R2 score is 0.9999946411807044
+ 
+Best parameters set found on development set:
+{'loss': 'least_squares', 'max_depth': None, 'max_leaf_nodes': 100, 'min_samples_leaf': 1, 'warm_start': True}

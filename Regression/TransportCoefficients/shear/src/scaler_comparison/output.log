@@ -1,0 +1,728 @@
+unscaled all
+None None
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.832322675987035e-17
+MSE is      1.166854286498459e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.526260124932073e-17
+MSE is      9.10771447653739e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.7937930343382738e-17
+MSE is      1.1393878368713468e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5064516585739105e-17
+MSE is      9.056356344687064e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.789127567212e-17
+MSE is      1.1494701624349123e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.4910318943430053e-17
+MSE is      8.95158246352446e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.7751311658331784e-17
+MSE is      1.1309570922572413e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5127974846227827e-17
+MSE is      9.149072587522629e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.824177877444557e-17
+MSE is      1.160656742703059e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5251926027930102e-17
+MSE is      9.113393500732378e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.80395426358787e-17
+MSE is      1.1463892232218827e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5234133992279058e-17
+MSE is      9.130595182714299e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.8017599125242415e-17
+MSE is      1.1554742901888887e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5368167327516923e-17
+MSE is      9.224834062471709e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.7835527293746728e-17
+MSE is      1.126973544850902e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.5066295789304207e-17
+MSE is      8.955656546099125e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.7530888105543848e-17
+MSE is      1.124313731345085e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.4801787525958685e-17
+MSE is      8.845121336043054e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+0.3043133594051282 0.1269637010239958
+
+The model performance for training set
+--------------------------------------
+MAE is      1.8020169085947564e-17
+MSE is      1.1388885217005797e-33
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      1.525548443506031e-17
+MSE is      9.125327682011702e-34
+EVS is      1.0
+ME is       1.6653345369377348e-16
+R2 score is 1.0
+
+unscaled inputs
+None StandardScaler()
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.386156877713039e-17
+MSE is      8.944370346201182e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.686292946461856e-17
+MSE is      7.302392125297914e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.3879410235102686e-17
+MSE is      8.878841017087116e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7138706017209744e-17
+MSE is      7.312215319662365e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.492290694824627e-17
+MSE is      9.37782073056774e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.793599308145169e-17
+MSE is      7.599171531019935e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398934636e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.567685063674942e-17
+MSE is      9.406922923116152e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.833269987635857e-17
+MSE is      7.59389864916542e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.519495039893221e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.3820449405847976e-17
+MSE is      9.172838972764804e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.704678049967935e-17
+MSE is      7.428601364971498e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.4316946045154615e-17
+MSE is      9.092630815012324e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.71413748225574e-17
+MSE is      7.36678744998826e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.47086673634051e-17
+MSE is      9.185496363714972e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.715160524305675e-17
+MSE is      7.407136428209504e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398931e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.480943947643977e-17
+MSE is      9.091413948618732e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.777640222833592e-17
+MSE is      7.46889221549944e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.510631936020594e-17
+MSE is      9.3315172873869e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.76781012313639e-17
+MSE is      7.415985083503538e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.48449741254206e-17
+MSE is      9.255362421699314e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.734168349059541e-17
+MSE is      7.431941006713338e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+normalized inputs
+MinMaxScaler() StandardScaler()
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.539860296809559e-17
+MSE is      9.340498273203955e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7846829036121304e-17
+MSE is      7.423813803541901e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.519495039893221e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.4763322272920656e-17
+MSE is      9.188454208910448e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.674392669283173e-17
+MSE is      7.225093204207562e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.4889305947584455e-17
+MSE is      9.444937019922445e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.730639595322084e-17
+MSE is      7.446732318439671e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398935856e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.564037696366478e-17
+MSE is      9.5409787583798e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7939051087579214e-17
+MSE is      7.554539770746651e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398934636e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.5154604968070024e-17
+MSE is      9.401877216429141e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7597740537006686e-17
+MSE is      7.511031449513672e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.5822689728976575e-17
+MSE is      9.429214527787406e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.848339471164882e-17
+MSE is      7.655870208992758e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.448809554365341e-17
+MSE is      9.166000223927823e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.714582283147016e-17
+MSE is      7.346375884765695e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.542731733674353e-17
+MSE is      9.46521068190803e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.771798504461499e-17
+MSE is      7.545738054850968e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.5053239787180324e-17
+MSE is      9.241519285819666e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7440429288458705e-17
+MSE is      7.411496005207015e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398934033e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.509786814327169e-17
+MSE is      9.325371741299445e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.84815599079723e-17
+MSE is      7.72852753089222e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+standardized inputs
+StandardScaler() StandardScaler()
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.516597210195819e-17
+MSE is      9.314748305210416e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7666091607299446e-17
+MSE is      7.443161323334454e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398934636e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.459376046649211e-17
+MSE is      9.243912594997129e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.727703909439661e-17
+MSE is      7.34149753096559e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.385005337627846e-17
+MSE is      8.886429981824131e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.724886837128246e-17
+MSE is      7.305258129220231e-33
+EVS is      1.0
+ME is       4.440892098500626e-16
+R2 score is 1.0
+
+3.5194950398934636e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.554859971309815e-17
+MSE is      9.468433596725934e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.746563467229768e-17
+MSE is      7.460609276406352e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.5183319336717956e-17
+MSE is      9.265674343078009e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7886564582408634e-17
+MSE is      7.479175415967728e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.485737912805508e-17
+MSE is      9.29117040965015e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.793742015097787e-17
+MSE is      7.504075545082451e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398934636e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.411090438785127e-17
+MSE is      9.181731052360691e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.665224210911745e-17
+MSE is      7.233266852466905e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398932814e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.516731268242218e-17
+MSE is      9.37631954055707e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.828608844962693e-17
+MSE is      7.691566021962455e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.5194950398933424e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.469809098665698e-17
+MSE is      9.2412027985338e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.693558027686032e-17
+MSE is      7.30486911091883e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+3.51949503989316e-05 1.0050433529528788
+
+The model performance for training set
+--------------------------------------
+MAE is      4.468973861436524e-17
+MSE is      9.191733816715727e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
+The model performance for testing set
+--------------------------------------
+MAE is      3.7398024936823716e-17
+MSE is      7.356753221232869e-33
+EVS is      1.0
+ME is       6.661338147750939e-16
+R2 score is 1.0
+
