@@ -13,6 +13,13 @@
 *.compress
 *.o
 *.pyc
+*.pit
+*.xlsx
+*.unf
+*.bin
+*.out
+*.so
+*.conf
 #
 OLDREPO/*
 #

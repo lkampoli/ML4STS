@@ -65,8 +65,8 @@ y_train = sc_y.transform(y_train)
 # transform test dataset
 y_test = sc_y.transform(y_test)
 
-dump(sc_x, open('scaler_x.pkl', 'wb'))
-dump(sc_y, open('scaler_y.pkl', 'wb'))
+dump(sc_x, open('scaler_x_shear.pkl', 'wb'))
+dump(sc_y, open('scaler_y_shear.pkl', 'wb'))
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:'  , y_train.shape)
@@ -96,22 +96,23 @@ est=DecisionTreeRegressor(random_state=69)
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 t0 = time.time()
+#gs.fit(x_train, y_train.ravel())
 gs.fit(x_train, y_train)
 runtime = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 
-train_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_evs  = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-#train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_r2   = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+train_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+train_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+train_score_evs   = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_me   = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+train_score_r2    = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 #train_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 
-test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-#test_score_me  = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_evs   = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_r2    = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 #test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
 
 print()
@@ -120,8 +121,8 @@ print("--------------------------------------")
 print('MAE is      {}'.format(train_score_mae))
 print('MSE is      {}'.format(train_score_mse))
 print('EVS is      {}'.format(train_score_evs))
-#print('ME is       {}'.format(train_score_me))
-#print('MSLE is     {}'.format(train_score_msle))
+#print('ME is      {}'.format(train_score_me))
+#print('MSLE is    {}'.format(train_score_msle))
 print('R2 score is {}'.format(train_score_r2))
 print()
 print("The model performance for testing set")
@@ -129,8 +130,8 @@ print("--------------------------------------")
 print('MAE is      {}'.format(test_score_mae))
 print('MSE is      {}'.format(test_score_mse))
 print('EVS is      {}'.format(test_score_evs))
-#print('ME is       {}'.format(test_score_me))
-#print('MSLE is     {}'.format(test_score_msle))
+#print('ME is      {}'.format(test_score_me))
+#print('MSLE is    {}'.format(test_score_msle))
 print('R2 score is {}'.format(test_score_r2))
 print()
 print("Best parameters set found on development set:")
@@ -207,8 +208,8 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(train_score_mae), file=f)
     print('MSE is {}'.format(train_score_mse), file=f)
     print('EVS is {}'.format(train_score_evs), file=f)
-    #print('ME is {}'.format(train_score_me), file=f)
-    #print('MSLE is {}'.format(train_score_msle), file=f)
+    print('ME is {}'.format(train_score_me), file=f)
+    print('MSLE is {}'.format(train_score_msle), file=f)
     print('R2 score is {}'.format(train_score_r2), file=f)
     print(" ", file=f)
     print("The model performance for testing set", file=f)
@@ -216,22 +217,12 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(test_score_mae), file=f)
     print('MSE is {}'.format(test_score_mse), file=f)
     print('EVS is {}'.format(test_score_evs), file=f)
-    #print('ME is {}'.format(test_score_me), file=f)
-    #print('MSLE is {}'.format(test_score_msle), file=f)
+    print('ME is {}'.format(test_score_me), file=f)
+    print('MSLE is {}'.format(test_score_msle), file=f)
     print('R2 score is {}'.format(test_score_r2), file=f)
-    print(" ", file=f)
-    print("Adimensional test metrics", file=f)
-    print("--------------------------------------", file=f)
-    print('Mean Absolute Error (MAE):',              mean_absolute_error(y_test, y_regr), file=f)
-    print('Mean Squared Error (MSE):',               mean_squared_error(y_test, y_regr), file=f)
-    print('Root Mean Squared Error (RMSE):', np.sqrt(mean_squared_error(y_test, y_regr)), file=f)
     print(" ", file=f)
     print("Best parameters set found on development set:", file=f)
     print(gs.best_params_, file=f)
-
-print('Mean Absolute Error (MAE):',              mean_absolute_error(y_test, y_regr))
-print('Mean Squared Error (MSE):',               mean_squared_error(y_test, y_regr))
-print('Root Mean Squared Error (RMSE):', np.sqrt(mean_squared_error(y_test, y_regr)))
 
 x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
@@ -261,7 +252,7 @@ plt.tight_layout()
 plt.show()
 
 # save the model to disk
-dump(gs, 'model.sav')
+dump(gs, 'model_NEW.sav')
 
 # https://gdcoder.com/decision-tree-regressor-explained-in-depth/
 from sklearn.tree import export_graphviz
@@ -337,11 +328,11 @@ from yellowbrick.features import PCA
 #steps = [('pca', PCA(n_components=10)), ('m', regr)]
 #regr  = Pipeline(steps=steps)
 
-#pca = PCA(n_components=2)
-#pca.fit(x_train)
-#
-#print(pca.components_)
-#print(pca.explained_variance_)
+pca = PCA(n_components=2)
+pca.fit(x_train)
+
+print(pca.components_)
+print(pca.explained_variance_)
 
 def plot_components(c, v0, v1, ax=None):
     ax = ax or plt.gca()
@@ -355,3 +346,4 @@ def plot_components(c, v0, v1, ax=None):
 #   v = vector * 3 * np.sqrt(length)
 #   plot_components(i,pca.mean_, pca.mean_ + v)
 #plt.axis('equal');
+

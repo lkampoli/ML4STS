@@ -3,26 +3,30 @@
 
 # Physics Informed Neural Network (PINN) in Tensorflow
 
-# Importing necessary libraries Note that there are 2 important data handling and
-# numerical calculation libraries: **numpy** and **scipy** alongside tensorflow.
-# *Matplotlib* is necessary to plot and visualize data
+import time
 import sys
 sys.path.insert(0, './utilities')
 
 import tensorflow as tf
+
 import numpy as np
+
 import matplotlib.pyplot as plt
+
 import scipy.io
 from scipy.interpolate import griddata
+
 from plotting import newfig, savefig
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from itertools import product, combinations
 import matplotlib.gridspec as gridspec
-import time
+
 from sklearn.preprocessing import MinMaxScaler
+
 from sklearn.model_selection  import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold, StratifiedKFold
+
 from sklearn.pipeline import Pipeline
 
 from sklearn.preprocessing import MinMaxScaler
