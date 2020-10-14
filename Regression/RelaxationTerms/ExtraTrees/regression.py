@@ -35,6 +35,21 @@ from sklearn.ensemble import ExtraTreesRegressor
 from joblib import dump, load
 import pickle
 
+from hyperopt import hp, tpe, fmin, rand
+from hyperopt import STATUS_OK
+from hyperopt.pyll.stochastic import sample
+from hyperopt import Trials
+from hyperopt import pyll
+
+import hpsklearn
+#from hpsklearn import HyperoptEstimator
+#from hpsklearn import any_preprocessing, pca, standard_scaler, min_max_scaler, normalizer
+#from hpsklearn import any_regressor, any_sparse_regressor
+#from hpsklearn import any_classifier, any_sparse_classifier
+#from hpsklearn import svr, svr_linear, svr_rbf, svr_poly, svr_sigmoid, knn_regression, ada_boost_regression, \
+#                      gradient_boosting_regression, random_forest_regression, extra_trees_regression, sgd_regression, \
+#                      xgboost_regression
+
 n_jobs = -1
 trial  = 1
 
@@ -90,8 +105,65 @@ hyper_params = [{'n_estimators': (1, 100,),
                  'min_samples_leaf': (1, 10, 100,),
 }]
 
+# https://towardsdatascience.com/automated-machine-learning-hyperparameter-tuning-in-python-dfda59b72f8a
+# https://towardsdatascience.com/an-introductory-example-of-bayesian-optimization-in-python-with-hyperopt-aae40fff4ff0
+
+#N_FOLDS = 10
+#
+#def objective(params, n_folds = N_FOLDS):
+#    """Objective function for Gradient Boosting Machine Hyperparameter Tuning"""
+#
+#    # Perform n_fold cross validation with hyperparameters
+#    # Use early stopping and evalute based on ROC AUC
+#    cv_results = lgb.cv(params, train_set, nfold = n_folds, num_boost_round = 10000,
+#                        early_stopping_rounds = 100, metrics = 'auc', seed = 50)
+#
+#    # Extract the best score
+#    best_score = max(cv_results['auc-mean'])
+#
+#    # Loss must be minimized
+#    loss = 1 - best_score
+#
+#    # Dictionary with information for evaluation
+#    return {'loss': loss, 'params': params, 'status': STATUS_OK}
+#
+## Define the search space
+## choice : categorical variables
+## quniform : discrete uniform (integers spaced evenly)
+## uniform: continuous uniform (floats spaced evenly)
+## loguniform: continuous log uniform (floats spaced evenly on a log scale)
+#hyper_space = {'class_weight': hp.choice('class_weight', [None, 'balanced']),
+#               'boosting_type': hp.choice('boosting_type',
+#                                          [{'boosting_type': 'gbdt',
+#                                            'subsample': hp.uniform('gdbt_subsample', 0.5, 1)},
+#                                           {'boosting_type': 'dart',
+#                                            'subsample': hp.uniform('dart_subsample', 0.5, 1)},
+#                                           {'boosting_type': 'goss'}]),
+#               'num_leaves': hp.quniform('num_leaves', 30, 150, 1),
+#               'learning_rate': hp.loguniform('learning_rate', np.log(0.01), np.log(0.2)),
+#               'subsample_for_bin': hp.quniform('subsample_for_bin', 20000, 300000, 20000),
+#               'min_child_samples': hp.quniform('min_child_samples', 20, 500, 5),
+#               'reg_alpha': hp.uniform('reg_alpha', 0.0, 1.0),
+#               'reg_lambda': hp.uniform('reg_lambda', 0.0, 1.0),
+#               'colsample_bytree': hp.uniform('colsample_by_tree', 0.6, 1.0)
+#}
+
 est=ensemble.ExtraTreesRegressor(random_state=69)
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+
+#hest = hpsklearn.HyperoptEstimator(preprocessing=hpsklearn.components.any_preprocessing('pp'), #[ pca('my_pca') ],
+#                                   regressor=hpsklearn.components.extra_trees_regression('ET'),
+#                                   algo=tpe.suggest,
+#                                   trial_timeout=15.0, # seconds
+#                                   max_evals=30,
+#                                   seed=69,)
+#
+#hest.fit( x_train, y_train )
+#print( hest.score( x_test, y_test ) )
+#print( hest.best_model() )
+#
+#hest.retrain_best_model_on_full_data(x_train, y_train)
+#print('Test R2:', hest.score(x_test, y_test))
 
 t0 = time.time()
 gs.fit(x_train, y_train)
