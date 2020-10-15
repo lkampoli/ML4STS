@@ -17,57 +17,52 @@ nm_b = sum(ni_b);
 v_b = y(l+2);
 T_b = y(l+3);
 
-xx = t*Delta;
-disp(xx);
+% xx = t*Delta;
 
 temp = T_b*T0;
-
 temperature = temp;
-%disp("temperature");
-%disp(temperature); % temperature, T [K]
 
 velocity = v_b*v0;
-%disp("velocity");
-%disp(velocity);
 
-ef_b = 0.5*D/T0;
-
-ei_b = e_i/(k*T0);
-e0_b = e_0/(k*T0);
-
-%sigma = 2;
-%Theta_r = Be*h*c/k;
-%Z_rot = temp./(sigma.*Theta_r);
-
-M = sum(m);
-mb = m/M;
-
-A = zeros(l+3,l+3);
-
-for i=1:l
-    A(i,i) = v_b;
-    A(i,l+2) = ni_b(i);
-end
-
-A(l+1,l+1) = v_b;
-A(l+1,l+2) = na_b;
-
-for i=1:l+1
-    A(l+2,i) = T_b;
-end
-A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
-A(l+2,l+3) = nm_b+na_b;
-
-for i=1:l
-    A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
-end
-A(l+3,l+1) = 1.5*T_b+ef_b;
-A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
-A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
-
-AA = sparse(A);% figure(1); spy(A);
-
-B = zeros(l+3,1);
+% ef_b = 0.5*D/T0;
+% ei_b = e_i/(k*T0);
+% e0_b = e_0/(k*T0);
+% 
+% sigma = 2;
+% Theta_r = Be*h*c/k;
+% Z_rot = temp./(sigma.*Theta_r);
+% 
+% M = sum(m);
+% mb = m/M;
+% 
+% A = zeros(l+3,l+3);
+% 
+% for i=1:l
+%     A(i,i) = v_b;
+%     A(i,l+2) = ni_b(i);
+% end
+% 
+% A(l+1,l+1) = v_b;
+% A(l+1,l+2) = na_b;
+% 
+% for i=1:l+1
+%     A(l+2,i) = T_b;
+% end
+% 
+% A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
+% A(l+2,l+3) = nm_b+na_b;
+% 
+% for i=1:l
+%     A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
+% end
+% 
+% A(l+3,l+1) = 1.5*T_b+ef_b;
+% A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
+% A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
+% 
+% AA = sparse(A);
+% 
+% B = zeros(l+3,1);
 
 %Kdr = (m(1)*h^2/(m(2)*m(2)*2*pi*k*temp))^(3/2)*Z_rot* exp(-e_i'/(k*temp))*exp(D/temp);
 
@@ -95,7 +90,7 @@ B = zeros(l+3,1);
 %    kvv_up(ip,:) = kvv_down(ip,:) .* exp((deps(ip)-deps') / (k*temp));
 %end
 
-RD = zeros(l,1);
+%RD = zeros(l,1);
 %RVT = zeros(l,1);
 %RVV = zeros(l,1);
 
@@ -108,9 +103,14 @@ RD = zeros(l,1);
 %RD_ML = zeros(l,1);
 %RD_MLd = zeros(l,1);
 %input = [temperature; velocity; ni_b/(nm_b+na_b); na_b/(nm_b+na_b)];
-input = [temperature; velocity; ni_b; na_b];
-RD_ML = py.run_regression.regressor(input);
-RD_MLd = double(RD_ML);
+%disp(input')
+%pause(10)
+%input = [temperature; velocity; ni_b*n0; na_b*n0];
+%RD_ML = py.run_regression.regressor(input);
+%RD_MLd = double(RD_ML);
+
+%disp(RD_MLd)
+%pause(10)
 
 %for i1 = 1:l
 %  RD(i1) = nm_b*(na_b*na_b*kr(1,i1)-ni_b(i1)*kd(1,i1)) + na_b*(na_b*na_b*kr(2,i1)-ni_b(i1)*kd(2,i1));
@@ -119,8 +119,8 @@ RD_MLd = double(RD_ML);
 %disp("RD")
 %fprintf('%d\n',RD);
 
-disp("RD_MLd")
-fprintf('%d\n',RD_MLd);
+%disp("RD_MLd")
+%fprintf('%d\n',RD_MLd);
 
     % fprintf('%i, %d, %d, %d, %d %d, %d\n', i1, RD(i1), ni_b(i1), nm_b, na_b, kr(1,i1), kd(1,i1))
 
@@ -154,17 +154,14 @@ fprintf('%d\n',RD_MLd);
 %    end
 %end
 
-B(1:l) = RD_MLd(1:l); % + RVT + RVV;
-B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
+%B(1:l) = RD_MLd(1:l); % + RVT + RVV;
+%B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
 
-dataset = [temperature; velocity; ni_b; na_b; B(1:l+1)];
-data = horzcat(dataset, dataset);
-save solution_tmp.dat data -ascii -append
+%dy = AA^(-1)*B;
 
-%fprintf('%d\n',B);
-%disp(B(l+2))
-%disp(B(l+3))
+input = [ni_b; na_b; temperature; velocity];
+RD_ML = py.run_regression.regressor(input);
+RD_MLd = double(RD_ML);
+dy = RD_MLd';
 
-dy = AA^(-1)*B;
-%disp(size(dy))
-%fprintf('%d\n', dy);
+%fprintf('%d\n', dy)

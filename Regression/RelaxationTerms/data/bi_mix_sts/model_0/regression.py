@@ -39,31 +39,21 @@ trial  = 1
 #dataset=np.loadtxt("../data/solution_DR.dat") # 943 x 103
 #dataset=np.loadtxt("../data/solution_DR_TVX.dat") # 943 x 98
 #dataset=np.loadtxt("../data/solution_tmp.dat")
-#dataset=np.loadtxt("../data/solution.dat")
-dataset=np.loadtxt("../data/sol.dat")
-#dataset=np.loadtxt("../data/sol.txt") # 224600 x 1
-#dataset=np.loadtxt("../data/transposed_reshaped_data.txt")
+dataset=np.loadtxt("../data/solution.dat")
 #dataset=dataset.reshape(98,-1).T # -1 x 98
-#print(dataset.shape)
-#dataset=dataset.reshape(100,-1).T # -1 x 100
 print(dataset.shape)
 
 #x = dataset[:,0:55]  # x_s[1], time_s[1], Temp[1], rho[1], p[1], v[1], E[1], ni_n[47], na_n[1]
 #y = dataset[:,55:]   # RD_mol[47], RD_at[1]
 
-x = dataset[:,0:50]  # Temp[1], v[1], ni_n[47], na_n[1]
-y = dataset[:,50:]   # RD_mol[47], RD_at[1]
+#x = dataset[:,0:50]  # Temp[1], v[1], ni_n[47], na_n[1]
+#y = dataset[:,50:]   # RD_mol[47], RD_at[1]
 
-plt.scatter(x[:,0], y[:,0], s=2, c='k', marker='o', label='Matlab')
-plt.legend()
-plt.tight_layout()
-plt.show()
+x = dataset[:,0:1]  # X
+y = dataset[:,1:]   # ni_n[47], na_n[1], Temp[1], v[1]
 
-#x = dataset[:,0:1]  # X
-#y = dataset[:,1:]   # ni_n[47], na_n[1], Temp[1], v[1]
-
-print(x)
-print(y)
+#print(x)
+#print(y)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
@@ -110,12 +100,12 @@ from sklearn.feature_selection import mutual_info_regression
 #print(x_selected.shape)
 
 # DecisionTree
-hyper_params = [{'criterion': ('mse',),
-                 #'criterion': ('mse', 'friedman_mse', 'mae'),
-                 #'splitter': ('best', 'random'),
-                 'splitter': ('best',),
-                 #'max_features': ('auto', 'sqrt', 'log2'),
-                 'max_features': ('auto',),
+hyper_params = [{#'criterion': ('mse',),
+                 'criterion': ('mse', 'friedman_mse', 'mae'),
+                 'splitter': ('best', 'random'),
+                 #'splitter': ('best',),
+                 'max_features': ('auto', 'sqrt', 'log2'),
+                 #'max_features': ('auto',),
 }]
 
 est=DecisionTreeRegressor(random_state=69)

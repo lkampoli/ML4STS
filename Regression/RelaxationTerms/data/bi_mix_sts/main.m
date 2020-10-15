@@ -2,12 +2,11 @@
 clear all
 format long e
 global c h h_bar N_a k m sw_o sw_sp e_i e_0 l om_e om_x_e Be D xc r0 em re CA nA n0 v0 T0 Delta
+
 tic
 
 sw_sp = 1;
-
 sw_o = 1;
-
 xc = [1; 0];
 
 x_w = 1000;
@@ -27,7 +26,7 @@ Be = BE(sw_sp); % m^-1
 
 D = ED(sw_sp);
 
-CA = CArr(sw_sp,:); % �^3/�
+CA = CArr(sw_sp,:); % m^3/s
 nA = NArr(sw_sp,:);
 
 l = QN(sw_sp,sw_o);
@@ -43,16 +42,19 @@ sigma0 = pi*R0(sw_sp,1)^2;
 r0 = [R0(sw_sp,1); 0.5*(R0(sw_sp,1)+R0(sw_sp,2))];
 
 em = [EM(sw_sp,1); sqrt(EM(sw_sp,1)*EM(sw_sp,2)*...
-    R0(sw_sp,1)^6*R0(sw_sp,2)^6)/r0(2)^6];
+      R0(sw_sp,1)^6 * R0(sw_sp,2)^6)/r0(2)^6];
 
 re = RE(sw_sp);
 
 p0 = 0.8*133.322; % Pa
+%p0 = 0.8*300.; % Pa
 
 T0 = 300;
+%T0 = 500;
 Tv0 = T0;
 
 M0 = 13.4;
+%M0 = 15.;
 
 n0 = p0/(k*T0);
 
@@ -92,7 +94,7 @@ Delta = 1/(sqrt(2)*n0*sigma0);
 xspan = [0, x_w]./Delta;
 
 options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12);
-[X,Y] = ode15s(@rpart, xspan, Y0_bar,options);
+[X,Y] = ode15s(@rpart, xspan, Y0_bar, options);
 %[X,Y] = ode15s(@rpart_ML, xspan, Y0_bar, options); % machine learning version
 
 x_s = X*Delta*100;
@@ -154,72 +156,96 @@ d1 = max(abs(u1)/u10);
 d2 = max(abs(u2)/u20);
 d3 = max(abs(u3)/u30);
 
-% clc
 disp('Relative error of conservation law of:');
 disp(['mass = ',num2str(d1)]);
 disp(['momentum = ',num2str(d2)]);
 disp(['energy = ',num2str(d3)]);
 
-%RDm = zeros(Npoint,l);
-%RDa = zeros(Npoint,l);
-%RVTm = zeros(Npoint,l);
-%RVTa = zeros(Npoint,l);
-%RVV = zeros(Npoint,l);
-%
-%for i = 1:Npoint
-%    input = Y(i,:)';
-%    [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % �^-3*�^-1
-%    RDm(i,:) = rdm;
-%    RDa(i,:) = rda;
-%    RVTm(i,:) = rvtm;
-%    RVTa(i,:) = rvta;
-%    RVV(i,:) = rvv;
-%end
+RDm = zeros(Npoint,l);
+RDa = zeros(Npoint,l);
+RVTm = zeros(Npoint,l);
+RVTa = zeros(Npoint,l);
+RVV = zeros(Npoint,l);
 
-%RD_mol = RDm+RDa;
-%RVT = RVTm+RVTa;
-%RD_at = -2*sum(RD_mol,2);
+for i = 1:Npoint
+    input = Y(i,:)';
+    [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % m^-3*s^-1
+    RDm(i,:) = rdm;
+    RDa(i,:) = rda;
+    RVTm(i,:) = rvtm;
+    RVTa(i,:) = rvta;
+    RVV(i,:) = rvv;
+end
+
+RD_mol = RDm+RDa;
+RVT = RVTm+RVTa;
+RD_at = -2*sum(RD_mol,2);
 
 %dataset = [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n, RD_mol, RD_at];
-%save solution_DR.dat dataset -ascii
+%dataset = [x_s, Temp, v, n_i, n_a, RD_mol, RD_at];
+%dataset = [x_s, Temp, v, ni_n, na_n, RD_mol, RD_at];
+%save sol_ML.dat dataset -ascii
+%save sol_dim.dat dataset -ascii
 
 toc
 
 %dataset = [X, Y]; 
-%save solution.dat dataset -ascii
+%save solution_adim.dat dataset -ascii
 
-my_xspan = linspace(0,x_w/Delta,1000);
+% my_xspan = linspace(0,x_w/Delta,1000);
+% 
+% %figure(1), plot(x_s, Temp,'b');
+% %xlabel('X [mm]') 
+% %ylabel('Temperature [K]') 
+% %hold on;
+% %figure(1), plot(x_s, v, 'b');
+% %xlabel('X [mm]') 
+% %ylabel('Velocity [m/s]')
+% %hold on;
+% figure(1), plot(x_s, n_i(:,3), 'k');
+% xlabel('X [mm]') 
+% ylabel('Number density [m^-3]')
+% hold on;
+% plot(x_s, n_i(:,6), 'b');
+% plot(x_s, n_i(:,9), 'r');
+% plot(x_s, n_i(:,12), 'g');
+% plot(x_s, n_i(:,15), 'm');
+% %legend;
+% 
+% tic 
+% for i = 1:20:1000
+%     input = my_xspan(i);
+%     
+%     RHS = py.run_regression.regressor(input);
+%     RHSd = double(RHS);
+%     %disp(size(RHSd)) % 50
+%     
+%     ni_ML = RHSd(1:l) * n0;
+%     na_ML = RHSd(l+1) * n0;
+%     T_ML  = RHSd(l+3) * T0;
+%     V_ML  = RHSd(l+2) * v0;
+%     
+%     %disp(ni_ML')
+%     %disp(na_ML)
+%     %disp(T_ML)
+%     %disp(V_ML)
+%     
+%     scatter(input*Delta*100,ni_ML(3),'k');
+%     scatter(input*Delta*100,ni_ML(6),'b');
+%     scatter(input*Delta*100,ni_ML(9),'r');
+%     scatter(input*Delta*100,ni_ML(12),'g');
+%     scatter(input*Delta*100,ni_ML(15),'m');
+%     %scatter(input*Delta*100,V_ML,'k');
+%     %scatter(input*Delta*100,T_ML,'k');
+% end
+% legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15','MLA'},'Location','northeast')
+% toc
 
-%figure(1), plot(x_s, Temp);
-%hold on;
+%data = importdata('sol.txt');
+%reshaped_data = reshape(data,[100,size(data,1)/100]);
+%transposed_reshaped_data = transpose(reshaped_data);
+%save transposed_reshaped_data.txt transposed_reshaped_data -ascii
 
-figure(1), plot(x_s, n_i(:,1));
-hold on;
-
-for i = 1:50:1000
-    input = my_xspan(i);
-    disp(input)
-    
-    %input = [1000000];
-    RHS = py.run_regression.regressor(input);
-    RHSd = double(RHS);
-    
-    ni_ML = RHSd(1:l) * n0;
-    na_ML = RHSd(l+1) * n0;
-    T_ML  = RHSd(l+2) * T0;
-    V_ML  = RHSd(l+3) * v0;
-    
-    %disp(ni_ML')
-    %disp(na_ML)
-    %disp(T_ML)
-    %disp(V_ML)
-    
-    %figure(1), plot(x_s, Temp);
-    %hold on; 
-    %plot(input*Delta*100,T_ML);
-    
-    %figure(2), plot(x_s, n_i(:,1));
-    %hold on; 
-    scatter(input*Delta*100,ni_ML(1));
-    
-end
+figure, plot(x_s, Temp)
+figure, plot(x_s, v)
+figure, plot(x_s, n_i(:,1))

@@ -16,8 +16,9 @@ def regressor(inp):
     regr = load('model.sav')
 
     # Build array of inputs for prediction
-    Xinput = np.asarray(inp).reshape(1,-1) # if it is only 1 row
-    #Xinput = np.asarray(inp).reshape(-1,1) # if it is only 1 column
+    #Xinput = np.array([inp])
+    #Xinput = np.asarray(inp).reshape(1,-1) # if it is only 1 row
+    Xinput = np.asarray(inp).reshape(-1,1) # if it is only 1 column
 
     print(Xinput)
 

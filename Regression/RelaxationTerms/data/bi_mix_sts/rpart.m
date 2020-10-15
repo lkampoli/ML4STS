@@ -12,7 +12,6 @@ v_b = y(l+2);
 T_b = y(l+3);
 
 xx = t*Delta;
-disp(xx);
 
 temp = T_b*T0;
 
@@ -28,7 +27,7 @@ Z_rot = temp./(sigma.*Theta_r);
 M = sum(m);
 mb = m/M; 
 
-%% A*X=B
+% A*X=B
 A = zeros(l+3,l+3);
 
 for i=1:l
@@ -53,9 +52,9 @@ A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+...
     sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
 A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
 
-AA = sparse(A);% figure(1); spy(A);
+AA = sparse(A);
 
-%% B
+% B
 B = zeros(l+3,1);
 
 Kdr = (m(1)*h^2/(m(2)*m(2)*2*pi*k*temp))^(3/2)*Z_rot* ...
@@ -70,14 +69,14 @@ for iM = 1:2
     kr(iM,:) = kd(iM,:) .* Kdr * n0;
 end
 
-%  VT  i+1 -> i
+% VT i+1 -> i
 kvt_down = kvt_ssh(temp) * Delta*n0/v0;
 kvt_up = zeros(2,Lmax);
 for ip = 1:2
     kvt_up(ip,:) = kvt_down(ip,:) .* Kvt;
 end
 
-%  VV
+% VV
 kvv_down = kvv_ssh(temp) * Delta*n0/v0;
 kvv_up = zeros(Lmax,Lmax);
 deps = e_i(1:end-1)-e_i(2:end);
@@ -89,56 +88,87 @@ RD = zeros(l,1);
 RVT = zeros(l,1);
 RVV = zeros(l,1);
 
-%dataset = [];
-
 for i1 = 1:l
 
     RD(i1) = nm_b*(na_b*na_b*kr(1,i1)-ni_b(i1)*kd(1,i1)) + ...
              na_b*(na_b*na_b*kr(2,i1)-ni_b(i1)*kd(2,i1));
 
-    %fprintf('%i, %d, %d, %d, %d %d, %d\n', i1, RD(i1), ni_b(i1), nm_b, na_b, kr(1,i1), kd(1,i1))
+    if i1 == 1 %  0<->1
 
-%     if i1 == 1 %  0<->1
-% 
-%         RVT(i1) = nm_b*(ni_b(i1+1)*kvt_down(1,i1) - ni_b(i1)*kvt_up(1,i1))+...
-%                   na_b*(ni_b(i1+1)*kvt_down(2,i1) - ni_b(i1)*kvt_up(2,i1));
-% 
-%         RVV(i1) = ni_b(i1+1)*sum(ni_b(1:end-1) .* kvv_down(i1,:)') - ...
-%                   ni_b(i1)  *sum(ni_b(2:end)   .* kvv_up(i1,:)');
-% 
-%     elseif i1 == l % Lmax <-> Lmax-1
-% 
-%         RVT(i1) = nm_b*(ni_b(i1-1)*kvt_up(1,i1-1) - ni_b(i1)*kvt_down(1,i1-1))+...
-%                   na_b*(ni_b(i1-1)*kvt_up(2,i1-1) - ni_b(i1)*kvt_down(2,i1-1));
-% 
-%         RVV(i1) = ni_b(i1-1)*sum(ni_b(2:end)   .* kvv_up(i1-1,:)') - ...
-%                   ni_b(i1)  *sum(ni_b(1:end-1) .* kvv_down(i1-1,:)');
-% 
-%     else
-% 
-%         RVT(i1) = nm_b*(ni_b(i1+1)*kvt_down(1,i1)+ni_b(i1-1)*kvt_up(1,i1-1)-...
-%                   ni_b(i1)*(kvt_up(1,i1)+kvt_down(1,i1-1)))+...
-%                   na_b*(ni_b(i1+1)*kvt_down(2,i1)+ni_b(i1-1)*kvt_up(2,i1-1)-...
-%                   ni_b(i1)*(kvt_up(2,i1)+kvt_down(2,i1-1)));
-% 
-%         RVV(i1) = ni_b(i1+1)*sum(ni_b(1:end-1) .* kvv_down(i1,:)') + ...
-%                   ni_b(i1-1)*sum(ni_b(2:end) .* kvv_up(i1-1,:)') - ...
-%                   ni_b(i1)*(sum(ni_b(2:end) .* kvv_up(i1,:)') + ...
-%                             sum(ni_b(1:end-1) .* kvv_down(i1-1,:)'));
-%     end
+        RVT(i1) = nm_b*(ni_b(i1+1)*kvt_down(1,i1) - ni_b(i1)*kvt_up(1,i1))+...
+                  na_b*(ni_b(i1+1)*kvt_down(2,i1) - ni_b(i1)*kvt_up(2,i1));
+
+        RVV(i1) = ni_b(i1+1)*sum(ni_b(1:end-1) .* kvv_down(i1,:)') - ...
+                  ni_b(i1)  *sum(ni_b(2:end)   .* kvv_up(i1,:)');
+
+    elseif i1 == l % Lmax <-> Lmax-1
+
+        RVT(i1) = nm_b*(ni_b(i1-1)*kvt_up(1,i1-1) - ni_b(i1)*kvt_down(1,i1-1))+...
+                  na_b*(ni_b(i1-1)*kvt_up(2,i1-1) - ni_b(i1)*kvt_down(2,i1-1));
+
+        RVV(i1) = ni_b(i1-1)*sum(ni_b(2:end)   .* kvv_up(i1-1,:)') - ...
+                  ni_b(i1)  *sum(ni_b(1:end-1) .* kvv_down(i1-1,:)');
+
+    else
+
+        RVT(i1) = nm_b*(ni_b(i1+1)*kvt_down(1,i1)+ni_b(i1-1)*kvt_up(1,i1-1)-...
+                  ni_b(i1)*(kvt_up(1,i1)+kvt_down(1,i1-1)))+...
+                  na_b*(ni_b(i1+1)*kvt_down(2,i1)+ni_b(i1-1)*kvt_up(2,i1-1)-...
+                  ni_b(i1)*(kvt_up(2,i1)+kvt_down(2,i1-1)));
+
+        RVV(i1) = ni_b(i1+1)*sum(ni_b(1:end-1) .* kvv_down(i1,:)') + ...
+                  ni_b(i1-1)*sum(ni_b(2:end) .* kvv_up(i1-1,:)') - ...
+                  ni_b(i1)*(sum(ni_b(2:end) .* kvv_up(i1,:)') + ...
+                            sum(ni_b(1:end-1) .* kvv_down(i1-1,:)'));
+    end
 end
 
 B(1:l) = RD; % + RVT + RVV;
 B(l+1) = - 2*sum(RD);
 
+%disp(B')
+%pause(10)
+
+%kkk = kkk + 1;
+%save('odeB.mat', 'B', 'RD', '-append')
+%save(sprintf('name%04d.mat',kkk),'B')
+
 %tmp_dataset = [temp; v_b*v0; ni_b; na_b; B(1:l+1)]; 
 %dataset = [dataset; {tmp_dataset}];
-
+%data = [temp; v_b*v0; ni_b; na_b; B];
 %tmp_dataset = [temp; v_b*v0; ni_b; na_b; B(1:l+1)];
 %data = horzcat(dataset, dataset);
 %save solution_tmp.dat data -ascii -append
 
 dy = AA^(-1)*B;
+%dy = B;
 %fprintf('%d\n', dy)
 
+%database = [ni_b; na_b; v_b*v0; temp; dy];
+%save database.dat database -ascii -append
+
+%size(dy)
+%pause(10)
+
 %save solution_tmp.dat dataset -ascii
+
+%filename='BODE.mat';
+%m = matfile(filename, 'Writable', true);
+%for row = 1:10
+  %x = randn(1,1000000);
+  %out = x.^2;
+  %m.out(row, 1:1000000) = out;
+%end
+%clear m;
+
+%tmp_dataset = [temp; v_b*v0; ni_b; na_b; B];
+%fileID = fopen('sol.txt','a');
+%fprintf(fileID,'%d\n',tmp_dataset);
+%fclose(fileID);
+%
+%data = importdata('sol.txt');
+%reshaped_data = reshape(data,[100,2246]);
+%transposed_reshaped_data = transpose(reshaped_data);
+%save transposed_reshaped_data.txt transposed_reshaped_data -ascii
+
+%save sol.txt data -ascii -append
