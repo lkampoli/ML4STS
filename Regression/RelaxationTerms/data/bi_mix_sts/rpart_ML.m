@@ -24,45 +24,45 @@ temperature = temp;
 
 velocity = v_b*v0;
 
-% ef_b = 0.5*D/T0;
-% ei_b = e_i/(k*T0);
-% e0_b = e_0/(k*T0);
-% 
-% sigma = 2;
-% Theta_r = Be*h*c/k;
-% Z_rot = temp./(sigma.*Theta_r);
-% 
-% M = sum(m);
-% mb = m/M;
-% 
-% A = zeros(l+3,l+3);
-% 
-% for i=1:l
-%     A(i,i) = v_b;
-%     A(i,l+2) = ni_b(i);
-% end
-% 
-% A(l+1,l+1) = v_b;
-% A(l+1,l+2) = na_b;
-% 
-% for i=1:l+1
-%     A(l+2,i) = T_b;
-% end
-% 
-% A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
-% A(l+2,l+3) = nm_b+na_b;
-% 
-% for i=1:l
-%     A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
-% end
-% 
-% A(l+3,l+1) = 1.5*T_b+ef_b;
-% A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
-% A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
-% 
-% AA = sparse(A);
-% 
-% B = zeros(l+3,1);
+ef_b = 0.5*D/T0;
+ei_b = e_i/(k*T0);
+e0_b = e_0/(k*T0);
+
+sigma = 2;
+Theta_r = Be*h*c/k;
+Z_rot = temp./(sigma.*Theta_r);
+
+M = sum(m);
+mb = m/M;
+
+A = zeros(l+3,l+3);
+
+for i=1:l
+    A(i,i) = v_b;
+    A(i,l+2) = ni_b(i);
+end
+
+A(l+1,l+1) = v_b;
+A(l+1,l+2) = na_b;
+
+for i=1:l+1
+    A(l+2,i) = T_b;
+end
+
+A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
+A(l+2,l+3) = nm_b+na_b;
+
+for i=1:l
+    A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
+end
+
+A(l+3,l+1) = 1.5*T_b+ef_b;
+A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
+A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
+
+AA = sparse(A);
+
+B = zeros(l+3,1);
 
 %Kdr = (m(1)*h^2/(m(2)*m(2)*2*pi*k*temp))^(3/2)*Z_rot* exp(-e_i'/(k*temp))*exp(D/temp);
 
@@ -154,14 +154,20 @@ velocity = v_b*v0;
 %    end
 %end
 
-%B(1:l) = RD_MLd(1:l); % + RVT + RVV;
-%B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
-
-%dy = AA^(-1)*B;
-
-input = [ni_b; na_b; temperature; velocity];
+input = [ni_b; na_b; velocity; temperature;];
 RD_ML = py.run_regression.regressor(input);
-RD_MLd = double(RD_ML);
-dy = RD_MLd';
+%RD_MLd = double(RD_ML)
+%disp(size(RD_MLd))
+
+B(1:l) = RD_MLd(1:l); % + RVT + RVV;
+B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
+
+dy = AA^(-1)*B;
+
+%pause(30)
+%input = [ni_b; na_b; velocity; temperature;];
+%RD_ML = py.run_regression.regressor(input);
+%RD_MLd = double(RD_ML);
+%dy = RD_MLd';
 
 %fprintf('%d\n', dy)

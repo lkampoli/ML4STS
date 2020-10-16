@@ -91,18 +91,26 @@ print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
 # Extra Trees
-hyper_params = [{'n_estimators': (1, 100,),
-                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
-                 'max_features': ('sqrt','log2','auto',),
-                 'max_samples': (1, 10, 100, 200,),
-                 'bootstrap': (True, False,),
-                 'oob_score': (True, False,),
-                 'warm_start': (True, False,),
-                 'criterion': ('mse', 'mae',),
-                 'max_depth': (1, 10, 100, None,),
-                 'max_leaf_nodes': (2, 100,),
-                 'min_samples_split': (10,),
-                 'min_samples_leaf': (1, 10, 100,),
+hyper_params = [{'n_estimators': (1, 100,  500, 1000),
+                 #'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+                 'min_weight_fraction_leaf': (0.0,),
+                 'max_features': ('sqrt','log2',),
+                 #'max_features': ('sqrt','log2','auto',),
+                 'max_samples': (1, 10, 100, 200, 300, 500),
+                 'bootstrap': (True,),
+                 'oob_score': (True,),
+                 'warm_start': (True,),
+                 'criterion': ('mse',),
+                 'max_depth': (None,),
+                 #'bootstrap': (True, False,),
+                 #'oob_score': (True, False,),
+                 #'warm_start': (True, False,),
+                 #'criterion': ('mse', 'mae',),
+                 #'max_depth': (1, 10, 100, None,),
+                 'max_leaf_nodes': (2, 100, 200, 500),
+                 #'min_samples_split': (10,),
+                 #'min_samples_leaf': (1, 10, 100,),
+                 'min_samples_leaf': (1,),
 }]
 
 # https://towardsdatascience.com/automated-machine-learning-hyperparameter-tuning-in-python-dfda59b72f8a
@@ -173,13 +181,13 @@ print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_r2  = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 
 test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 
 print()
@@ -188,7 +196,7 @@ print("--------------------------------------")
 print('MAE is {}'.format(train_score_mae))
 print('MSE is {}'.format(train_score_mse))
 print('EVS is {}'.format(train_score_evs))
-print('ME is {}'.format(train_score_me))
+#print('ME is {}'.format(train_score_me))
 print('R2 score is {}'.format(train_score_r2))
 print()
 print("The model performance for testing set")
@@ -196,7 +204,7 @@ print("--------------------------------------")
 print('MAE is {}'.format(test_score_mae))
 print('MSE is {}'.format(test_score_mse))
 print('EVS is {}'.format(test_score_evs))
-print('ME is {}'.format(test_score_me))
+#print('ME is {}'.format(test_score_me))
 print('R2 score is {}'.format(test_score_r2))
 print()
 print("Best parameters set found on development set:")
@@ -225,7 +233,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(train_score_mae), file=f)
     print('MSE is {}'.format(train_score_mse), file=f)
     print('EVS is {}'.format(train_score_evs), file=f)
-    print('ME is {}'.format(train_score_me), file=f)
+   # print('ME is {}'.format(train_score_me), file=f)
     print('R2 score is {}'.format(train_score_r2), file=f)
     print(" ", file=f)
     print("The model performance for testing set", file=f)
@@ -233,7 +241,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(test_score_mae), file=f)
     print('MSE is {}'.format(test_score_mse), file=f)
     print('EVS is {}'.format(test_score_evs), file=f)
-    print('ME is {}'.format(test_score_me), file=f)
+    #print('ME is {}'.format(test_score_me), file=f)
     print('R2 score is {}'.format(test_score_r2), file=f)
     print(" ", file=f)
     print("Adimensional test metrics", file=f)

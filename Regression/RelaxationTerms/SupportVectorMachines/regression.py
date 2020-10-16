@@ -76,7 +76,7 @@ print('Testing Labels Shape:',    y_test.shape)
 
 hyper_params = [{'estimator__kernel': ('poly', 'rbf',),
                  'estimator__gamma': ('scale', 'auto',),
-                 'estimator__C': (1e-2, 1e-1, 1e0, 1e1, 1e2,),
+                 'estimator__C': (1e-1, 1e0, 1e1,),
                  'estimator__epsilon': (1e-2, 1e-1, 1e0, 1e1,),
                  'estimator__coef0': (0.0, 0.1, 0.2,),
 }]

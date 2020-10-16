@@ -43,8 +43,8 @@ trial  = 1
 #dataset=np.loadtxt("../data/sol.dat")
 #dataset=np.loadtxt("../data/sol.txt") # 224600 x 1
 dataset=np.loadtxt("../data/transposed_reshaped_data.txt")
-#dataset=dataset.reshape(98,-1).T # -1 x 98
 #print(dataset.shape)
+#dataset=dataset.reshape(98,-1).T # -1 x 98
 #dataset=dataset.reshape(100,-1).T # -1 x 100
 print(dataset.shape)
 
@@ -56,6 +56,17 @@ print(dataset.shape)
 
 x = dataset[:,0:50]  # ni_n[47], na_n[1], V, T
 y = dataset[:,50:]   # RD_mol[47], RD_at[1]
+
+print(x.shape)
+print(y.shape)
+
+xtmp = np.arange(1, 2247)
+print(xtmp.shape)
+
+plt.scatter(xtmp, y[:,0])
+plt.legend()
+plt.tight_layout()
+plt.show()
 
 plt.scatter(x[:,0], y[:,0], s=2, c='k', marker='o', label='Matlab')
 plt.legend()

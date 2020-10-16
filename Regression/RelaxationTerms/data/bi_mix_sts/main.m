@@ -193,24 +193,38 @@ toc
 %save solution_adim.dat dataset -ascii
 
 % my_xspan = linspace(0,x_w/Delta,1000);
-% 
-% %figure(1), plot(x_s, Temp,'b');
-% %xlabel('X [mm]') 
-% %ylabel('Temperature [K]') 
-% %hold on;
-% %figure(1), plot(x_s, v, 'b');
-% %xlabel('X [mm]') 
-% %ylabel('Velocity [m/s]')
-% %hold on;
-% figure(1), plot(x_s, n_i(:,3), 'k');
-% xlabel('X [mm]') 
-% ylabel('Number density [m^-3]')
-% hold on;
-% plot(x_s, n_i(:,6), 'b');
-% plot(x_s, n_i(:,9), 'r');
-% plot(x_s, n_i(:,12), 'g');
-% plot(x_s, n_i(:,15), 'm');
-% %legend;
+%%
+figure(1), plot(x_s, Temp,'b');
+xlabel('X [mm]') 
+ylabel('Temperature [K]') 
+hold on;
+plot(ML.x_s, ML.Temp, 'k-');
+legend({'Matlab','MLA'},'Location','northeast');
+%%
+figure(1), plot(x_s, v, 'b');
+xlabel('X [mm]') 
+ylabel('Velocity [m/s]')
+hold on;
+plot(ML.x_s, ML.v, 'k-');
+legend({'Matlab','MLA'},'Location','northeast');
+%%
+figure(1), plot(x_s, n_i(:,3), 'k');
+xlabel('X [mm]') 
+ylabel('Number density [m^-3]')
+hold on;
+plot(x_s, n_i(:,6), 'b');
+plot(x_s, n_i(:,9), 'r');
+plot(x_s, n_i(:,12), 'g');
+plot(x_s, n_i(:,15), 'm');
+plot(ML.x_s, ML.n_i(:,3), 'k.');
+plot(ML.x_s, ML.n_i(:,6), 'b.');
+plot(ML.x_s, ML.n_i(:,9), 'r.');
+plot(ML.x_s, ML.n_i(:,12), 'g.');
+plot(ML.x_s, ML.n_i(:,15), 'm.');
+legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15', ...
+        'MLA i=3','MLA i=6','MLA i=9','MLA i=12','MLA i=15'},'Location','northwest')
+    %%
+%legend;
 % 
 % tic 
 % for i = 1:20:1000
@@ -241,8 +255,13 @@ toc
 % legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15','MLA'},'Location','northeast')
 % toc
 
-%data = importdata('sol.txt');
-%reshaped_data = reshape(data,[100,size(data,1)/100]);
+%data = importdata('database.dat');
+%reshaped_data = reshape(data,[97,size(data,1)/100]);
+%transposed_reshaped_data = transpose(reshaped_data);
+%save transposed_reshaped_data.txt transposed_reshaped_data -ascii
+
+%data = importdata('database.dat');
+%reshaped_data = reshape(data,[97,2246]);
 %transposed_reshaped_data = transpose(reshaped_data);
 %save transposed_reshaped_data.txt transposed_reshaped_data -ascii
 

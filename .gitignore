@@ -20,6 +20,7 @@
 *.out
 *.so
 *.conf
+*.dat
 #
 OLDREPO/*
 #

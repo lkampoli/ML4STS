@@ -123,6 +123,12 @@ for i1 = 1:l
     end
 end
 
+%disp(RD')
+%disp(size(RD))
+%pause(10)
+
+%plot(RD)
+
 B(1:l) = RD; % + RVT + RVV;
 B(l+1) = - 2*sum(RD);
 
@@ -147,6 +153,10 @@ dy = AA^(-1)*B;
 %database = [ni_b; na_b; v_b*v0; temp; dy];
 %save database.dat database -ascii -append
 
+%delete database.dat
+%database = [ni_b; na_b; v_b*v0; temp; RD];
+%save database.dat database -ascii -append
+
 %size(dy)
 %pause(10)
 
@@ -161,8 +171,8 @@ dy = AA^(-1)*B;
 %end
 %clear m;
 
-%tmp_dataset = [temp; v_b*v0; ni_b; na_b; B];
-%fileID = fopen('sol.txt','a');
+%tmp_dataset = [ni_b; na_b; temp; v_b*v0; RD];
+%fileID = fopen('dataset.txt','a');
 %fprintf(fileID,'%d\n',tmp_dataset);
 %fclose(fileID);
 %

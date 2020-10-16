@@ -1,0 +1,25 @@
+Training time: 6.080730 s
+Prediction time: 0.001676 s
+ 
+The model performance for training set
+--------------------------------------
+MAE is 4.069249947092164e+19
+MSE is 6.020943026983513e+40
+EVS is 0.999981564974663
+R2 score is 0.9999815443529906
+ 
+The model performance for testing set
+--------------------------------------
+MAE is 4.333940640599919e+19
+MSE is 6.815799479563022e+40
+EVS is 0.9999721343114869
+R2 score is 0.9999719413619892
+ 
+Adimensional test metrics
+--------------------------------------
+Mean Absolute Error (MAE): 0.0021255092292136826
+Mean Squared Error (MSE): 2.8491636274470027e-05
+Root Mean Squared Error (RMSE): 0.005337755733870746
+ 
+Best parameters set found on development set:
+{'activation': 'tanh', 'alpha': 0.0001, 'early_stopping': True, 'hidden_layer_sizes': 50, 'learning_rate': 'constant', 'max_iter': 1000, 'nesterovs_momentum': True, 'solver': 'lbfgs', 'warm_start': True}

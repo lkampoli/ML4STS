@@ -71,14 +71,18 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
+hyper_params = [{#'hidden_layer_sizes': (10, 50, 100, 150, 200,),
+                 'hidden_layer_sizes': (50,),
                  'activation' : ('tanh', 'relu',),
                  'solver' : ('lbfgs', 'adam', 'sgd',),
                  'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-                 'nesterovs_momentum': (True, False,),
+                 'nesterovs_momentum': (True,),
+                 #'nesterovs_momentum': (True, False,),
                  'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-                 'warm_start': (True, False,),
-                 'early_stopping': (True, False,),
+                 'warm_start': (True,),
+                 #'warm_start': (True, False,),
+                 'early_stopping': (True,),
+                 #'early_stopping': (True, False,),
                  'max_iter': (1000,)
 }]
 
@@ -93,13 +97,13 @@ print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_r2  = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 
 test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 
 print()
@@ -108,7 +112,7 @@ print("--------------------------------------")
 print('MAE is {}'.format(train_score_mae))
 print('MSE is {}'.format(train_score_mse))
 print('EVS is {}'.format(train_score_evs))
-print('ME is {}'.format(train_score_me))
+#print('ME is {}'.format(train_score_me))
 print('R2 score is {}'.format(train_score_r2))
 print()
 print("The model performance for testing set")
@@ -116,7 +120,7 @@ print("--------------------------------------")
 print('MAE is {}'.format(test_score_mae))
 print('MSE is {}'.format(test_score_mse))
 print('EVS is {}'.format(test_score_evs))
-print('ME is {}'.format(test_score_me))
+#print('ME is {}'.format(test_score_me))
 print('R2 score is {}'.format(test_score_r2))
 print()
 print("Best parameters set found on development set:")
@@ -145,7 +149,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(train_score_mae), file=f)
     print('MSE is {}'.format(train_score_mse), file=f)
     print('EVS is {}'.format(train_score_evs), file=f)
-    print('ME is {}'.format(train_score_me), file=f)
+    #print('ME is {}'.format(train_score_me), file=f)
     print('R2 score is {}'.format(train_score_r2), file=f)
     print(" ", file=f)
     print("The model performance for testing set", file=f)
@@ -153,7 +157,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(test_score_mae), file=f)
     print('MSE is {}'.format(test_score_mse), file=f)
     print('EVS is {}'.format(test_score_evs), file=f)
-    print('ME is {}'.format(test_score_me), file=f)
+    #print('ME is {}'.format(test_score_me), file=f)
     print('R2 score is {}'.format(test_score_r2), file=f)
     print(" ", file=f)
     print("Adimensional test metrics", file=f)
