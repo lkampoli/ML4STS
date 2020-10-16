@@ -5,6 +5,7 @@ This project aims at investigating the usage of machine learning algorithms (MLA
 
 * Regression of transport coefficients
 * Regression of chemical reaction rate coefficients
+* Regression of chemical relaxation terms
 * Coupling of machine learning with CFD solver
 * Solution of Euler and Navier-Stokes equations with NN
 
@@ -23,11 +24,35 @@ Assuming an available python3 version, the following packages are necessary:
 # Description
 Here below a brief description of the repository directories is given.
 
+## Regression of transport coefficients
+- [x] model implementation for shear, bulk viscosity, thermal conductivity and thermal/mass diffusion
+- [x] hyperparameters tuning
+- [ ] solve the problem of big data for the mass diffusion (probably with Dask and/or cluster)
+- [ ] coupling with Spark CFD solver
+- [ ] define optimal interface Fortran -> Python
+
+## Regression of chemical reaction rate coefficients, k_ci
+- [x] model implementation
+- [x] hyperparameters tuning
+
+## Regression of chemical relaxation terms, R_ci
+- [x] model implementation
+- [x] hyperparameters tuning
+
+## Coupling of machine learning with CFD solver
+- [x] model implementation
+- [ ] find optimal coupling strategy
+
 ## Euler_1d_shock_STS
 In this directory, I try to solve the full system of Euler equations for a one-dimensional reacting shock flow.
 The directory contains both the `.py` and `.ipynb` files, for convenience, but they are the same.
 The `PINN.py` deals with the solution of the Euler equations without STS.
 The `PINN_STS.py` deals with the solution of the Euler equations with STS.
+
+- [x] model implementation
+- [ ] hyperparameters tuning
+- [ ] re-write in compact form
+- [ ] bigfix
 
 # Useful Links
 https://machinelearningmastery.com/multi-output-regression-models-with-python/
