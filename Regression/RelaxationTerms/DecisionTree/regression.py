@@ -42,7 +42,9 @@ trial  = 1
 #dataset=np.loadtxt("../data/solution.dat")
 #dataset=np.loadtxt("../data/sol.dat")
 #dataset=np.loadtxt("../data/sol.txt") # 224600 x 1
-dataset=np.loadtxt("../data/transposed_reshaped_data.txt")
+#dataset=np.loadtxt("../data/transposed_reshaped_data.txt")
+dataset=np.loadtxt("../data/transposed_reshaped_data_air5.txt")
+#dataset=np.loadtxt("../data/solution_XY.dat")
 #print(dataset.shape)
 #dataset=dataset.reshape(98,-1).T # -1 x 98
 #dataset=dataset.reshape(100,-1).T # -1 x 100
@@ -54,30 +56,36 @@ print(dataset.shape)
 #x = dataset[:,0:50]  # Temp[1], v[1], ni_n[47], na_n[1]
 #y = dataset[:,50:]   # RD_mol[47], RD_at[1]
 
-x = dataset[:,0:50]  # ni_n[47], na_n[1], V, T
-y = dataset[:,50:]   # RD_mol[47], RD_at[1]
+#x = dataset[:,0:50]  # ni_n[47], na_n[1], V, T
+#y = dataset[:,50:]   # RD_mol[47], RD_at[1]
+
+#x = dataset[:,0:1]
+#y = dataset[:,1:]
+
+x = dataset[:,0:126]
+y = dataset[:,126:]
 
 print(x.shape)
 print(y.shape)
 
-xtmp = np.arange(1, 2247)
-print(xtmp.shape)
-
-plt.scatter(xtmp, y[:,0])
-plt.legend()
-plt.tight_layout()
-plt.show()
-
-plt.scatter(x[:,0], y[:,0], s=2, c='k', marker='o', label='Matlab')
-plt.legend()
-plt.tight_layout()
-plt.show()
-
+#xtmp = np.arange(1, 2247)
+#print(xtmp.shape)
+#
+#plt.scatter(xtmp, y[:,0])
+#plt.legend()
+#plt.tight_layout()
+#plt.show()
+#
+#plt.scatter(x[:,0], y[:,0], s=2, c='k', marker='o', label='Matlab')
+#plt.legend()
+#plt.tight_layout()
+#plt.show()
+#
 #x = dataset[:,0:1]  # X
 #y = dataset[:,1:]   # ni_n[47], na_n[1], Temp[1], v[1]
-
-print(x)
-print(y)
+#
+#print(x)
+#print(y)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 

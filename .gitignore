@@ -21,6 +21,7 @@
 *.so
 *.conf
 *.dat
+*.mat
 #
 OLDREPO/*
 #
