@@ -93,7 +93,8 @@ Y0_bar(l+3) = T1;
 Delta = 1/(sqrt(2)*n0*sigma0);
 xspan = [0, x_w]./Delta;
 
-options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12);
+%options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12);
+options = odeset('RelTol', 1e-6, 'AbsTol', 1e-6, 'Stats','on');
 %[X,Y] = ode15s(@rpart, xspan, Y0_bar, options);
 [X,Y] = ode15s(@rpart_ML, xspan, Y0_bar, options); % machine learning version
 
@@ -161,25 +162,25 @@ disp(['mass = ',num2str(d1)]);
 disp(['momentum = ',num2str(d2)]);
 disp(['energy = ',num2str(d3)]);
 
-RDm = zeros(Npoint,l);
-RDa = zeros(Npoint,l);
-RVTm = zeros(Npoint,l);
-RVTa = zeros(Npoint,l);
-RVV = zeros(Npoint,l);
-
-for i = 1:Npoint
-    input = Y(i,:)';
-    [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % m^-3*s^-1
-    RDm(i,:) = rdm;
-    RDa(i,:) = rda;
-    RVTm(i,:) = rvtm;
-    RVTa(i,:) = rvta;
-    RVV(i,:) = rvv;
-end
-
-RD_mol = RDm+RDa;
-RVT = RVTm+RVTa;
-RD_at = -2*sum(RD_mol,2);
+% RDm = zeros(Npoint,l);
+% RDa = zeros(Npoint,l);
+% RVTm = zeros(Npoint,l);
+% RVTa = zeros(Npoint,l);
+% RVV = zeros(Npoint,l);
+% 
+% for i = 1:Npoint
+%     input = Y(i,:)';
+%     [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % m^-3*s^-1
+%     RDm(i,:) = rdm;
+%     RDa(i,:) = rda;
+%     RVTm(i,:) = rvtm;
+%     RVTa(i,:) = rvta;
+%     RVV(i,:) = rvv;
+% end
+% 
+% RD_mol = RDm+RDa;
+% RVT = RVTm+RVTa;
+% RD_at = -2*sum(RD_mol,2);
 
 %dataset = [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n, RD_mol, RD_at];
 %dataset = [x_s, Temp, v, n_i, n_a, RD_mol, RD_at];
@@ -193,13 +194,14 @@ toc
 %save solution_adim.dat dataset -ascii
 
 % my_xspan = linspace(0,x_w/Delta,1000);
-% %%
+%%
 % figure(1), plot(x_s, Temp,'b');
 % xlabel('X [mm]') 
 % ylabel('Temperature [K]') 
 % hold on;
 % plot(ML.x_s, ML.Temp, 'k-');
 % legend({'Matlab','MLA'},'Location','northeast');
+% hold off;
 % %%
 % figure(1), plot(x_s, v, 'b');
 % xlabel('X [mm]') 
@@ -207,6 +209,7 @@ toc
 % hold on;
 % plot(ML.x_s, ML.v, 'k-');
 % legend({'Matlab','MLA'},'Location','northeast');
+% hold off;
 % %%
 % figure(1), plot(x_s, n_i(:,3), 'k');
 % xlabel('X [mm]') 
@@ -223,6 +226,7 @@ toc
 % plot(ML.x_s, ML.n_i(:,15), 'm.');
 % legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15', ...
 %         'MLA i=3','MLA i=6','MLA i=9','MLA i=12','MLA i=15'},'Location','northwest')
+% hold off;
     %%
 %legend;
 % 
@@ -268,3 +272,14 @@ toc
 figure, plot(x_s, Temp)
 figure, plot(x_s, v)
 figure, plot(x_s, n_i(:,1))
+
+%%
+% data_dy = importdata('database_dy.dat');
+% reshaped_data_dy = reshape(data_dy,[100,2246]);
+% transposed_reshaped_data_dy = transpose(reshaped_data_dy);
+% save transposed_reshaped_data_dy.txt transposed_reshaped_data_dy -ascii
+% 
+% data_RD = importdata('database_RD.dat');
+% reshaped_data_RD = reshape(data_RD,[97,2246]);
+% transposed_reshaped_data_RD = transpose(reshaped_data_RD);
+% save transposed_reshaped_data_RD.txt transposed_reshaped_data_RD -ascii

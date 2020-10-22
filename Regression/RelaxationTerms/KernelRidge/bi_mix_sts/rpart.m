@@ -123,17 +123,11 @@ for i1 = 1:l
     end
 end
 
-%disp(RD')
-%disp(size(RD))
-%pause(10)
-
-%plot(RD)
+database = [ni_b; na_b; v_b*v0; temp; RD];
+save database_RD.dat database -ascii -append
 
 B(1:l) = RD; % + RVT + RVV;
 B(l+1) = - 2*sum(RD);
-
-%disp(B')
-%pause(10)
 
 %kkk = kkk + 1;
 %save('odeB.mat', 'B', 'RD', '-append')
@@ -150,8 +144,8 @@ dy = AA^(-1)*B;
 %dy = B;
 %fprintf('%d\n', dy)
 
-%database = [ni_b; na_b; v_b*v0; temp; dy];
-%save database.dat database -ascii -append
+database = [ni_b; na_b; v_b*v0; temp; dy];
+save database_dy.dat database -ascii -append
 
 %delete database.dat
 %database = [ni_b; na_b; v_b*v0; temp; RD];

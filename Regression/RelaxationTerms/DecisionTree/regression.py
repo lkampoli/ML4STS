@@ -43,7 +43,8 @@ trial  = 1
 #dataset=np.loadtxt("../data/sol.dat")
 #dataset=np.loadtxt("../data/sol.txt") # 224600 x 1
 #dataset=np.loadtxt("../data/transposed_reshaped_data.txt")
-dataset=np.loadtxt("../data/transposed_reshaped_data_air5.txt")
+#dataset=np.loadtxt("../data/transposed_reshaped_data_air5.txt")
+dataset=np.loadtxt("../data/transposed_reshaped_data_dy.txt")
 #dataset=np.loadtxt("../data/solution_XY.dat")
 #print(dataset.shape)
 #dataset=dataset.reshape(98,-1).T # -1 x 98
@@ -53,17 +54,14 @@ print(dataset.shape)
 #x = dataset[:,0:55]  # x_s[1], time_s[1], Temp[1], rho[1], p[1], v[1], E[1], ni_n[47], na_n[1]
 #y = dataset[:,55:]   # RD_mol[47], RD_at[1]
 
-#x = dataset[:,0:50]  # Temp[1], v[1], ni_n[47], na_n[1]
-#y = dataset[:,50:]   # RD_mol[47], RD_at[1]
-
-#x = dataset[:,0:50]  # ni_n[47], na_n[1], V, T
-#y = dataset[:,50:]   # RD_mol[47], RD_at[1]
+x = dataset[:,0:50]  # ni_n[47], na_n[1], V, T
+y = dataset[:,50:]   # RD_mol[47], RD_at[1]
 
 #x = dataset[:,0:1]
 #y = dataset[:,1:]
 
-x = dataset[:,0:126]
-y = dataset[:,126:]
+#x = dataset[:,0:126]
+#y = dataset[:,126:]
 
 print(x.shape)
 print(y.shape)
@@ -132,12 +130,12 @@ from sklearn.feature_selection import mutual_info_regression
 #print(x_selected.shape)
 
 # DecisionTree
-hyper_params = [{'criterion': ('mse',),
-                 #'criterion': ('mse', 'friedman_mse', 'mae'),
-                 #'splitter': ('best', 'random'),
-                 'splitter': ('best',),
-                 #'max_features': ('auto', 'sqrt', 'log2'),
-                 'max_features': ('auto',),
+hyper_params = [{#'criterion': ('mse',),
+                 'criterion': ('mse', 'friedman_mse', 'mae'),
+                 'splitter': ('best', 'random'),
+                 #'splitter': ('best',),
+                 'max_features': ('auto', 'sqrt', 'log2'),
+                 #'max_features': ('auto',),
 }]
 
 est=DecisionTreeRegressor(random_state=69)

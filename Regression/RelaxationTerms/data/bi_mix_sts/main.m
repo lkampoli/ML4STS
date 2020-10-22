@@ -49,53 +49,102 @@ re = RE(sw_sp);
 p0 = 0.8*133.322; % Pa
 %p0 = 0.8*300.; % Pa
 
-T0 = 300;
-%T0 = 500;
-Tv0 = T0;
+%for T = 300:100:3000
 
-M0 = 13.4;
-%M0 = 15.;
+    %T0 = T
+    T0 = 300;
+    %T0 = 500;
+    Tv0 = T0;
 
-n0 = p0/(k*T0);
+%    for M = 13:0.1:14
 
-if xc(1) ~= 0
-    gamma0 = 1.4;
-else
-    gamma0 = 5/3;
-end
+        %M0 = M
+        M0 = 13.4;
+        %M0 = 15.;
 
-rho0_c = m.*xc*n0;
+        % Let's assume constant p0
+        n0 = p0/(k*T0);
 
-rho0 = sum(rho0_c);
+        if xc(1) ~= 0
+            gamma0 = 1.4;
+        else
+            gamma0 = 5/3;
+        end
 
-mu_mix = sum(rho0_c./mu)/rho0;
+        rho0_c = m.*xc*n0;
 
-R_bar = R*mu_mix;
+        rho0 = sum(rho0_c);
 
-a0 = sqrt(gamma0*R_bar*T0);
+        mu_mix = sum(rho0_c./mu)/rho0;
 
-v0 = M0*a0;
+        R_bar = R*mu_mix;
 
-NN = in_con;
-n1 = NN(1);
-T1 = NN(2);
-v1 = NN(3);
+        a0 = sqrt(gamma0*R_bar*T0);
 
-Zvibr_0 = sum(exp(-e_i/Tv0/k));
+        v0 = M0*a0;
 
-Y0_bar = zeros(l+3,1);
+        NN = in_con;
+        n1 = NN(1);
+        T1 = NN(2);
+        v1 = NN(3);
 
-Y0_bar(1:l) = xc(1)*n1/Zvibr_0*exp(-e_i/Tv0/k);
-Y0_bar(l+1) = xc(2)*n1;
-Y0_bar(l+2) = v1;
-Y0_bar(l+3) = T1;
+        Zvibr_0 = sum(exp(-e_i/Tv0/k));
 
-Delta = 1/(sqrt(2)*n0*sigma0);
-xspan = [0, x_w]./Delta;
+        Y0_bar = zeros(l+3,1);
 
-options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12);
-[X,Y] = ode15s(@rpart, xspan, Y0_bar, options);
-%[X,Y] = ode15s(@rpart_ML, xspan, Y0_bar, options); % machine learning version
+        Y0_bar(1:l) = xc(1)*n1/Zvibr_0*exp(-e_i/Tv0/k);
+        Y0_bar(l+1) = xc(2)*n1;
+        Y0_bar(l+2) = v1;
+        Y0_bar(l+3) = T1;
+
+        Delta = 1/(sqrt(2)*n0*sigma0);
+        xspan = [0, x_w]./Delta;
+
+        % https://www.mathworks.com/help/optim/ug/output-functions.html
+        % https://www.mathworks.com/help/matlab/ref/odeset.html#f92-1016858
+
+        %function status = myoutput (t,y,flag)
+        %switch (flag)
+        %case 'init'
+        %   statement;
+        %case '[]'
+        %   statement for output;
+        %case 'done'
+        %   statement for output;
+        %end
+
+        %opt1 = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'OutputFcn',@OutputFcn);
+        %options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'OutputFcn',@odeplot,'Stats','on');
+        options = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'Stats','on');
+        %opt1 = odeset('RelTol', 1e-12, 'AbsTol', 1e-12, 'OutputFcn',@odeprint,'Stats','on');
+        %opt2 = optimset('Display','iter');
+        %options = odeset(opt1,opt2);
+        %[X,Y] = ode15s(@rpart, xspan, Y0_bar, opt1);
+        [X,Y] = ode15s(@rpart, xspan, Y0_bar, options);
+        %[X,Y] = ode15s(@rpart_ML, xspan, Y0_bar, options); % machine learning version
+
+        %sol = ode15s(@rpart, xspan, Y0_bar, options);
+        %X = sol.x';
+        %Y = sol.y';
+        %%
+%         disp(size(X))
+%         disp(size(Y))
+%         my_X = [xspan(1):50000:xspan(2)];
+%         disp("my_X =", size(my_X))
+%         my_Y = interp1(X,Y,my_X);
+%         disp("my_Y = ", size(my_Y))
+%         Y0_bar_prime = Y0_bar';
+%         Y0 = repmat(Y0_bar_prime, size(my_X,2), 1);
+%         my_X_prime = my_X';
+%         disp(size(Y0))
+%         disp(size(my_X_prime))
+%         disp(size(my_Y))
+%         dataset = [Y0, my_X_prime, my_Y];
+%         save my_solution_XY.dat dataset -ascii -append
+
+%    end
+%end
+%%
 
 x_s = X*Delta*100;
 
@@ -161,25 +210,25 @@ disp(['mass = ',num2str(d1)]);
 disp(['momentum = ',num2str(d2)]);
 disp(['energy = ',num2str(d3)]);
 
-RDm = zeros(Npoint,l);
-RDa = zeros(Npoint,l);
-RVTm = zeros(Npoint,l);
-RVTa = zeros(Npoint,l);
-RVV = zeros(Npoint,l);
-
-for i = 1:Npoint
-    input = Y(i,:)';
-    [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % m^-3*s^-1
-    RDm(i,:) = rdm;
-    RDa(i,:) = rda;
-    RVTm(i,:) = rvtm;
-    RVTa(i,:) = rvta;
-    RVV(i,:) = rvv;
-end
-
-RD_mol = RDm+RDa;
-RVT = RVTm+RVTa;
-RD_at = -2*sum(RD_mol,2);
+% RDm = zeros(Npoint,l);
+% RDa = zeros(Npoint,l);
+% RVTm = zeros(Npoint,l);
+% RVTa = zeros(Npoint,l);
+% RVV = zeros(Npoint,l);
+%
+% for i = 1:Npoint
+%     input = Y(i,:)';
+%     [rdm, rda, rvtm, rvta, rvv] = rpart_post(input); % m^-3*s^-1
+%     RDm(i,:) = rdm;
+%     RDa(i,:) = rda;
+%     RVTm(i,:) = rvtm;
+%     RVTa(i,:) = rvta;
+%     RVV(i,:) = rvv;
+% end
+%
+% RD_mol = RDm+RDa;
+% RVT = RVTm+RVTa;
+% RD_at = -2*sum(RD_mol,2);
 
 %dataset = [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n, RD_mol, RD_at];
 %dataset = [x_s, Temp, v, n_i, n_a, RD_mol, RD_at];
@@ -189,61 +238,64 @@ RD_at = -2*sum(RD_mol,2);
 
 toc
 
-%dataset = [X, Y]; 
+%dataset = [X, Y];
 %save solution_adim.dat dataset -ascii
 
 % my_xspan = linspace(0,x_w/Delta,1000);
 %%
-figure(1), plot(x_s, Temp,'b');
-xlabel('X [mm]') 
-ylabel('Temperature [K]') 
-hold on;
-plot(ML.x_s, ML.Temp, 'k-');
-legend({'Matlab','MLA'},'Location','northeast');
-%%
-figure(1), plot(x_s, v, 'b');
-xlabel('X [mm]') 
-ylabel('Velocity [m/s]')
-hold on;
-plot(ML.x_s, ML.v, 'k-');
-legend({'Matlab','MLA'},'Location','northeast');
-%%
-figure(1), plot(x_s, n_i(:,3), 'k');
-xlabel('X [mm]') 
-ylabel('Number density [m^-3]')
-hold on;
-plot(x_s, n_i(:,6), 'b');
-plot(x_s, n_i(:,9), 'r');
-plot(x_s, n_i(:,12), 'g');
-plot(x_s, n_i(:,15), 'm');
-plot(ML.x_s, ML.n_i(:,3), 'k.');
-plot(ML.x_s, ML.n_i(:,6), 'b.');
-plot(ML.x_s, ML.n_i(:,9), 'r.');
-plot(ML.x_s, ML.n_i(:,12), 'g.');
-plot(ML.x_s, ML.n_i(:,15), 'm.');
-legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15', ...
-        'MLA i=3','MLA i=6','MLA i=9','MLA i=12','MLA i=15'},'Location','northwest')
+% figure(1), plot(x_s, Temp,'b');
+% xlabel('X [mm]')
+% ylabel('Temperature [K]')
+% hold on;
+% plot(ML.x_s, ML.Temp, 'k-');
+% legend({'Matlab','MLA'},'Location','northeast');
+% hold off;
+% %%
+% figure(1), plot(x_s, v, 'b');
+% xlabel('X [mm]')
+% ylabel('Velocity [m/s]')
+% hold on;
+% plot(ML.x_s, ML.v, 'k-');
+% legend({'Matlab','MLA'},'Location','northeast');
+% hold off;
+% %%
+% figure(1), plot(x_s, n_i(:,3), 'k');
+% xlabel('X [mm]')
+% ylabel('Number density [m^-3]')
+% hold on;
+% plot(x_s, n_i(:,6), 'b');
+% plot(x_s, n_i(:,9), 'r');
+% plot(x_s, n_i(:,12), 'g');
+% plot(x_s, n_i(:,15), 'm');
+% plot(ML.x_s, ML.n_i(:,3), 'k.');
+% plot(ML.x_s, ML.n_i(:,6), 'b.');
+% plot(ML.x_s, ML.n_i(:,9), 'r.');
+% plot(ML.x_s, ML.n_i(:,12), 'g.');
+% plot(ML.x_s, ML.n_i(:,15), 'm.');
+% legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15', ...
+%         'MLA i=3','MLA i=6','MLA i=9','MLA i=12','MLA i=15'},'Location','northwest')
+% hold off;
     %%
 %legend;
-% 
-% tic 
+%
+% tic
 % for i = 1:20:1000
 %     input = my_xspan(i);
-%     
+%
 %     RHS = py.run_regression.regressor(input);
 %     RHSd = double(RHS);
 %     %disp(size(RHSd)) % 50
-%     
+%
 %     ni_ML = RHSd(1:l) * n0;
 %     na_ML = RHSd(l+1) * n0;
 %     T_ML  = RHSd(l+3) * T0;
 %     V_ML  = RHSd(l+2) * v0;
-%     
+%
 %     %disp(ni_ML')
 %     %disp(na_ML)
 %     %disp(T_ML)
 %     %disp(V_ML)
-%     
+%
 %     scatter(input*Delta*100,ni_ML(3),'k');
 %     scatter(input*Delta*100,ni_ML(6),'b');
 %     scatter(input*Delta*100,ni_ML(9),'r');
@@ -268,3 +320,39 @@ legend({'Matlab i=3','Matlab i=6','Matlab i=9','Matlab i=12','Matlab i=15', ...
 figure, plot(x_s, Temp)
 figure, plot(x_s, v)
 figure, plot(x_s, n_i(:,1))
+
+%%
+data_dy = importdata('database_dy.dat');
+% reshaped_data_dy = reshape(data_dy,[100,2246]);
+% transposed_reshaped_data_dy = transpose(reshaped_data_dy);
+% save transposed_reshaped_data_dy.txt transposed_reshaped_data_dy -ascii
+%
+data_RD = importdata('database_RD.dat');
+% reshaped_data_RD = reshape(data_RD,[97,2246]);
+% transposed_reshaped_data_RD = transpose(reshaped_data_RD);
+% save transposed_reshaped_data_RD.txt transposed_reshaped_data_RD -ascii
+
+%function [status,out_rand] = OutputFcn(~,~,flag)
+function [status] = OutputFcn(~,~,flag)
+        disp(flag)
+        %OUTPUT FUNCTION:
+        %persistent random
+        % Initialize random:
+        %if isempty(random)
+        %    random = rand;
+        %end
+        % Random number generation and output:
+        %if isempty(flag)
+            % Successful integration step! Generate a new value:
+            %random = [random; rand];
+
+        %elseif strcmp(flag,'pass2ode')
+        %    out_rand = random(end);
+        %elseif strcmp(flag,'allout')
+        %    out_rand = random;
+        %elseif strcmp(flag,'clear')
+        %    clear random
+        %end
+        % Always keep integrating:
+        status = 0;
+        end

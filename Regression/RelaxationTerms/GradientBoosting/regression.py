@@ -37,11 +37,15 @@ from sklearn.multioutput import MultiOutputRegressor
 n_jobs = -1
 trial  = 1
 
-dataset=np.loadtxt("../data/solution_DR.dat")
-print(dataset.shape) # 943 x 103
+#dataset=np.loadtxt("../data/solution_DR.dat")
+#print(dataset.shape) # 943 x 103
+#x = dataset[:,0:55]  # x_s[1], time_s[1], Temp[1], rho[1], p[1],
+#y = dataset[:,55:]   # RD_mol[47], RD_at[1]
 
-x = dataset[:,0:55]  # x_s[1], time_s[1], Temp[1], rho[1], p[1],
-y = dataset[:,55:]   # RD_mol[47], RD_at[1]
+dataset=np.loadtxt("../data/transposed_reshaped_data_dy.txt")
+print(dataset.shape)
+x = dataset[:,0:50]
+y = dataset[:,50:]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
@@ -74,14 +78,14 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-hyper_params = [{'estimator__n_estimators': (10, 100, 1000,),
-                 'estimator__min_weight_fraction_leaf': (0.0, 0.1, 0.2, 0.3,),
+hyper_params = [{'estimator__n_estimators': (10, 100,),
+                 'estimator__min_weight_fraction_leaf': (0.0, 0.1, 0.2,),
                  'estimator__max_features': ('sqrt', 'log2', 'auto',),
                  'estimator__warm_start': (False, True),
                  'estimator__criterion': ('friedman_mse', 'mse', 'mae',),
-                 'estimator__max_depth': (1, 10, 100, None,),
-                 'estimator__min_samples_split': (2, 5, 10,),
-                 'estimator__min_samples_leaf': (2, 5, 10,),
+                 #'estimator__max_depth': (1, 10, 100, None,),
+                 #'estimator__min_samples_split': (2, 5, 10,),
+                 #'estimator__min_samples_leaf': (2, 5, 10,),
                  'estimator__loss': ('ls', 'lad', 'huber', 'quantile',),
 }]
 

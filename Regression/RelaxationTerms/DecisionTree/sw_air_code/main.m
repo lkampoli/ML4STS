@@ -1,6 +1,3 @@
-% ��������� ������� ������������� � ���������� ����������
-% �� ������� ������ � �������
-% ����������� ������
 
 % add the current folder to the Python search path                                                                                  
 % https://www.mathworks.com/help/matlab/matlab_external/call-user-defined-custom-module.html                                        
@@ -258,7 +255,7 @@ x_w = 2;      % m
 xspan = [0, x_w]./Delta;
 
 % �������
-options = odeset('RelTol', 1e-8, 'AbsTol', 1e-8);
+options = odeset('RelTol', 1e-2, 'AbsTol', 1e-2, 'stats', 'on');
 %[X,Y] = ode15s(@rpart_fho, xspan, Y0_bar,options);
 [X,Y] = ode15s(@rpart_fho_ML, xspan, Y0_bar,options); % machine learning version
 
@@ -349,11 +346,11 @@ d1 = max(abs(u1)/u10);
 d2 = max(abs(u2)/u20);
 d3 = max(abs(u3)/u30);
 
-tol = 1e-4;
-if (d1>tol)||(d2>tol)||(d3>tol)
-    disp('Big error!');
-    return;
-end
+%tol = 1e-4;
+%if (d1>tol)||(d2>tol)||(d3>tol)
+%    disp('Big error!');
+%    return;
+%end
 
 beep
 msgbox('Woah! Finally done!','Success');

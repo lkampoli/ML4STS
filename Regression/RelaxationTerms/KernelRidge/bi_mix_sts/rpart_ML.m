@@ -17,52 +17,50 @@ nm_b = sum(ni_b);
 v_b = y(l+2);
 T_b = y(l+3);
 
-% xx = t*Delta;
-
 temp = T_b*T0;
 temperature = temp;
 
 velocity = v_b*v0;
 
-ef_b = 0.5*D/T0;
-ei_b = e_i/(k*T0);
-e0_b = e_0/(k*T0);
-
-sigma = 2;
-Theta_r = Be*h*c/k;
-Z_rot = temp./(sigma.*Theta_r);
-
-M = sum(m);
-mb = m/M;
-
-A = zeros(l+3,l+3);
-
-for i=1:l
-    A(i,i) = v_b;
-    A(i,l+2) = ni_b(i);
-end
-
-A(l+1,l+1) = v_b;
-A(l+1,l+2) = na_b;
-
-for i=1:l+1
-    A(l+2,i) = T_b;
-end
-
-A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
-A(l+2,l+3) = nm_b+na_b;
-
-for i=1:l
-    A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
-end
-
-A(l+3,l+1) = 1.5*T_b+ef_b;
-A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
-A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
-
-AA = sparse(A);
-
-B = zeros(l+3,1);
+% ef_b = 0.5*D/T0;
+% ei_b = e_i/(k*T0);
+% e0_b = e_0/(k*T0);
+% 
+% sigma = 2;
+% Theta_r = Be*h*c/k;
+% Z_rot = temp./(sigma.*Theta_r);
+% 
+% M = sum(m);
+% mb = m/M;
+% 
+% A = zeros(l+3,l+3);
+% 
+% for i=1:l
+%     A(i,i) = v_b;
+%     A(i,l+2) = ni_b(i);
+% end
+% 
+% A(l+1,l+1) = v_b;
+% A(l+1,l+2) = na_b;
+% 
+% for i=1:l+1
+%     A(l+2,i) = T_b;
+% end
+% 
+% A(l+2,l+2) = M*v0^2/k/T0*(mb(1)*nm_b+mb(2)*na_b)*v_b;
+% A(l+2,l+3) = nm_b+na_b;
+% 
+% for i=1:l
+%     A(l+3,i) = 2.5*T_b+ei_b(i)+e0_b;
+% end
+% 
+% A(l+3,l+1) = 1.5*T_b+ef_b;
+% A(l+3,l+2) = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b+e0_b).*ni_b)+ef_b*na_b);
+% A(l+3,l+3) = 2.5*nm_b+1.5*na_b;
+% 
+% AA = sparse(A);
+% 
+% B = zeros(l+3,1);
 
 %Kdr = (m(1)*h^2/(m(2)*m(2)*2*pi*k*temp))^(3/2)*Z_rot* exp(-e_i'/(k*temp))*exp(D/temp);
 
@@ -94,9 +92,35 @@ B = zeros(l+3,1);
 %RVT = zeros(l,1);
 %RVV = zeros(l,1);
 
+% Instead of the for loop, we call the ML model to predict 
+% the full vector of RD, for example, given as input the following args:
+% [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n] or
+% more properly a subset of features, namely:
+% [Temp, v, ni_n, na_n]
+
+%RD_ML = zeros(l,1);
+%RD_MLd = zeros(l,1);
+%input = [temperature; velocity; ni_b/(nm_b+na_b); na_b/(nm_b+na_b)];
+%disp(input')
+%pause(10)
+%input = [temperature; velocity; ni_b*n0; na_b*n0];
+%RD_ML = py.run_regression.regressor(input);
+%RD_MLd = double(RD_ML);
+
+%disp(RD_MLd)
+%pause(10)
+
 %for i1 = 1:l
 %  RD(i1) = nm_b*(na_b*na_b*kr(1,i1)-ni_b(i1)*kd(1,i1)) + na_b*(na_b*na_b*kr(2,i1)-ni_b(i1)*kd(2,i1));
 %end
+
+%disp("RD")
+%fprintf('%d\n',RD);
+
+%disp("RD_MLd")
+%fprintf('%d\n',RD_MLd);
+
+    % fprintf('%i, %d, %d, %d, %d %d, %d\n', i1, RD(i1), ni_b(i1), nm_b, na_b, kr(1,i1), kd(1,i1))
 
 %    if i1 == 1 % 0<->1
 %
@@ -128,13 +152,18 @@ B = zeros(l+3,1);
 %    end
 %end
 
+% input = [ni_b; na_b; velocity; temperature;];
+% RD_ML = py.run_regression.regressor(input);
+% RD_MLd = double(RD_ML);
+%disp(size(RD_MLd))
+
+% B(1:l) = RD_MLd(1:l); % + RVT + RVV;
+% B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
+
 input = [ni_b; na_b; velocity; temperature;];
 RD_ML = py.run_regression.regressor(input);
 RD_MLd = double(RD_ML);
+%disp(size(RD_MLd))
+dy = RD_MLd'
 
-%disp(RD_MLd')
-
-B(1:l) = RD_MLd(1:l); % + RVT + RVV;
-B(l+1) = - 2*sum(RD_MLd); %- 2*sum(RD);
-
-dy = AA^(-1)*B;
+%dy = AA^(-1)*B;

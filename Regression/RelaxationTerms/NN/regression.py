@@ -32,6 +32,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 
+import time
 import os;
 path="."
 os.chdir(path)
@@ -41,7 +42,7 @@ import csv
 
 from IPython.display import clear_output
 from livelossplot import PlotLossesKeras
-from time import time
+#from time import time
 from keras.callbacks import TensorBoard
 
 from keras.utils.vis_utils import plot_model
@@ -57,35 +58,44 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits import mplot3d
 
 from keras.optimizers import SGD, Adam, RMSprop, Adagrad
+from keras import regularizers
+
 import pickle
+from joblib import dump, load
 
 import sys
-sys.path.insert(0, '../../../../../Utilities/')
+sys.path.insert(0, '../../../Utilities/')
 
 from plotting import newfig, savefig
 
 from matplotlib import rc
 rc("text", usetex=False)
 
-with open('../../../../Data/TCs_air5.txt') as f:
-    lines = (line for line in f if not line.startswith('#'))
-    dataset = np.loadtxt(lines, skiprows=1)
+#with open('../../../../Data/TCs_air5.txt') as f:
+#    lines = (line for line in f if not line.startswith('#'))
+#    dataset = np.loadtxt(lines, skiprows=1)
 
 #dataset = np.loadtxt("../../../Data/TCs_air5.txt")
-x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
-y = dataset[:,7:8] # shear
+#x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
+#y = dataset[:,7:8] # shear
+
+dataset=np.loadtxt("../data/transposed_reshaped_data_air5.txt")
+x = dataset[:,0:126]
+y = dataset[:,126:]
 
 # summarize the dataset
-print(x.shape, y.shape)
+print("X:", x.shape, "Y:", x.shape)
+in_dim = x.shape[1]
+out_dim = y.shape[1]
 
 # 2D Plot
-plt.scatter(x[:,0], y, s=0.5)
+#plt.scatter(x[:,0], y, s=0.5)
 #plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
 #plt.xlabel('T [K]')
 #plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-plt.tight_layout()
-plt.savefig("shear_data.pdf")
-plt.show()
+#plt.tight_layout()
+#plt.savefig("shear_data.pdf")
+#plt.show()
 
 print("[INFO] Split data ...")
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
@@ -103,20 +113,57 @@ sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
 y_test  = sc_y.transform(y_test)
 
+dump(sc_x, open('scaler_x.pkl', 'wb'))
+dump(sc_y, open('scaler_y.pkl', 'wb'))
+
+print('Training Features Shape:', x_train.shape)
+print('Training Labels Shape:'  , y_train.shape)
+print('Testing Features Shape:' , x_test.shape)
+print('Testing Labels Shape:'   , y_test.shape)
+
 print("[INFO] Model build ...")
 model = Sequential()
 
-model.add(Dense(7, input_dim=7, kernel_initializer='normal', activation='relu')) # Hidden 1
-#model.add(Dense(7, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(7, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(7, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))              # Hidden 2
-model.add(Dense(1, activation='linear'))                                            # Output
+#from keras import regularizers
+
+# L1 regularization
+#regularizers.l1(0.001)
+
+# L1 and L2 regularization at the same time
+#regularizers.l1_l2(l1=0.001, l2=0.001)
+
+# he_uniform
+# https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
+
+# evaluate a model using repeated k-fold cross-validation
+#def evaluate_model(X, y):
+#	results = list()
+#	n_inputs, n_outputs = X.shape[1], y.shape[1]
+#	# define evaluation procedure
+#	cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+#	# enumerate folds
+#	for train_ix, test_ix in cv.split(X):
+#		# prepare data
+#		X_train, X_test = X[train_ix], X[test_ix]
+#		y_train, y_test = y[train_ix], y[test_ix]
+#		# define model
+#		model = get_model(n_inputs, n_outputs)
+#		# fit model
+#		model.fit(X_train, y_train, verbose=0, epochs=100)
+#		# evaluate model on test set
+#		mae = model.evaluate(X_test, y_test, verbose=0)
+#		# store result
+#		print('>%.3f' % mae)
+#		results.append(mae)
+#	return results
+
+model.add(Dense(126, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
+#model.add(layers.Dropout(0.5))
+#model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
+#model.add(Dense(126, activation='linear'))
+# https://www.datatechnotes.com/2019/12/multi-output-regression-example-with.html
+model.add(Dense(out_dim, activation='linear'))
+
 #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
 opt = keras.optimizers.Adam(learning_rate=0.01)
 
@@ -133,7 +180,8 @@ model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
 #monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=5, verbose=1, mode='auto', restore_best_weights=True)
 
 print("[INFO] training model...")
-history = model.fit(x_train, y_train, epochs=100, batch_size=15, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
+#history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
+history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
 
 #loss_history = np.array(history)
 #np.savetxt("loss_history.txt", loss_history, delimiter=",")
@@ -152,6 +200,7 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.tight_layout()
 plt.savefig("MSE.pdf", dpi=150)
 plt.show()
+plt.close()
 
 plt.figure()
 plt.plot(history.history['mean_absolute_error'])
@@ -163,6 +212,7 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.tight_layout()
 plt.savefig("MAE.pdf", dpi=150)
 plt.show()
+plt.close()
 
 plt.figure()
 plt.plot(history.history['mean_absolute_percentage_error'])
@@ -174,8 +224,11 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.tight_layout()
 plt.savefig("MAPE.pdf", dpi=150)
 plt.show()
+plt.close()
 
 plt.figure()
+# https://www.pyimagesearch.com/2018/06/04/keras-multiple-outputs-and-multiple-losses/
+plt.style.use("ggplot")
 plt.plot(history.history['mean_squared_logarithmic_error'])
 plt.plot(history.history['val_mean_squared_logarithmic_error'])
 plt.title('model MSLE')
@@ -185,10 +238,21 @@ plt.legend(['train', 'validation'], loc='upper left')
 plt.tight_layout()
 plt.savefig("MSLE.pdf", dpi=150)
 plt.show()
+plt.close()
 
 # Predict
 print("[INFO] predicting...")
+t0 = time.time()
 pred = model.predict(x_test)
+regr_predict = time.time() - t0
+print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
+
+fig, ax = plt.subplots()
+ax.scatter(y_test, pred)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
 
 score = metrics.mean_squared_error(pred, y_test)
 print("Final score (MSE): {}".format(score))
@@ -212,34 +276,13 @@ def chart_regression(pred, y, sort=True):
     plt.tight_layout()
     plt.savefig("adim_regression.pdf", dpi=150)
     plt.show()
+    plt.close()
 
 # Plot the chart
 chart_regression(pred.flatten(), y_test)
 
-#Xnew = np.array([[6750], [6800], [6850],[6900], [6950],
-#                 [7000], [7050],[7100], [7150], [7200], [7300], [7400], [7500], [7600], [7700], [7800], [7900],
-#                 [8000], [8100], [8200], [8300], [8400], [8500], [8600], [8700], [8800], [8900],
-#                 [9000], [9100], [9200], [9300], [9400], [9500], [9600], [9700], [9800], [9900],
-#                 [10000], [10100], [10200], [10300], [10400], [10500], [10757]])
-#
-#Xnew = scaler_x.transform(Xnew)
-#ynew = model.predict(Xnew)
-#
-# Invert normalize
-#ynew = scaler_y.inverse_transform(ynew)
-#Xnew = scaler_x.inverse_transform(Xnew)
-# show the inputs and predicted outputs
-#for i in range(len(Xnew)):
-#    print("X=%s, Predicted=%s" % (Xnew[i], ynew[i]))
-#
-#print(x.min(), x.max())
-#
-#plt.scatter(x[:], y[:], s=15, facecolor='red', label='MATLAB')
-#plt.plot(Xnew[:], ynew[:], 'o', color='black', label='predicted', linewidth=2, markersize=5, fillstyle='none')
-#plt.title('$R_{ci}$ for $N_2/N$ and i = 10')
-#plt.ylabel('$R_{ci}$ $[J/m^3/s]$')
-#plt.xlabel('T [K] ')
-#plt.legend()
-#plt.tight_layout()
-#plt.savefig("dim_regression.pdf", dpi=150, crop='false')
-#plt.show()
+#dump(model, 'model.sav')
+model.save('model.sav')
+
+new_model = tf.keras.models.load_model('model.sav')
+new_model.summary()
