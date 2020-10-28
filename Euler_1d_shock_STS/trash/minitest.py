@@ -10,4 +10,3 @@ x_train, x_test, y_train, y_test, z_train, z_test = train_test_split(x, y, z, te
 print(x_train, x_test)
 print(y_train, y_test)
 print(z_train, z_test)
-

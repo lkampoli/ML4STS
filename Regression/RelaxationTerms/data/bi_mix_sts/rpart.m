@@ -1,5 +1,7 @@
 function dy = rpart(t,y)
 
+%tic
+
 format long e
 global c h k m l e_i e_0 Be D n0 v0 T0 Delta
 
@@ -146,6 +148,9 @@ B(l+1) = - 2*sum(RD);
 
 dy = AA^(-1)*B;
 %disp(size(dy))
+
+%toc
+
 database = [ni_b', na_b, v_b*v0, temp, dy'];
 save database_dy.dat database -ascii -append
 

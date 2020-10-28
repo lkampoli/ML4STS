@@ -33,8 +33,13 @@ from joblib import dump, load
 n_jobs = -1
 trial  = 1
 
-dataset=np.loadtxt("./solution_XY.dat")
+nba = pd.read_csv("solution_XY.dat")
+print(type(nba))
+print(len(nba))
+print(nba.shape)
+nba.head()
 
+dataset=np.loadtxt("./solution_XY.dat")
 print(dataset.shape)
 
 x = dataset[:,0:50]

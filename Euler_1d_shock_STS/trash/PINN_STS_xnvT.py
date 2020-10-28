@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# Physics Informed Neural Network (PINN) in Tensorflow
+# Physics Informed Neural Network (PINN) for State-to-State (STS)
+# 1D shock flow relaxation for N2/N binary mixture in Tensorflow
 
 import time
 import sys
@@ -16,10 +17,15 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from itertools import product, combinations
 import matplotlib.gridspec as gridspec
 
-from sklearn.model_selection  import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
+#from sklearn.preprocessing import MinMaxScaler
+#from sklearn.model_selection  import train_test_split
+#from sklearn.model_selection import cross_val_score
+#from sklearn.model_selection import KFold, StratifiedKFold
+#from sklearn.pipeline import Pipeline
+#from sklearn.preprocessing import MinMaxScaler
+#from sklearn.preprocessing import StandardScaler
 #from sklearn.preprocessing import RobustScaler
+#from sklearn.preprocessing import minmax_scale
 #from sklearn.preprocessing import MaxAbsScaler
 #from sklearn.preprocessing import Normalizer
 #from sklearn.preprocessing import QuantileTransformer
@@ -36,8 +42,8 @@ class PINN:
     def __init__(self,
                  x, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18,
                  n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34,
-                 n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, nat,
-                 rho, u, p, E,
+                 n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, nat, u, T,
+                 #rho, u, p, E,
                  R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18,
                  R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34,
                  R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, Rat, layers):
@@ -103,10 +109,12 @@ class PINN:
         self.n47 = n47
         self.nat = nat
 
-        self.rho = rho
-        self.u   = u
-        self.p   = p
-        self.E   = E
+        self.u = u
+        self.T = T
+        #self.rho = rho
+        #self.u   = u
+        #self.p   = p
+        #self.E   = E
 
         self.R1  = R1
         self.R2  = R2
@@ -162,7 +170,7 @@ class PINN:
         # Initialize_NN is another class method which is used to assign random
         # weights and bias terms to the network. This not only initializes the
         # network but also structures the sizes and values of all the weights and
-        # biases that would be so required for the network defined by layers.
+        # biases required by the network.
         self.weights, self.biases = self.initialize_NN(layers)
 
         # Define a session to run
@@ -174,10 +182,12 @@ class PINN:
         # similar to their numpy counterparts variable_Name
         self.x_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.x.shape[1]])
 
-        self.rho_tf = tf.compat.v1.placeholder(tf.float32, shape=[None, self.rho.shape[1]])
         self.u_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.u.shape[1]])
-        self.p_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.p.shape[1]])
-        self.E_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.E.shape[1]])
+        self.T_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.T.shape[1]])
+        #self.rho_tf = tf.compat.v1.placeholder(tf.float32, shape=[None, self.rho.shape[1]])
+        #self.u_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.u.shape[1]])
+        #self.p_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.p.shape[1]])
+        #self.E_tf   = tf.compat.v1.placeholder(tf.float32, shape=[None, self.E.shape[1]])
 
         self.n1_tf  = tf.placeholder(tf.float32, shape=[None, self.n1.shape[1]])
         self.n2_tf  = tf.placeholder(tf.float32, shape=[None, self.n2.shape[1]])
@@ -285,8 +295,8 @@ class PINN:
          self.n25_pred, self.n26_pred, self.n27_pred, self.n28_pred, self.n29_pred, self.n30_pred, self.n31_pred, self.n32_pred,
          self.n33_pred, self.n34_pred, self.n35_pred, self.n36_pred, self.n37_pred, self.n38_pred, self.n39_pred, self.n40_pred,
          self.n41_pred, self.n42_pred, self.n43_pred, self.n44_pred, self.n45_pred, self.n46_pred, self.n47_pred, self.nat_pred,
-         #####
-         self.rho_pred, self.u_pred, self.p_pred, self.E_pred,
+         self.u_pred, self.T_pred,
+         #self.rho_pred, self.u_pred,   self.p_pred,   self.E_pred,
          #####
          self.R1_pred,  self.R2_pred,  self.R3_pred,  self.R4_pred,  self.R5_pred,  self.R6_pred,  self.R7_pred,  self.R8_pred,
          self.R9_pred,  self.R10_pred, self.R11_pred, self.R12_pred, self.R13_pred, self.R14_pred, self.R15_pred, self.R16_pred,
@@ -295,8 +305,7 @@ class PINN:
          self.R33_pred, self.R34_pred, self.R35_pred, self.R36_pred, self.R37_pred, self.R38_pred, self.R39_pred, self.R40_pred,
          self.R41_pred, self.R42_pred, self.R43_pred, self.R44_pred, self.R45_pred, self.R46_pred, self.R47_pred, self.Rat_pred,
          #####
-         self.e1, self.e2, self.e3, self.e4,
-         #####
+         self.e1,   self.e2,   self.e3,   self.e4,
          self.en1,  self.en2,  self.en3,  self.en4,  self.en5,  self.en6,  self.en7,  self.en8,  self.en9,  self.en10, self.en11,
          self.en12, self.en13, self.en14, self.en15, self.en16, self.en17, self.en18, self.en19, self.en20, self.en21, self.en22,
          self.en23, self.en24, self.en25, self.en26, self.en27, self.en28, self.en29, self.en30, self.en31, self.en32, self.en33,
@@ -305,17 +314,19 @@ class PINN:
 
         # MSE Normalization
         # The initial normalization terms are necessary to ensure that the
-        # gradients don't get driven towards either the residual squared errors
+        # gradients don't get driven towards either the residual aquared errors
         # or the MSE of the outputs. Basically, to ensure equal weightage to it
-        # being 'trained to training data' as well as being 'Physics informed'
-        rho_norm = np.amax(rho)
+        # being 'trained to training data' as well as being 'Physics informed
         u_norm   = np.amax(u)
-        p_norm   = np.amax(p)
-        E_norm   = np.amax(E)
+        T_norm   = np.amax(T)
+        #rho_norm = np.amax(rho)
+        #u_norm   = np.amax(u)
+        #p_norm   = np.amax(p)
+        #E_norm   = np.amax(E)
 
-        e1_norm  = rho_norm*u_norm        # e1 is continuity residual
-        e2_norm  = p_norm                 # e2 is momentum   residual
-        e3_norm  = E_norm*rho_norm*u_norm # e3 is energy     residual
+        #e1_norm  = rho_norm*u_norm        #*S_norm # e1 is continuity residual
+        #e2_norm  = p_norm                 #*S_norm # e2 is momentum   residual
+        #e3_norm  = E_norm*rho_norm*u_norm #*S_norm # e3 is energy     residual
 
         n1_norm  = np.amax(n1)
         n2_norm  = np.amax(n2)
@@ -415,55 +426,6 @@ class PINN:
         en47_norm = n47_norm*u_norm
         enat_norm = nat_norm*u_norm
 
-        R1_norm  = np.amax(R1)
-        R2_norm  = np.amax(R2)
-        R3_norm  = np.amax(R3)
-        R4_norm  = np.amax(R4)
-        R5_norm  = np.amax(R5)
-        R6_norm  = np.amax(R6)
-        R7_norm  = np.amax(R7)
-        R8_norm  = np.amax(R8)
-        R9_norm  = np.amax(R9)
-        R10_norm = np.amax(R10)
-        R11_norm = np.amax(R11)
-        R12_norm = np.amax(R12)
-        R13_norm = np.amax(R13)
-        R14_norm = np.amax(R14)
-        R15_norm = np.amax(R15)
-        R16_norm = np.amax(R16)
-        R17_norm = np.amax(R17)
-        R18_norm = np.amax(R18)
-        R19_norm = np.amax(R19)
-        R20_norm = np.amax(R20)
-        R21_norm = np.amax(R21)
-        R22_norm = np.amax(R22)
-        R23_norm = np.amax(R23)
-        R24_norm = np.amax(R24)
-        R25_norm = np.amax(R25)
-        R26_norm = np.amax(R26)
-        R27_norm = np.amax(R27)
-        R28_norm = np.amax(R28)
-        R29_norm = np.amax(R29)
-        R30_norm = np.amax(R30)
-        R31_norm = np.amax(R31)
-        R32_norm = np.amax(R32)
-        R33_norm = np.amax(R33)
-        R34_norm = np.amax(R34)
-        R35_norm = np.amax(R35)
-        R36_norm = np.amax(R36)
-        R37_norm = np.amax(R37)
-        R38_norm = np.amax(R38)
-        R39_norm = np.amax(R39)
-        R40_norm = np.amax(R40)
-        R41_norm = np.amax(R41)
-        R42_norm = np.amax(R42)
-        R43_norm = np.amax(R43)
-        R44_norm = np.amax(R44)
-        R45_norm = np.amax(R45)
-        R46_norm = np.amax(R46)
-        R47_norm = np.amax(R47)
-        Rat_norm = np.amax(Rat)
-
         # Weight factor... let's see its impact by varying it w = [0:100].
         # If is it 0, then PINN -> NN and we do not physically inform the NN.
         w = 0.
@@ -474,9 +436,10 @@ class PINN:
         # residual expressions will result in a true Phyics Informed Neural
         # Network, otherwise, it is just a data trained Neural network
         self.loss = tf.reduce_sum(tf.square(self.u_tf   - self.u_pred)) /(u_norm**2) + \
-                    tf.reduce_sum(tf.square(self.rho_tf - self.rho_pred))/(rho_norm**2) + \
-                    tf.reduce_sum(tf.square(self.p_tf   - self.p_pred)) /(p_norm**2) + \
-                    tf.reduce_sum(tf.square(self.E_tf   - self.E_pred)) /(E_norm**2) + \
+                    #tf.reduce_sum(tf.square(self.rho_tf - self.rho_pred))/(rho_norm**2) + \
+                    #tf.reduce_sum(tf.square(self.p_tf   - self.p_pred)) /(p_norm**2) + \
+                    #tf.reduce_sum(tf.square(self.E_tf   - self.E_pred)) /(E_norm**2) + \
+                    tf.reduce_sum(tf.square(self.T_tf   - self.T_pred)) /(T_norm**2) + \
                     tf.reduce_sum(tf.square(self.n1_tf  - self.n1_pred))/(n1_norm**2) + \
                     tf.reduce_sum(tf.square(self.n2_tf  - self.n2_pred))/(n2_norm**2) + \
                     tf.reduce_sum(tf.square(self.n3_tf  - self.n3_pred))/(n3_norm**2) + \
@@ -525,58 +488,10 @@ class PINN:
                     tf.reduce_sum(tf.square(self.n46_tf - self.n46_pred))/(n46_norm**2) + \
                     tf.reduce_sum(tf.square(self.n47_tf - self.n47_pred))/(n47_norm**2) + \
                     tf.reduce_sum(tf.square(self.nat_tf - self.nat_pred))/(nat_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R1_tf  - self.R1_pred))/(R1_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R2_tf  - self.R2_pred))/(R2_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R3_tf  - self.R3_pred))/(R3_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R4_tf  - self.R4_pred))/(R4_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R5_tf  - self.R5_pred))/(R5_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R6_tf  - self.R6_pred))/(R6_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R7_tf  - self.R7_pred))/(R7_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R8_tf  - self.R8_pred))/(R8_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R9_tf  - self.R9_pred))/(R9_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R10_tf - self.R10_pred))/(R10_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R11_tf - self.R11_pred))/(R11_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R12_tf - self.R12_pred))/(R12_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R13_tf - self.R13_pred))/(R13_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R14_tf - self.R14_pred))/(R14_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R15_tf - self.R15_pred))/(R15_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R16_tf - self.R16_pred))/(R16_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R17_tf - self.R17_pred))/(R17_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R18_tf - self.R18_pred))/(R18_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R19_tf - self.R19_pred))/(R19_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R20_tf - self.R20_pred))/(R20_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R21_tf - self.R21_pred))/(R21_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R22_tf - self.R22_pred))/(R22_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R23_tf - self.R23_pred))/(R23_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R24_tf - self.R24_pred))/(R24_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R25_tf - self.R25_pred))/(R25_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R26_tf - self.R26_pred))/(R26_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R27_tf - self.R27_pred))/(R27_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R28_tf - self.R28_pred))/(R28_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R29_tf - self.R29_pred))/(R29_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R30_tf - self.R30_pred))/(R30_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R31_tf - self.R31_pred))/(R31_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R32_tf - self.R32_pred))/(R32_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R33_tf - self.R33_pred))/(R33_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R34_tf - self.R34_pred))/(R34_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R35_tf - self.R35_pred))/(R35_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R36_tf - self.R36_pred))/(R36_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R37_tf - self.R37_pred))/(R37_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R38_tf - self.R38_pred))/(R38_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R39_tf - self.R39_pred))/(R39_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R40_tf - self.R40_pred))/(R40_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R41_tf - self.R41_pred))/(R41_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R42_tf - self.R42_pred))/(R42_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R43_tf - self.R43_pred))/(R43_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R44_tf - self.R44_pred))/(R44_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R45_tf - self.R45_pred))/(R45_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R46_tf - self.R46_pred))/(R46_norm**2) + \
-                    tf.reduce_sum(tf.square(self.R47_tf - self.R47_pred))/(R47_norm**2) + \
-                    tf.reduce_sum(tf.square(self.Rat_tf - self.Rat_pred))/(Rat_norm**2) + \
-                    w*tf.reduce_sum(tf.square(self.e1))/(e1_norm**2)                    + \
-                    w*tf.reduce_sum(tf.square(self.e2))/(e2_norm**2)                    + \
-                    w*tf.reduce_sum(tf.square(self.e3))/(e3_norm**2)                    + \
-                    w*tf.reduce_sum(tf.square(self.e4))/(p_norm**2)                     + \
+                    #w*tf.reduce_sum(tf.square(self.e1))/(e1_norm**2)                    + \
+                    #w*tf.reduce_sum(tf.square(self.e2))/(e2_norm**2)                    + \
+                    #w*tf.reduce_sum(tf.square(self.e3))/(e3_norm**2)                    + \
+                    #w*tf.reduce_sum(tf.square(self.e4))/(p_norm**2)                     + \
                     w*tf.reduce_sum(tf.square(self.en1))/(en1_norm**2) + \
                     w*tf.reduce_sum(tf.square(self.en2))/(en2_norm**2) + \
                     w*tf.reduce_sum(tf.square(self.en3))/(en3_norm**2) + \
@@ -700,221 +615,228 @@ class PINN:
 
     def net_Euler_STS(self, x):
 
-        nci_rho_u_p_E = self.neural_net(tf.concat([x], 1), self.weights, self.biases)
+        #nci_rho_u_p_E = self.neural_net(tf.concat([x], 1), self.weights, self.biases)
+        nci_u_V_T = self.neural_net(tf.concat([x], 1), self.weights, self.biases)
 
-        n1  = nci_rho_u_p_E[:,0:1]
-        n2  = nci_rho_u_p_E[:,1:2]
-        n3  = nci_rho_u_p_E[:,2:3]
-        n4  = nci_rho_u_p_E[:,3:4]
-        n5  = nci_rho_u_p_E[:,4:5]
-        n6  = nci_rho_u_p_E[:,5:6]
-        n7  = nci_rho_u_p_E[:,6:7]
-        n8  = nci_rho_u_p_E[:,7:8]
-        n9  = nci_rho_u_p_E[:,8:9]
-        n10 = nci_rho_u_p_E[:,9:10]
-        n11 = nci_rho_u_p_E[:,10:11]
-        n12 = nci_rho_u_p_E[:,11:12]
-        n13 = nci_rho_u_p_E[:,12:13]
-        n14 = nci_rho_u_p_E[:,13:14]
-        n15 = nci_rho_u_p_E[:,14:15]
-        n16 = nci_rho_u_p_E[:,15:16]
-        n17 = nci_rho_u_p_E[:,16:17]
-        n18 = nci_rho_u_p_E[:,17:18]
-        n19 = nci_rho_u_p_E[:,18:19]
-        n20 = nci_rho_u_p_E[:,19:20]
-        n21 = nci_rho_u_p_E[:,20:21]
-        n22 = nci_rho_u_p_E[:,21:22]
-        n23 = nci_rho_u_p_E[:,22:23]
-        n24 = nci_rho_u_p_E[:,23:24]
-        n25 = nci_rho_u_p_E[:,24:25]
-        n26 = nci_rho_u_p_E[:,25:26]
-        n27 = nci_rho_u_p_E[:,26:27]
-        n28 = nci_rho_u_p_E[:,27:28]
-        n29 = nci_rho_u_p_E[:,28:29]
-        n30 = nci_rho_u_p_E[:,29:30]
-        n31 = nci_rho_u_p_E[:,30:31]
-        n32 = nci_rho_u_p_E[:,31:32]
-        n33 = nci_rho_u_p_E[:,32:33]
-        n34 = nci_rho_u_p_E[:,33:34]
-        n35 = nci_rho_u_p_E[:,34:35]
-        n36 = nci_rho_u_p_E[:,35:36]
-        n37 = nci_rho_u_p_E[:,36:37]
-        n38 = nci_rho_u_p_E[:,37:38]
-        n39 = nci_rho_u_p_E[:,38:39]
-        n40 = nci_rho_u_p_E[:,39:40]
-        n41 = nci_rho_u_p_E[:,40:41]
-        n42 = nci_rho_u_p_E[:,41:42]
-        n43 = nci_rho_u_p_E[:,42:43]
-        n44 = nci_rho_u_p_E[:,43:44]
-        n45 = nci_rho_u_p_E[:,44:45]
-        n46 = nci_rho_u_p_E[:,45:46]
-        n47 = nci_rho_u_p_E[:,46:47]
-        nat = nci_rho_u_p_E[:,47:48]
+        n1   = nci_u_V_T[:,0:1]
+        n2   = nci_u_V_T[:,1:2]
+        n3   = nci_u_V_T[:,2:3]
+        n4   = nci_u_V_T[:,3:4]
+        n5   = nci_u_V_T[:,4:5]
+        n6   = nci_u_V_T[:,5:6]
+        n7   = nci_u_V_T[:,6:7]
+        n8   = nci_u_V_T[:,7:8]
+        n9   = nci_u_V_T[:,8:9]
+        n10  = nci_u_V_T[:,9:10]
+        n11  = nci_u_V_T[:,10:11]
+        n12  = nci_u_V_T[:,11:12]
+        n13  = nci_u_V_T[:,12:13]
+        n14  = nci_u_V_T[:,13:14]
+        n15  = nci_u_V_T[:,14:15]
+        n16  = nci_u_V_T[:,15:16]
+        n17  = nci_u_V_T[:,16:17]
+        n18  = nci_u_V_T[:,17:18]
+        n19  = nci_u_V_T[:,18:19]
+        n20  = nci_u_V_T[:,19:20]
+        n21  = nci_u_V_T[:,20:21]
+        n22  = nci_u_V_T[:,21:22]
+        n23  = nci_u_V_T[:,22:23]
+        n24  = nci_u_V_T[:,23:24]
+        n25  = nci_u_V_T[:,24:25]
+        n26  = nci_u_V_T[:,25:26]
+        n27  = nci_u_V_T[:,26:27]
+        n28  = nci_u_V_T[:,27:28]
+        n29  = nci_u_V_T[:,28:29]
+        n30  = nci_u_V_T[:,29:30]
+        n31  = nci_u_V_T[:,30:31]
+        n32  = nci_u_V_T[:,31:32]
+        n33  = nci_u_V_T[:,32:33]
+        n34  = nci_u_V_T[:,33:34]
+        n35  = nci_u_V_T[:,34:35]
+        n36  = nci_u_V_T[:,35:36]
+        n37  = nci_u_V_T[:,36:37]
+        n38  = nci_u_V_T[:,37:38]
+        n39  = nci_u_V_T[:,38:39]
+        n40  = nci_u_V_T[:,39:40]
+        n41  = nci_u_V_T[:,40:41]
+        n42  = nci_u_V_T[:,41:42]
+        n43  = nci_u_V_T[:,42:43]
+        n44  = nci_u_V_T[:,43:44]
+        n45  = nci_u_V_T[:,44:45]
+        n46  = nci_u_V_T[:,45:46]
+        n47  = nci_u_V_T[:,46:47]
+        nat  = nci_u_V_T[:,47:48]
 
-        rho = nci_rho_u_p_E[:,48:49]
-        u   = nci_rho_u_p_E[:,49:50]
-        p   = nci_rho_u_p_E[:,50:51]
-        E   = nci_rho_u_p_E[:,51:52]
+        #rho = nci_u_V_T[:,48:49]
+        u   = nci_u_V_T[:,49:50]
+        #p  = nci_u_V_T[:,50:51]
+        E  = nci_u_V_T[:,51:52]
+        #T   = nci_u_V_T[:,51:52]
 
-        R1  = nci_rho_u_p_E[:,52:53]
-        R2  = nci_rho_u_p_E[:,53:54]
-        R3  = nci_rho_u_p_E[:,54:55]
-        R4  = nci_rho_u_p_E[:,55:56]
-        R5  = nci_rho_u_p_E[:,56:57]
-        R6  = nci_rho_u_p_E[:,57:58]
-        R7  = nci_rho_u_p_E[:,58:59]
-        R8  = nci_rho_u_p_E[:,59:60]
-        R9  = nci_rho_u_p_E[:,60:61]
-        R10 = nci_rho_u_p_E[:,61:62]
-        R11 = nci_rho_u_p_E[:,62:63]
-        R12 = nci_rho_u_p_E[:,63:64]
-        R13 = nci_rho_u_p_E[:,64:65]
-        R14 = nci_rho_u_p_E[:,65:66]
-        R15 = nci_rho_u_p_E[:,66:67]
-        R16 = nci_rho_u_p_E[:,67:68]
-        R17 = nci_rho_u_p_E[:,68:69]
-        R18 = nci_rho_u_p_E[:,69:70]
-        R19 = nci_rho_u_p_E[:,70:71]
-        R20 = nci_rho_u_p_E[:,71:72]
-        R21 = nci_rho_u_p_E[:,72:73]
-        R22 = nci_rho_u_p_E[:,73:74]
-        R23 = nci_rho_u_p_E[:,74:75]
-        R24 = nci_rho_u_p_E[:,75:76]
-        R25 = nci_rho_u_p_E[:,76:77]
-        R26 = nci_rho_u_p_E[:,77:78]
-        R27 = nci_rho_u_p_E[:,78:79]
-        R28 = nci_rho_u_p_E[:,79:80]
-        R29 = nci_rho_u_p_E[:,80:81]
-        R30 = nci_rho_u_p_E[:,81:82]
-        R31 = nci_rho_u_p_E[:,82:83]
-        R32 = nci_rho_u_p_E[:,83:84]
-        R33 = nci_rho_u_p_E[:,84:85]
-        R34 = nci_rho_u_p_E[:,85:86]
-        R35 = nci_rho_u_p_E[:,86:87]
-        R36 = nci_rho_u_p_E[:,87:88]
-        R37 = nci_rho_u_p_E[:,88:89]
-        R38 = nci_rho_u_p_E[:,89:90]
-        R39 = nci_rho_u_p_E[:,90:91]
-        R40 = nci_rho_u_p_E[:,91:92]
-        R41 = nci_rho_u_p_E[:,92:93]
-        R42 = nci_rho_u_p_E[:,93:94]
-        R43 = nci_rho_u_p_E[:,94:95]
-        R44 = nci_rho_u_p_E[:,95:96]
-        R45 = nci_rho_u_p_E[:,96:97]
-        R46 = nci_rho_u_p_E[:,97:98]
-        R47 = nci_rho_u_p_E[:,98:99]
-        Rat = nci_rho_u_p_E[:,99:100]
+        R1   = nci_u_V_T[:,52:53]
+        R2   = nci_u_V_T[:,53:54]
+        R3   = nci_u_V_T[:,54:55]
+        R4   = nci_u_V_T[:,55:56]
+        R5   = nci_u_V_T[:,56:57]
+        R6   = nci_u_V_T[:,57:58]
+        R7   = nci_u_V_T[:,58:59]
+        R8   = nci_u_V_T[:,59:60]
+        R9   = nci_u_V_T[:,60:61]
+        R10  = nci_u_V_T[:,61:62]
+        R11  = nci_u_V_T[:,62:63]
+        R12  = nci_u_V_T[:,63:64]
+        R13  = nci_u_V_T[:,64:65]
+        R14  = nci_u_V_T[:,65:66]
+        R15  = nci_u_V_T[:,66:67]
+        R16  = nci_u_V_T[:,67:68]
+        R17  = nci_u_V_T[:,68:69]
+        R18  = nci_u_V_T[:,69:70]
+        R19  = nci_u_V_T[:,70:71]
+        R20  = nci_u_V_T[:,71:72]
+        R21  = nci_u_V_T[:,72:73]
+        R22  = nci_u_V_T[:,73:74]
+        R23  = nci_u_V_T[:,74:75]
+        R24  = nci_u_V_T[:,75:76]
+        R25  = nci_u_V_T[:,76:77]
+        R26  = nci_u_V_T[:,77:78]
+        R27  = nci_u_V_T[:,78:79]
+        R28  = nci_u_V_T[:,79:80]
+        R29  = nci_u_V_T[:,80:81]
+        R30  = nci_u_V_T[:,81:82]
+        R31  = nci_u_V_T[:,82:83]
+        R32  = nci_u_V_T[:,83:84]
+        R33  = nci_u_V_T[:,84:85]
+        R34  = nci_u_V_T[:,85:86]
+        R35  = nci_u_V_T[:,86:87]
+        R36  = nci_u_V_T[:,87:88]
+        R37  = nci_u_V_T[:,88:89]
+        R38  = nci_u_V_T[:,89:90]
+        R39  = nci_u_V_T[:,90:91]
+        R40  = nci_u_V_T[:,91:92]
+        R41  = nci_u_V_T[:,92:93]
+        R42  = nci_u_V_T[:,93:94]
+        R43  = nci_u_V_T[:,94:95]
+        R44  = nci_u_V_T[:,95:96]
+        R45  = nci_u_V_T[:,96:97]
+        R46  = nci_u_V_T[:,97:98]
+        R47  = nci_u_V_T[:,98:99]
+        Rat  = nci_u_V_T[:,99:100]
 
-        n1_u_x  = tf.gradients(n1 *u, x)[0]
-        n2_u_x  = tf.gradients(n2 *u, x)[0]
-        n3_u_x  = tf.gradients(n3 *u, x)[0]
-        n4_u_x  = tf.gradients(n4 *u, x)[0]
-        n5_u_x  = tf.gradients(n5 *u, x)[0]
-        n6_u_x  = tf.gradients(n6 *u, x)[0]
-        n7_u_x  = tf.gradients(n7 *u, x)[0]
-        n8_u_x  = tf.gradients(n8 *u, x)[0]
-        n9_u_x  = tf.gradients(n9 *u, x)[0]
-        n10_u_x = tf.gradients(n10*u, x)[0]
-        n11_u_x = tf.gradients(n11*u, x)[0]
-        n12_u_x = tf.gradients(n12*u, x)[0]
-        n13_u_x = tf.gradients(n13*u, x)[0]
-        n14_u_x = tf.gradients(n14*u, x)[0]
-        n15_u_x = tf.gradients(n15*u, x)[0]
-        n16_u_x = tf.gradients(n16*u, x)[0]
-        n17_u_x = tf.gradients(n17*u, x)[0]
-        n18_u_x = tf.gradients(n18*u, x)[0]
-        n19_u_x = tf.gradients(n19*u, x)[0]
-        n20_u_x = tf.gradients(n20*u, x)[0]
-        n21_u_x = tf.gradients(n21*u, x)[0]
-        n22_u_x = tf.gradients(n22*u, x)[0]
-        n23_u_x = tf.gradients(n23*u, x)[0]
-        n24_u_x = tf.gradients(n24*u, x)[0]
-        n25_u_x = tf.gradients(n25*u, x)[0]
-        n26_u_x = tf.gradients(n26*u, x)[0]
-        n27_u_x = tf.gradients(n27*u, x)[0]
-        n28_u_x = tf.gradients(n28*u, x)[0]
-        n29_u_x = tf.gradients(n29*u, x)[0]
-        n30_u_x = tf.gradients(n30*u, x)[0]
-        n31_u_x = tf.gradients(n31*u, x)[0]
-        n32_u_x = tf.gradients(n32*u, x)[0]
-        n33_u_x = tf.gradients(n33*u, x)[0]
-        n34_u_x = tf.gradients(n34*u, x)[0]
-        n35_u_x = tf.gradients(n35*u, x)[0]
-        n36_u_x = tf.gradients(n36*u, x)[0]
-        n37_u_x = tf.gradients(n37*u, x)[0]
-        n38_u_x = tf.gradients(n38*u, x)[0]
-        n39_u_x = tf.gradients(n39*u, x)[0]
-        n40_u_x = tf.gradients(n40*u, x)[0]
-        n41_u_x = tf.gradients(n41*u, x)[0]
-        n42_u_x = tf.gradients(n42*u, x)[0]
-        n43_u_x = tf.gradients(n43*u, x)[0]
-        n44_u_x = tf.gradients(n44*u, x)[0]
-        n45_u_x = tf.gradients(n45*u, x)[0]
-        n46_u_x = tf.gradients(n46*u, x)[0]
-        n47_u_x = tf.gradients(n47*u, x)[0]
-        nat_u_x = tf.gradients(nat*u, x)[0]
+        n1_x  = u*tf.gradients(n1 , x)[0]
+        n2_x  = u*tf.gradients(n2 , x)[0]
+        n3_x  = u*tf.gradients(n3 , x)[0]
+        n4_x  = u*tf.gradients(n4 , x)[0]
+        n5_x  = u*tf.gradients(n5 , x)[0]
+        n6_x  = u*tf.gradients(n6 , x)[0]
+        n7_x  = u*tf.gradients(n7 , x)[0]
+        n8_x  = u*tf.gradients(n8 , x)[0]
+        n9_x  = u*tf.gradients(n9 , x)[0]
+        n10_x = u*tf.gradients(n10, x)[0]
+        n11_x = u*tf.gradients(n11, x)[0]
+        n12_x = u*tf.gradients(n12, x)[0]
+        n13_x = u*tf.gradients(n13, x)[0]
+        n14_x = u*tf.gradients(n14, x)[0]
+        n15_x = u*tf.gradients(n15, x)[0]
+        n16_x = u*tf.gradients(n16, x)[0]
+        n17_x = u*tf.gradients(n17, x)[0]
+        n18_x = u*tf.gradients(n18, x)[0]
+        n19_x = u*tf.gradients(n19, x)[0]
+        n20_x = u*tf.gradients(n20, x)[0]
+        n21_x = u*tf.gradients(n21, x)[0]
+        n22_x = u*tf.gradients(n22, x)[0]
+        n23_x = u*tf.gradients(n23, x)[0]
+        n24_x = u*tf.gradients(n24, x)[0]
+        n25_x = u*tf.gradients(n25, x)[0]
+        n26_x = u*tf.gradients(n26, x)[0]
+        n27_x = u*tf.gradients(n27, x)[0]
+        n28_x = u*tf.gradients(n28, x)[0]
+        n29_x = u*tf.gradients(n29, x)[0]
+        n30_x = u*tf.gradients(n30, x)[0]
+        n31_x = u*tf.gradients(n31, x)[0]
+        n32_x = u*tf.gradients(n32, x)[0]
+        n33_x = u*tf.gradients(n33, x)[0]
+        n34_x = u*tf.gradients(n34, x)[0]
+        n35_x = u*tf.gradients(n35, x)[0]
+        n36_x = u*tf.gradients(n36, x)[0]
+        n37_x = u*tf.gradients(n37, x)[0]
+        n38_x = u*tf.gradients(n38, x)[0]
+        n39_x = u*tf.gradients(n39, x)[0]
+        n40_x = u*tf.gradients(n40, x)[0]
+        n41_x = u*tf.gradients(n41, x)[0]
+        n42_x = u*tf.gradients(n42, x)[0]
+        n43_x = u*tf.gradients(n43, x)[0]
+        n44_x = u*tf.gradients(n44, x)[0]
+        n45_x = u*tf.gradients(n45, x)[0]
+        n46_x = u*tf.gradients(n46, x)[0]
+        n47_x = u*tf.gradients(n47, x)[0]
+
+        nat_x = u*tf.gradients(nat, x)[0]
+
+        u_x  = tf.gradients(u, x)[0]
 
         # autodiff gradient #1
-        mass_flow_grad = tf.gradients(rho*u, x)[0]
+        #mass_flow_grad = tf.gradients(rho*u, x)[0]
 
         # autodiff gradient #2
+        #momentum_grad = tf.gradients((rho*u*u + p), x)[0]
         momentum_grad = tf.gradients((rho*u*u + p), x)[0]
 
         # autodiff gradient #3
-        energy_grad = tf.gradients((rho*E + p)*u, x)[0]
+        #energy_grad = tf.gradients((rho*E + p)*u, x)[0]
+        energy_grad = u*tf.gradients(E, x)[0] + (p+E)*u_x
 
         # state residual
         gamma = 1.4
         state_res = p - rho*(gamma-1.0)*(E-0.5*gamma*u*u)
 
-        eqn1  =  n1_u_x  - R1
-        eqn2  =  n2_u_x  - R2
-        eqn3  =  n3_u_x  - R3
-        eqn4  =  n4_u_x  - R4
-        eqn5  =  n5_u_x  - R5
-        eqn6  =  n6_u_x  - R6
-        eqn7  =  n7_u_x  - R7
-        eqn8  =  n8_u_x  - R8
-        eqn9  =  n9_u_x  - R9
-        eqn10 =  n10_u_x - R10
-        eqn11 =  n11_u_x - R11
-        eqn12 =  n12_u_x - R12
-        eqn13 =  n13_u_x - R13
-        eqn14 =  n14_u_x - R14
-        eqn15 =  n15_u_x - R15
-        eqn16 =  n16_u_x - R16
-        eqn17 =  n17_u_x - R17
-        eqn18 =  n18_u_x - R18
-        eqn19 =  n19_u_x - R19
-        eqn20 =  n20_u_x - R20
-        eqn21 =  n21_u_x - R21
-        eqn22 =  n22_u_x - R22
-        eqn23 =  n23_u_x - R23
-        eqn24 =  n24_u_x - R24
-        eqn25 =  n25_u_x - R25
-        eqn26 =  n26_u_x - R26
-        eqn27 =  n27_u_x - R27
-        eqn28 =  n28_u_x - R28
-        eqn29 =  n29_u_x - R29
-        eqn30 =  n30_u_x - R30
-        eqn31 =  n31_u_x - R31
-        eqn32 =  n32_u_x - R32
-        eqn33 =  n33_u_x - R33
-        eqn34 =  n34_u_x - R34
-        eqn35 =  n35_u_x - R35
-        eqn36 =  n36_u_x - R36
-        eqn37 =  n37_u_x - R37
-        eqn38 =  n38_u_x - R38
-        eqn39 =  n39_u_x - R39
-        eqn40 =  n40_u_x - R40
-        eqn41 =  n41_u_x - R41
-        eqn42 =  n42_u_x - R42
-        eqn43 =  n43_u_x - R43
-        eqn44 =  n44_u_x - R44
-        eqn45 =  n45_u_x - R45
-        eqn46 =  n46_u_x - R46
-        eqn47 =  n47_u_x - R47
-        eqnat =  nat_u_x - Rat
+        eqn1  = n1_x  + n1 *u_x  - R1
+        eqn2  = n2_x  + n2 *u_x  - R2
+        eqn3  = n3_x  + n3 *u_x  - R3
+        eqn4  = n4_x  + n4 *u_x  - R4
+        eqn5  = n5_x  + n5 *u_x  - R5
+        eqn6  = n6_x  + n6 *u_x  - R6
+        eqn7  = n7_x  + n7 *u_x  - R7
+        eqn8  = n8_x  + n8 *u_x  - R8
+        eqn9  = n9_x  + n9 *u_x  - R9
+        eqn10 = n10_x + n10*u_x - R10
+        eqn11 = n11_x + n11*u_x - R11
+        eqn12 = n12_x + n12*u_x - R12
+        eqn13 = n13_x + n13*u_x - R13
+        eqn14 = n14_x + n14*u_x - R14
+        eqn15 = n15_x + n15*u_x - R15
+        eqn16 = n16_x + n16*u_x - R16
+        eqn17 = n17_x + n17*u_x - R17
+        eqn18 = n18_x + n18*u_x - R18
+        eqn19 = n19_x + n19*u_x - R19
+        eqn20 = n20_x + n20*u_x - R20
+        eqn21 = n21_x + n21*u_x - R21
+        eqn22 = n22_x + n22*u_x - R22
+        eqn23 = n23_x + n23*u_x - R23
+        eqn24 = n24_x + n24*u_x - R24
+        eqn25 = n25_x + n25*u_x - R25
+        eqn26 = n26_x + n26*u_x - R26
+        eqn27 = n27_x + n27*u_x - R27
+        eqn28 = n28_x + n28*u_x - R28
+        eqn29 = n29_x + n29*u_x - R29
+        eqn30 = n30_x + n30*u_x - R30
+        eqn31 = n31_x + n31*u_x - R31
+        eqn32 = n32_x + n32*u_x - R32
+        eqn33 = n33_x + n33*u_x - R33
+        eqn34 = n34_x + n34*u_x - R34
+        eqn35 = n35_x + n35*u_x - R35
+        eqn36 = n36_x + n36*u_x - R36
+        eqn37 = n37_x + n37*u_x - R37
+        eqn38 = n38_x + n38*u_x - R38
+        eqn39 = n39_x + n39*u_x - R39
+        eqn40 = n40_x + n40*u_x - R40
+        eqn41 = n41_x + n41*u_x - R41
+        eqn42 = n42_x + n42*u_x - R42
+        eqn43 = n43_x + n43*u_x - R43
+        eqn44 = n44_x + n44*u_x - R44
+        eqn45 = n45_x + n45*u_x - R45
+        eqn46 = n46_x + n46*u_x - R46
+        eqn47 = n47_x + n47*u_x - R47
+        eqnat = nat_x + nat*u_x - Rat
 
         eq1 =  mass_flow_grad
         eq2 =  momentum_grad
@@ -928,8 +850,7 @@ class PINN:
                R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, \
                R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, \
                R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, Rat, \
-               eq1, eq2, eq3, eq4, \
-               eqn1, eqn2, eqn3, eqn4, eqn5, eqn6, eqn7, eqn8, eqn9, eqn10, eqn11, eqn12, eqn13, eqn14, \
+               eq1, eq2, eq3, eq4, eqn1, eqn2, eqn3, eqn4, eqn5, eqn6, eqn7, eqn8, eqn9, eqn10, eqn11, eqn12, eqn13, eqn14, \
                eqn15, eqn16, eqn17, eqn18, eqn19, eqn20, eqn21, eqn22, eqn23, eqn24, eqn25, eqn26, eqn27, eqn28, \
                eqn29, eqn30, eqn31, eqn32, eqn33, eqn34, eqn35, eqn36, eqn37, eqn38, eqn39, eqn40, eqn41, eqn42, \
                eqn43, eqn44, eqn45, eqn46, eqn47, eqnat
@@ -937,11 +858,6 @@ class PINN:
     # callback method just prints the current loss (cost) value of the network.
     def callback(self, loss):
         print('Loss: %.3e' % (loss))
-
-    tf.keras.callbacks.EarlyStopping(
-    monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto',
-    baseline=None, restore_best_weights=False
-    )
 
     # Train method actually trains the network weights based on the target
     # of minimizing the loss. tf_dict is defined as the set of input and
@@ -1128,14 +1044,12 @@ class PINN:
                n19_test, n20_test, n21_test, n22_test, n23_test, n24_test, n25_test, n26_test, n27_test, \
                n28_test, n29_test, n30_test, n31_test, n32_test, n33_test, n34_test, n35_test, n36_test, \
                n37_test, n38_test, n39_test, n40_test, n41_test, n42_test, n43_test, n44_test, n45_test, \
-               n46_test, n47_test, nat_test, \
-               rho_test, u_test, p_test, E_test, \
-               R1_test, R2_test, R3_test, R4_test, R5_test, R6_test, R7_test, R8_test, R9_test, R10_test, \
-               R11_test, R12_test, R13_test, R14_test, R15_test, R16_test, R17_test, R18_test, R19_test,  \
-               R20_test, R21_test, R22_test, R23_test, R24_test, R25_test, R26_test, R27_test, R28_test,  \
-               R29_test, R30_test, R31_test, R32_test, R33_test, R34_test, R35_test, R36_test, R37_test,  \
-               R38_test, R39_test, R40_test, R41_test, R42_test, R43_test, R44_test, R45_test, R46_test,  \
-               R47_test, Rat_test
+               n46_test, n47_test, nat_test, rho_test, u_test, p_test, E_test, R1_test, R2_test, R3_test,\
+               R4_test, R5_test, R6_test, R7_test, R8_test, R9_test, R10_test, R11_test, R12_test, \
+               R13_test, R14_test, R15_test, R16_test, R17_test, R18_test, R19_test, R20_test, R21_test, \
+               R22_test, R23_test, R24_test, R25_test, R26_test, R27_test, R28_test, R29_test, R30_test, \
+               R31_test, R32_test, R33_test, R34_test, R35_test, R36_test, R37_test, R38_test, R39_test, \
+               R40_test, R41_test, R42_test, R43_test, R44_test, R45_test, R46_test, R47_test, Rat_test
 
 def plot_solution(X_star, u_star, index):
 
@@ -1186,14 +1100,9 @@ if __name__ == "__main__":
     # layers is a vector of all the node in each of the neural network layers
     # First value, 1 respresents the input layer with 1 parameter (x) while
     # last value 100 is the number of outputs desired
-    layers = [1, 100]
-    ###layers = [1, 10, 25, 15, 100]
+    layers = [1, 10, 25, 15, 100]
     #layers = [1, 20, 20, 20, 20, 20, 20, 20, 20, 20, 100]
     #layers = [1, 40, 40, 40, 40, 100]
-    #layers = [1, 10, 10, 10, 100]
-    #layers = [1, 15, 25, 25, 15, 100]
-    #layers = [1, 10,10,10,10,10,10,10, 100]
-
 
     # Load Data
     # The Matlab generated data was stored in file name 'dataset_STS.txt', which
@@ -1202,12 +1111,11 @@ if __name__ == "__main__":
 
     # The training set length N_train is taken to be 85% of the entire dataset.
     # The rest 15% will be used as test set to validate the result of the training.
-    #train_frac = 0.01
-    #N_train = int(train_frac*data.shape[0])
+    N_train = int(0.75*data.shape[0])
 
     # idx is a random numbers vector, which will be used to randomly pick 85% of
     # the data from the dataset.
-    #idx = np.random.choice(range(data.shape[0]), size=(N_train,), replace=False)
+    idx = np.random.choice(range(data.shape[0]), size=(N_train,), replace=False)
 
     # The rest is mere slicing of dataset to get all required parameters.
 
@@ -1422,417 +1330,322 @@ if __name__ == "__main__":
                                                 R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18,
                                                 R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34,
                                                 R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47,
-                                                Rat, test_size=0.15, random_state=0)
+                                                Rat, test_size=0.20, random_state=0)
 
-    sc_x   = MinMaxScaler(); sc_x.fit(x_train)    ; x_train   = sc_x.transform(x_train)
-    sc_n1  = MinMaxScaler(); sc_n1.fit(n1_train)  ; n1_train  = sc_n1.transform(n1_train)
-    sc_n2  = MinMaxScaler(); sc_n2.fit(n2_train)  ; n2_train  = sc_n2.transform(n2_train)
-    sc_n3  = MinMaxScaler(); sc_n3.fit(n3_train)  ; n3_train  = sc_n3.transform(n3_train)
-    sc_n4  = MinMaxScaler(); sc_n4.fit(n4_train)  ; n4_train  = sc_n4.transform(n4_train)
-    sc_n5  = MinMaxScaler(); sc_n5.fit(n5_train)  ; n5_train  = sc_n5.transform(n5_train)
-    sc_n6  = MinMaxScaler(); sc_n6.fit(n6_train)  ; n6_train  = sc_n6.transform(n6_train)
-    sc_n7  = MinMaxScaler(); sc_n7.fit(n7_train)  ; n7_train  = sc_n7.transform(n7_train)
-    sc_n8  = MinMaxScaler(); sc_n8.fit(n8_train)  ; n8_train  = sc_n8.transform(n8_train)
-    sc_n9  = MinMaxScaler(); sc_n9.fit(n9_train)  ; n9_train  = sc_n9.transform(n9_train)
-    sc_n10 = MinMaxScaler(); sc_n10.fit(n10_train); n10_train = sc_n10.transform(n10_train)
-    sc_n11 = MinMaxScaler(); sc_n11.fit(n11_train); n11_train = sc_n11.transform(n11_train)
-    sc_n12 = MinMaxScaler(); sc_n12.fit(n12_train); n12_train = sc_n12.transform(n12_train)
-    sc_n13 = MinMaxScaler(); sc_n13.fit(n13_train); n13_train = sc_n13.transform(n13_train)
-    sc_n14 = MinMaxScaler(); sc_n14.fit(n14_train); n14_train = sc_n14.transform(n14_train)
-    sc_n15 = MinMaxScaler(); sc_n15.fit(n15_train); n15_train = sc_n15.transform(n15_train)
-    sc_n16 = MinMaxScaler(); sc_n16.fit(n16_train); n16_train = sc_n16.transform(n16_train)
-    sc_n17 = MinMaxScaler(); sc_n17.fit(n17_train); n17_train = sc_n17.transform(n17_train)
-    sc_n18 = MinMaxScaler(); sc_n18.fit(n18_train); n18_train = sc_n18.transform(n18_train)
-    sc_n19 = MinMaxScaler(); sc_n19.fit(n19_train); n19_train = sc_n19.transform(n19_train)
-    sc_n20 = MinMaxScaler(); sc_n20.fit(n20_train); n20_train = sc_n20.transform(n20_train)
-    sc_n21 = MinMaxScaler(); sc_n21.fit(n21_train); n21_train = sc_n21.transform(n21_train)
-    sc_n22 = MinMaxScaler(); sc_n22.fit(n22_train); n22_train = sc_n22.transform(n22_train)
-    sc_n23 = MinMaxScaler(); sc_n23.fit(n23_train); n23_train = sc_n23.transform(n23_train)
-    sc_n24 = MinMaxScaler(); sc_n24.fit(n24_train); n24_train = sc_n24.transform(n24_train)
-    sc_n25 = MinMaxScaler(); sc_n25.fit(n25_train); n25_train = sc_n25.transform(n25_train)
-    sc_n26 = MinMaxScaler(); sc_n26.fit(n26_train); n26_train = sc_n26.transform(n26_train)
-    sc_n27 = MinMaxScaler(); sc_n27.fit(n27_train); n27_train = sc_n27.transform(n27_train)
-    sc_n28 = MinMaxScaler(); sc_n28.fit(n28_train); n28_train = sc_n28.transform(n28_train)
-    sc_n29 = MinMaxScaler(); sc_n29.fit(n29_train); n29_train = sc_n29.transform(n29_train)
-    sc_n30 = MinMaxScaler(); sc_n30.fit(n30_train); n30_train = sc_n30.transform(n30_train)
-    sc_n31 = MinMaxScaler(); sc_n31.fit(n31_train); n31_train = sc_n31.transform(n31_train)
-    sc_n32 = MinMaxScaler(); sc_n32.fit(n32_train); n32_train = sc_n32.transform(n32_train)
-    sc_n33 = MinMaxScaler(); sc_n33.fit(n33_train); n33_train = sc_n33.transform(n33_train)
-    sc_n34 = MinMaxScaler(); sc_n34.fit(n34_train); n34_train = sc_n34.transform(n34_train)
-    sc_n35 = MinMaxScaler(); sc_n35.fit(n35_train); n35_train = sc_n35.transform(n35_train)
-    sc_n36 = MinMaxScaler(); sc_n36.fit(n36_train); n36_train = sc_n36.transform(n36_train)
-    sc_n37 = MinMaxScaler(); sc_n37.fit(n37_train); n37_train = sc_n37.transform(n37_train)
-    sc_n38 = MinMaxScaler(); sc_n38.fit(n38_train); n38_train = sc_n38.transform(n38_train)
-    sc_n39 = MinMaxScaler(); sc_n39.fit(n39_train); n39_train = sc_n39.transform(n39_train)
-    sc_n40 = MinMaxScaler(); sc_n40.fit(n40_train); n40_train = sc_n40.transform(n40_train)
-    sc_n41 = MinMaxScaler(); sc_n41.fit(n41_train); n41_train = sc_n41.transform(n41_train)
-    sc_n42 = MinMaxScaler(); sc_n42.fit(n42_train); n42_train = sc_n42.transform(n42_train)
-    sc_n43 = MinMaxScaler(); sc_n43.fit(n43_train); n43_train = sc_n43.transform(n43_train)
-    sc_n44 = MinMaxScaler(); sc_n44.fit(n44_train); n44_train = sc_n44.transform(n44_train)
-    sc_n45 = MinMaxScaler(); sc_n45.fit(n45_train); n45_train = sc_n45.transform(n45_train)
-    sc_n46 = MinMaxScaler(); sc_n46.fit(n46_train); n46_train = sc_n46.transform(n46_train)
-    sc_n47 = MinMaxScaler(); sc_n47.fit(n47_train); n47_train = sc_n47.transform(n47_train)
-    sc_nat = MinMaxScaler(); sc_nat.fit(nat_train); nat_train = sc_nat.transform(nat_train)
-    sc_rho = MinMaxScaler(); sc_rho.fit(rho_train); rho_train = sc_rho.transform(rho_train)
-    sc_u   = MinMaxScaler(); sc_u.fit(u_train)    ; u_train   = sc_u.transform(u_train)
-    sc_p   = MinMaxScaler(); sc_p.fit(p_train)    ; p_train   = sc_p.transform(p_train)
-    sc_E   = MinMaxScaler(); sc_E.fit(E_train)    ; E_train   = sc_E.transform(E_train)
-    sc_R1  = MinMaxScaler(); sc_R1.fit(R1_train)  ; R1_train  = sc_R1.transform(R1_train)
-    sc_R2  = MinMaxScaler(); sc_R2.fit(R2_train)  ; R2_train  = sc_R2.transform(R2_train)
-    sc_R3  = MinMaxScaler(); sc_R3.fit(R3_train)  ; R3_train  = sc_R3.transform(R3_train)
-    sc_R4  = MinMaxScaler(); sc_R4.fit(R4_train)  ; R4_train  = sc_R4.transform(R4_train)
-    sc_R5  = MinMaxScaler(); sc_R5.fit(R5_train)  ; R5_train  = sc_R5.transform(R5_train)
-    sc_R6  = MinMaxScaler(); sc_R6.fit(R6_train)  ; R6_train  = sc_R6.transform(R6_train)
-    sc_R7  = MinMaxScaler(); sc_R7.fit(R7_train)  ; R7_train  = sc_R7.transform(R7_train)
-    sc_R8  = MinMaxScaler(); sc_R8.fit(R8_train)  ; R8_train  = sc_R8.transform(R8_train)
-    sc_R9  = MinMaxScaler(); sc_R9.fit(R9_train)  ; R9_train  = sc_R9.transform(R9_train)
-    sc_R10 = MinMaxScaler(); sc_R10.fit(R10_train); R10_train = sc_R10.transform(R10_train)
-    sc_R11 = MinMaxScaler(); sc_R11.fit(R11_train); R11_train = sc_R11.transform(R11_train)
-    sc_R12 = MinMaxScaler(); sc_R12.fit(R12_train); R12_train = sc_R12.transform(R12_train)
-    sc_R13 = MinMaxScaler(); sc_R13.fit(R13_train); R13_train = sc_R13.transform(R13_train)
-    sc_R14 = MinMaxScaler(); sc_R14.fit(R14_train); R14_train = sc_R14.transform(R14_train)
-    sc_R15 = MinMaxScaler(); sc_R15.fit(R15_train); R15_train = sc_R15.transform(R15_train)
-    sc_R16 = MinMaxScaler(); sc_R16.fit(R16_train); R16_train = sc_R16.transform(R16_train)
-    sc_R17 = MinMaxScaler(); sc_R17.fit(R17_train); R17_train = sc_R17.transform(R17_train)
-    sc_R18 = MinMaxScaler(); sc_R18.fit(R18_train); R18_train = sc_R18.transform(R18_train)
-    sc_R19 = MinMaxScaler(); sc_R19.fit(R19_train); R19_train = sc_R19.transform(R19_train)
-    sc_R20 = MinMaxScaler(); sc_R20.fit(R20_train); R20_train = sc_R20.transform(R20_train)
-    sc_R21 = MinMaxScaler(); sc_R21.fit(R21_train); R21_train = sc_R21.transform(R21_train)
-    sc_R22 = MinMaxScaler(); sc_R22.fit(R22_train); R22_train = sc_R22.transform(R22_train)
-    sc_R23 = MinMaxScaler(); sc_R23.fit(R23_train); R23_train = sc_R23.transform(R23_train)
-    sc_R24 = MinMaxScaler(); sc_R24.fit(R24_train); R24_train = sc_R24.transform(R24_train)
-    sc_R25 = MinMaxScaler(); sc_R25.fit(R25_train); R25_train = sc_R25.transform(R25_train)
-    sc_R26 = MinMaxScaler(); sc_R26.fit(R26_train); R26_train = sc_R26.transform(R26_train)
-    sc_R27 = MinMaxScaler(); sc_R27.fit(R27_train); R27_train = sc_R27.transform(R27_train)
-    sc_R28 = MinMaxScaler(); sc_R28.fit(R28_train); R28_train = sc_R28.transform(R28_train)
-    sc_R29 = MinMaxScaler(); sc_R29.fit(R29_train); R29_train = sc_R29.transform(R29_train)
-    sc_R30 = MinMaxScaler(); sc_R30.fit(R30_train); R30_train = sc_R30.transform(R30_train)
-    sc_R31 = MinMaxScaler(); sc_R31.fit(R31_train); R31_train = sc_R31.transform(R31_train)
-    sc_R32 = MinMaxScaler(); sc_R32.fit(R32_train); R32_train = sc_R32.transform(R32_train)
-    sc_R33 = MinMaxScaler(); sc_R33.fit(R33_train); R33_train = sc_R33.transform(R33_train)
-    sc_R34 = MinMaxScaler(); sc_R34.fit(R34_train); R34_train = sc_R34.transform(R34_train)
-    sc_R35 = MinMaxScaler(); sc_R35.fit(R35_train); R35_train = sc_R35.transform(R35_train)
-    sc_R36 = MinMaxScaler(); sc_R36.fit(R36_train); R36_train = sc_R36.transform(R36_train)
-    sc_R37 = MinMaxScaler(); sc_R37.fit(R37_train); R37_train = sc_R37.transform(R37_train)
-    sc_R38 = MinMaxScaler(); sc_R38.fit(R38_train); R38_train = sc_R38.transform(R38_train)
-    sc_R39 = MinMaxScaler(); sc_R39.fit(R39_train); R39_train = sc_R39.transform(R39_train)
-    sc_R40 = MinMaxScaler(); sc_R40.fit(R40_train); R40_train = sc_R40.transform(R40_train)
-    sc_R41 = MinMaxScaler(); sc_R41.fit(R41_train); R41_train = sc_R41.transform(R41_train)
-    sc_R42 = MinMaxScaler(); sc_R42.fit(R42_train); R42_train = sc_R42.transform(R42_train)
-    sc_R43 = MinMaxScaler(); sc_R43.fit(R43_train); R43_train = sc_R43.transform(R43_train)
-    sc_R44 = MinMaxScaler(); sc_R44.fit(R44_train); R44_train = sc_R44.transform(R44_train)
-    sc_R45 = MinMaxScaler(); sc_R45.fit(R45_train); R45_train = sc_R45.transform(R45_train)
-    sc_R46 = MinMaxScaler(); sc_R46.fit(R46_train); R46_train = sc_R46.transform(R46_train)
-    sc_R47 = MinMaxScaler(); sc_R47.fit(R47_train); R47_train = sc_R47.transform(R47_train)
-    sc_Rat = MinMaxScaler(); sc_Rat.fit(Rat_train); Rat_train = sc_Rat.transform(Rat_train)
+    sc_x   = MinMaxScaler() #StandardScaler() RobustScaler() MaxAbsScaler()
+    sc_n1  = MinMaxScaler()
+    sc_n2  = MinMaxScaler()
+    sc_n3  = MinMaxScaler()
+    sc_n4  = MinMaxScaler()
+    sc_n5  = MinMaxScaler()
+    sc_n6  = MinMaxScaler()
+    sc_n7  = MinMaxScaler()
+    sc_n8  = MinMaxScaler()
+    sc_n9  = MinMaxScaler()
+    sc_n10 = MinMaxScaler()
+    sc_n11 = MinMaxScaler()
+    sc_n12 = MinMaxScaler()
+    sc_n12 = MinMaxScaler()
+    sc_n13 = MinMaxScaler()
+    sc_n14 = MinMaxScaler()
+    sc_n15 = MinMaxScaler()
+    sc_n16 = MinMaxScaler()
+    sc_n17 = MinMaxScaler()
+    sc_n18 = MinMaxScaler()
+    sc_n19 = MinMaxScaler()
+    sc_n20 = MinMaxScaler()
+    sc_n21 = MinMaxScaler()
+    sc_n22 = MinMaxScaler()
+    sc_n23 = MinMaxScaler()
+    sc_n24 = MinMaxScaler()
+    sc_n25 = MinMaxScaler()
+    sc_n26 = MinMaxScaler()
+    sc_n27 = MinMaxScaler()
+    sc_n28 = MinMaxScaler()
+    sc_n29 = MinMaxScaler()
+    sc_n30 = MinMaxScaler()
+    sc_n31 = MinMaxScaler()
+    sc_n32 = MinMaxScaler()
+    sc_n33 = MinMaxScaler()
+    sc_n34 = MinMaxScaler()
+    sc_n35 = MinMaxScaler()
+    sc_n36 = MinMaxScaler()
+    sc_n37 = MinMaxScaler()
+    sc_n38 = MinMaxScaler()
+    sc_n39 = MinMaxScaler()
+    sc_n40 = MinMaxScaler()
+    sc_n41 = MinMaxScaler()
+    sc_n42 = MinMaxScaler()
+    sc_n43 = MinMaxScaler()
+    sc_n44 = MinMaxScaler()
+    sc_n45 = MinMaxScaler()
+    sc_n46 = MinMaxScaler()
+    sc_n47 = MinMaxScaler()
+    sc_nat = MinMaxScaler()
+    sc_rho = MinMaxScaler()
+    sc_u   = MinMaxScaler()
+    sc_p   = MinMaxScaler()
+    sc_E   = MinMaxScaler()
+    sc_R1  = MinMaxScaler()
+    sc_R2  = MinMaxScaler()
+    sc_R3  = MinMaxScaler()
+    sc_R4  = MinMaxScaler()
+    sc_R5  = MinMaxScaler()
+    sc_R6  = MinMaxScaler()
+    sc_R7  = MinMaxScaler()
+    sc_R8  = MinMaxScaler()
+    sc_R9  = MinMaxScaler()
+    sc_R10 = MinMaxScaler()
+    sc_R11 = MinMaxScaler()
+    sc_R12 = MinMaxScaler()
+    sc_R13 = MinMaxScaler()
+    sc_R14 = MinMaxScaler()
+    sc_R15 = MinMaxScaler()
+    sc_R16 = MinMaxScaler()
+    sc_R17 = MinMaxScaler()
+    sc_R18 = MinMaxScaler()
+    sc_R19 = MinMaxScaler()
+    sc_R20 = MinMaxScaler()
+    sc_R21 = MinMaxScaler()
+    sc_R22 = MinMaxScaler()
+    sc_R23 = MinMaxScaler()
+    sc_R24 = MinMaxScaler()
+    sc_R25 = MinMaxScaler()
+    sc_R26 = MinMaxScaler()
+    sc_R27 = MinMaxScaler()
+    sc_R28 = MinMaxScaler()
+    sc_R29 = MinMaxScaler()
+    sc_R30 = MinMaxScaler()
+    sc_R31 = MinMaxScaler()
+    sc_R32 = MinMaxScaler()
+    sc_R33 = MinMaxScaler()
+    sc_R34 = MinMaxScaler()
+    sc_R35 = MinMaxScaler()
+    sc_R36 = MinMaxScaler()
+    sc_R37 = MinMaxScaler()
+    sc_R38 = MinMaxScaler()
+    sc_R39 = MinMaxScaler()
+    sc_R40 = MinMaxScaler()
+    sc_R41 = MinMaxScaler()
+    sc_R42 = MinMaxScaler()
+    sc_R43 = MinMaxScaler()
+    sc_R44 = MinMaxScaler()
+    sc_R45 = MinMaxScaler()
+    sc_R46 = MinMaxScaler()
+    sc_R47 = MinMaxScaler()
+    sc_Rat = MinMaxScaler()
 
-#### Training set
-#    x_train   = sc_x.fit_transform(x_train)
-#    n1_train  = sc_n1.fit_transform(n1_train)
-#    n2_train  = sc_n2.fit_transform(n2_train)
-#    n3_train  = sc_n3.fit_transform(n3_train)
-#    n4_train  = sc_n4.fit_transform(n4_train)
-#    n5_train  = sc_n5.fit_transform(n5_train)
-#    n6_train  = sc_n6.fit_transform(n6_train)
-#    n7_train  = sc_n7.fit_transform(n7_train)
-#    n8_train  = sc_n8.fit_transform(n8_train)
-#    n9_train  = sc_n9.fit_transform(n9_train)
-#    n10_train = sc_n10.fit_transform(n10_train)
-#    n11_train = sc_n11.fit_transform(n11_train)
-#    n12_train = sc_n12.fit_transform(n12_train)
-#    n13_train = sc_n13.fit_transform(n13_train)
-#    n14_train = sc_n14.fit_transform(n14_train)
-#    n15_train = sc_n15.fit_transform(n15_train)
-#    n16_train = sc_n16.fit_transform(n16_train)
-#    n17_train = sc_n17.fit_transform(n17_train)
-#    n18_train = sc_n18.fit_transform(n18_train)
-#    n19_train = sc_n19.fit_transform(n19_train)
-#    n20_train = sc_n20.fit_transform(n20_train)
-#    n21_train = sc_n21.fit_transform(n21_train)
-#    n22_train = sc_n22.fit_transform(n22_train)
-#    n23_train = sc_n23.fit_transform(n23_train)
-#    n24_train = sc_n24.fit_transform(n24_train)
-#    n25_train = sc_n25.fit_transform(n25_train)
-#    n26_train = sc_n26.fit_transform(n26_train)
-#    n27_train = sc_n27.fit_transform(n27_train)
-#    n28_train = sc_n28.fit_transform(n28_train)
-#    n29_train = sc_n29.fit_transform(n29_train)
-#    n30_train = sc_n30.fit_transform(n30_train)
-#    n31_train = sc_n31.fit_transform(n31_train)
-#    n32_train = sc_n32.fit_transform(n32_train)
-#    n33_train = sc_n33.fit_transform(n33_train)
-#    n34_train = sc_n34.fit_transform(n34_train)
-#    n35_train = sc_n35.fit_transform(n35_train)
-#    n36_train = sc_n36.fit_transform(n36_train)
-#    n37_train = sc_n37.fit_transform(n37_train)
-#    n38_train = sc_n38.fit_transform(n38_train)
-#    n39_train = sc_n39.fit_transform(n39_train)
-#    n40_train = sc_n40.fit_transform(n40_train)
-#    n41_train = sc_n41.fit_transform(n41_train)
-#    n42_train = sc_n42.fit_transform(n42_train)
-#    n43_train = sc_n43.fit_transform(n43_train)
-#    n44_train = sc_n44.fit_transform(n44_train)
-#    n45_train = sc_n45.fit_transform(n45_train)
-#    n46_train = sc_n46.fit_transform(n46_train)
-#    n47_train = sc_n47.fit_transform(n47_train)
-#    nat_train = sc_nat.fit_transform(nat_train)
-#    rho_train = sc_rho.fit_transform(rho_train)
-#    u_train   = sc_u.fit_transform(u_train)
-#    p_train   = sc_p.fit_transform(p_train)
-#    E_train   = sc_E.fit_transform(E_train)
-#    R1_train  = sc_R1.fit_transform(R1_train)
-#    R2_train  = sc_R2.fit_transform(R2_train)
-#    R3_train  = sc_R3.fit_transform(R3_train)
-#    R4_train  = sc_R4.fit_transform(R4_train)
-#    R5_train  = sc_R5.fit_transform(R5_train)
-#    R6_train  = sc_R6.fit_transform(R6_train)
-#    R7_train  = sc_R7.fit_transform(R7_train)
-#    R8_train  = sc_R8.fit_transform(R8_train)
-#    R9_train  = sc_R9.fit_transform(R9_train)
-#    R10_train = sc_R10.fit_transform(R10_train)
-#    R11_train = sc_R11.fit_transform(R11_train)
-#    R12_train = sc_R12.fit_transform(R12_train)
-#    R13_train = sc_R13.fit_transform(R13_train)
-#    R14_train = sc_R14.fit_transform(R14_train)
-#    R15_train = sc_R15.fit_transform(R15_train)
-#    R16_train = sc_R16.fit_transform(R16_train)
-#    R17_train = sc_R17.fit_transform(R17_train)
-#    R18_train = sc_R18.fit_transform(R18_train)
-#    R19_train = sc_R19.fit_transform(R19_train)
-#    R20_train = sc_R20.fit_transform(R20_train)
-#    R21_train = sc_R21.fit_transform(R21_train)
-#    R22_train = sc_R22.fit_transform(R22_train)
-#    R23_train = sc_R23.fit_transform(R23_train)
-#    R24_train = sc_R24.fit_transform(R24_train)
-#    R25_train = sc_R25.fit_transform(R25_train)
-#    R26_train = sc_R26.fit_transform(R26_train)
-#    R27_train = sc_R27.fit_transform(R27_train)
-#    R28_train = sc_R28.fit_transform(R28_train)
-#    R29_train = sc_R29.fit_transform(R29_train)
-#    R30_train = sc_R30.fit_transform(R30_train)
-#    R31_train = sc_R31.fit_transform(R31_train)
-#    R32_train = sc_R32.fit_transform(R32_train)
-#    R33_train = sc_R33.fit_transform(R33_train)
-#    R34_train = sc_R34.fit_transform(R34_train)
-#    R35_train = sc_R35.fit_transform(R35_train)
-#    R36_train = sc_R36.fit_transform(R36_train)
-#    R37_train = sc_R37.fit_transform(R37_train)
-#    R38_train = sc_R38.fit_transform(R38_train)
-#    R39_train = sc_R39.fit_transform(R39_train)
-#    R40_train = sc_R40.fit_transform(R40_train)
-#    R41_train = sc_R41.fit_transform(R41_train)
-#    R42_train = sc_R42.fit_transform(R42_train)
-#    R43_train = sc_R43.fit_transform(R43_train)
-#    R44_train = sc_R44.fit_transform(R44_train)
-#    R45_train = sc_R45.fit_transform(R45_train)
-#    R46_train = sc_R46.fit_transform(R46_train)
-#    R47_train = sc_R47.fit_transform(R47_train)
-#    Rat_train = sc_Rat.fit_transform(Rat_train)
+    # Training set
+    x_train   = sc_x.fit_transform(x_train)
 
-#### Testing set
-#    x_test   = sc_x.fit_transform(x_test)
-#    n1_test  = sc_n1.fit_transform(n1_test)
-#    n2_test  = sc_n2.fit_transform(n2_test)
-#    n3_test  = sc_n3.fit_transform(n3_test)
-#    n4_test  = sc_n4.fit_transform(n4_test)
-#    n5_test  = sc_n5.fit_transform(n5_test)
-#    n6_test  = sc_n6.fit_transform(n6_test)
-#    n7_test  = sc_n7.fit_transform(n7_test)
-#    n8_test  = sc_n8.fit_transform(n8_test)
-#    n9_test  = sc_n9.fit_transform(n9_test)
-#    n10_test = sc_n10.fit_transform(n10_test)
-#    n11_test = sc_n11.fit_transform(n11_test)
-#    n12_test = sc_n12.fit_transform(n12_test)
-#    n13_test = sc_n13.fit_transform(n13_test)
-#    n14_test = sc_n14.fit_transform(n14_test)
-#    n15_test = sc_n15.fit_transform(n15_test)
-#    n16_test = sc_n16.fit_transform(n16_test)
-#    n17_test = sc_n17.fit_transform(n17_test)
-#    n18_test = sc_n18.fit_transform(n18_test)
-#    n19_test = sc_n19.fit_transform(n19_test)
-#    n20_test = sc_n20.fit_transform(n20_test)
-#    n21_test = sc_n21.fit_transform(n21_test)
-#    n22_test = sc_n22.fit_transform(n22_test)
-#    n23_test = sc_n23.fit_transform(n23_test)
-#    n24_test = sc_n24.fit_transform(n24_test)
-#    n25_test = sc_n25.fit_transform(n25_test)
-#    n26_test = sc_n26.fit_transform(n26_test)
-#    n27_test = sc_n27.fit_transform(n27_test)
-#    n28_test = sc_n28.fit_transform(n28_test)
-#    n29_test = sc_n29.fit_transform(n29_test)
-#    n30_test = sc_n30.fit_transform(n30_test)
-#    n31_test = sc_n31.fit_transform(n31_test)
-#    n32_test = sc_n32.fit_transform(n32_test)
-#    n33_test = sc_n33.fit_transform(n33_test)
-#    n34_test = sc_n34.fit_transform(n34_test)
-#    n35_test = sc_n35.fit_transform(n35_test)
-#    n36_test = sc_n36.fit_transform(n36_test)
-#    n37_test = sc_n37.fit_transform(n37_test)
-#    n38_test = sc_n38.fit_transform(n38_test)
-#    n39_test = sc_n39.fit_transform(n39_test)
-#    n40_test = sc_n40.fit_transform(n40_test)
-#    n41_test = sc_n41.fit_transform(n41_test)
-#    n42_test = sc_n42.fit_transform(n42_test)
-#    n43_test = sc_n43.fit_transform(n43_test)
-#    n44_test = sc_n44.fit_transform(n44_test)
-#    n45_test = sc_n45.fit_transform(n45_test)
-#    n46_test = sc_n46.fit_transform(n46_test)
-#    n47_test = sc_n47.fit_transform(n47_test)
-#    nat_test = sc_nat.fit_transform(nat_test)
-#    rho_test = sc_rho.fit_transform(rho_test)
-#    u_test   = sc_u.fit_transform(u_test)
-#    p_test   = sc_p.fit_transform(p_test)
-#    E_test   = sc_E.fit_transform(E_test)
-#    R1_test  = sc_R1.fit_transform(R1_test)
-#    R2_test  = sc_R2.fit_transform(R2_test)
-#    R3_test  = sc_R3.fit_transform(R3_test)
-#    R4_test  = sc_R4.fit_transform(R4_test)
-#    R5_test  = sc_R5.fit_transform(R5_test)
-#    R6_test  = sc_R6.fit_transform(R6_test)
-#    R7_test  = sc_R7.fit_transform(R7_test)
-#    R8_test  = sc_R8.fit_transform(R8_test)
-#    R9_test  = sc_R9.fit_transform(R9_test)
-#    R10_test = sc_R10.fit_transform(R10_test)
-#    R11_test = sc_R11.fit_transform(R11_test)
-#    R12_test = sc_R12.fit_transform(R12_test)
-#    R13_test = sc_R13.fit_transform(R13_test)
-#    R14_test = sc_R14.fit_transform(R14_test)
-#    R15_test = sc_R15.fit_transform(R15_test)
-#    R16_test = sc_R16.fit_transform(R16_test)
-#    R17_test = sc_R17.fit_transform(R17_test)
-#    R18_test = sc_R18.fit_transform(R18_test)
-#    R19_test = sc_R19.fit_transform(R19_test)
-#    R20_test = sc_R20.fit_transform(R20_test)
-#    R21_test = sc_R21.fit_transform(R21_test)
-#    R22_test = sc_R22.fit_transform(R22_test)
-#    R23_test = sc_R23.fit_transform(R23_test)
-#    R24_test = sc_R24.fit_transform(R24_test)
-#    R25_test = sc_R25.fit_transform(R25_test)
-#    R26_test = sc_R26.fit_transform(R26_test)
-#    R27_test = sc_R27.fit_transform(R27_test)
-#    R28_test = sc_R28.fit_transform(R28_test)
-#    R29_test = sc_R29.fit_transform(R29_test)
-#    R30_test = sc_R30.fit_transform(R30_test)
-#    R31_test = sc_R31.fit_transform(R31_test)
-#    R32_test = sc_R32.fit_transform(R32_test)
-#    R33_test = sc_R33.fit_transform(R33_test)
-#    R34_test = sc_R34.fit_transform(R34_test)
-#    R35_test = sc_R35.fit_transform(R35_test)
-#    R36_test = sc_R36.fit_transform(R36_test)
-#    R37_test = sc_R37.fit_transform(R37_test)
-#    R38_test = sc_R38.fit_transform(R38_test)
-#    R39_test = sc_R39.fit_transform(R39_test)
-#    R40_test = sc_R40.fit_transform(R40_test)
-#    R41_test = sc_R41.fit_transform(R41_test)
-#    R42_test = sc_R42.fit_transform(R42_test)
-#    R43_test = sc_R43.fit_transform(R43_test)
-#    R44_test = sc_R44.fit_transform(R44_test)
-#    R45_test = sc_R45.fit_transform(R45_test)
-#    R46_test = sc_R46.fit_transform(R46_test)
-#    R47_test = sc_R47.fit_transform(R47_test)
-#    Rat_test = sc_Rat.fit_transform(Rat_test)
+    n1_train  = sc_n1.fit_transform(n1_train)
+    n2_train  = sc_n2.fit_transform(n2_train)
+    n3_train  = sc_n3.fit_transform(n3_train)
+    n4_train  = sc_n4.fit_transform(n4_train)
+    n5_train  = sc_n5.fit_transform(n5_train)
+    n6_train  = sc_n6.fit_transform(n6_train)
+    n7_train  = sc_n7.fit_transform(n7_train)
+    n8_train  = sc_n8.fit_transform(n8_train)
+    n9_train  = sc_n9.fit_transform(n9_train)
+    n10_train = sc_n10.fit_transform(n10_train)
+    n11_train = sc_n11.fit_transform(n11_train)
+    n12_train = sc_n12.fit_transform(n12_train)
+    n13_train = sc_n13.fit_transform(n13_train)
+    n14_train = sc_n14.fit_transform(n14_train)
+    n15_train = sc_n15.fit_transform(n15_train)
+    n16_train = sc_n16.fit_transform(n16_train)
+    n17_train = sc_n17.fit_transform(n17_train)
+    n18_train = sc_n18.fit_transform(n18_train)
+    n19_train = sc_n19.fit_transform(n19_train)
+    n20_train = sc_n20.fit_transform(n20_train)
+    n21_train = sc_n21.fit_transform(n21_train)
+    n22_train = sc_n22.fit_transform(n22_train)
+    n23_train = sc_n23.fit_transform(n23_train)
+    n24_train = sc_n24.fit_transform(n24_train)
+    n25_train = sc_n25.fit_transform(n25_train)
+    n26_train = sc_n26.fit_transform(n26_train)
+    n27_train = sc_n27.fit_transform(n27_train)
+    n28_train = sc_n28.fit_transform(n28_train)
+    n29_train = sc_n29.fit_transform(n29_train)
+    n30_train = sc_n30.fit_transform(n30_train)
+    n31_train = sc_n31.fit_transform(n31_train)
+    n32_train = sc_n32.fit_transform(n32_train)
+    n33_train = sc_n33.fit_transform(n33_train)
+    n34_train = sc_n34.fit_transform(n34_train)
+    n35_train = sc_n35.fit_transform(n35_train)
+    n36_train = sc_n36.fit_transform(n36_train)
+    n37_train = sc_n37.fit_transform(n37_train)
+    n38_train = sc_n38.fit_transform(n38_train)
+    n39_train = sc_n39.fit_transform(n39_train)
+    n40_train = sc_n40.fit_transform(n40_train)
+    n41_train = sc_n41.fit_transform(n41_train)
+    n42_train = sc_n42.fit_transform(n42_train)
+    n43_train = sc_n43.fit_transform(n43_train)
+    n44_train = sc_n44.fit_transform(n44_train)
+    n45_train = sc_n45.fit_transform(n45_train)
+    n46_train = sc_n46.fit_transform(n46_train)
+    n47_train = sc_n47.fit_transform(n47_train)
 
-    x_test   = sc_x.transform(x_test)
-    n1_test  = sc_n1.transform(n1_test)
-    n2_test  = sc_n2.transform(n2_test)
-    n3_test  = sc_n3.transform(n3_test)
-    n4_test  = sc_n4.transform(n4_test)
-    n5_test  = sc_n5.transform(n5_test)
-    n6_test  = sc_n6.transform(n6_test)
-    n7_test  = sc_n7.transform(n7_test)
-    n8_test  = sc_n8.transform(n8_test)
-    n9_test  = sc_n9.transform(n9_test)
-    n10_test = sc_n10.transform(n10_test)
-    n11_test = sc_n11.transform(n11_test)
-    n12_test = sc_n12.transform(n12_test)
-    n13_test = sc_n13.transform(n13_test)
-    n14_test = sc_n14.transform(n14_test)
-    n15_test = sc_n15.transform(n15_test)
-    n16_test = sc_n16.transform(n16_test)
-    n17_test = sc_n17.transform(n17_test)
-    n18_test = sc_n18.transform(n18_test)
-    n19_test = sc_n19.transform(n19_test)
-    n20_test = sc_n20.transform(n20_test)
-    n21_test = sc_n21.transform(n21_test)
-    n22_test = sc_n22.transform(n22_test)
-    n23_test = sc_n23.transform(n23_test)
-    n24_test = sc_n24.transform(n24_test)
-    n25_test = sc_n25.transform(n25_test)
-    n26_test = sc_n26.transform(n26_test)
-    n27_test = sc_n27.transform(n27_test)
-    n28_test = sc_n28.transform(n28_test)
-    n29_test = sc_n29.transform(n29_test)
-    n30_test = sc_n30.transform(n30_test)
-    n31_test = sc_n31.transform(n31_test)
-    n32_test = sc_n32.transform(n32_test)
-    n33_test = sc_n33.transform(n33_test)
-    n34_test = sc_n34.transform(n34_test)
-    n35_test = sc_n35.transform(n35_test)
-    n36_test = sc_n36.transform(n36_test)
-    n37_test = sc_n37.transform(n37_test)
-    n38_test = sc_n38.transform(n38_test)
-    n39_test = sc_n39.transform(n39_test)
-    n40_test = sc_n40.transform(n40_test)
-    n41_test = sc_n41.transform(n41_test)
-    n42_test = sc_n42.transform(n42_test)
-    n43_test = sc_n43.transform(n43_test)
-    n44_test = sc_n44.transform(n44_test)
-    n45_test = sc_n45.transform(n45_test)
-    n46_test = sc_n46.transform(n46_test)
-    n47_test = sc_n47.transform(n47_test)
-    nat_test = sc_nat.transform(nat_test)
-    rho_test = sc_rho.transform(rho_test)
-    u_test   = sc_u.transform(u_test)
-    p_test   = sc_p.transform(p_test)
-    E_test   = sc_E.transform(E_test)
-    R1_test  = sc_R1.transform(R1_test)
-    R2_test  = sc_R2.transform(R2_test)
-    R3_test  = sc_R3.transform(R3_test)
-    R4_test  = sc_R4.transform(R4_test)
-    R5_test  = sc_R5.transform(R5_test)
-    R6_test  = sc_R6.transform(R6_test)
-    R7_test  = sc_R7.transform(R7_test)
-    R8_test  = sc_R8.transform(R8_test)
-    R9_test  = sc_R9.transform(R9_test)
-    R10_test = sc_R10.transform(R10_test)
-    R11_test = sc_R11.transform(R11_test)
-    R12_test = sc_R12.transform(R12_test)
-    R13_test = sc_R13.transform(R13_test)
-    R14_test = sc_R14.transform(R14_test)
-    R15_test = sc_R15.transform(R15_test)
-    R16_test = sc_R16.transform(R16_test)
-    R17_test = sc_R17.transform(R17_test)
-    R18_test = sc_R18.transform(R18_test)
-    R19_test = sc_R19.transform(R19_test)
-    R20_test = sc_R20.transform(R20_test)
-    R21_test = sc_R21.transform(R21_test)
-    R22_test = sc_R22.transform(R22_test)
-    R23_test = sc_R23.transform(R23_test)
-    R24_test = sc_R24.transform(R24_test)
-    R25_test = sc_R25.transform(R25_test)
-    R26_test = sc_R26.transform(R26_test)
-    R27_test = sc_R27.transform(R27_test)
-    R28_test = sc_R28.transform(R28_test)
-    R29_test = sc_R29.transform(R29_test)
-    R30_test = sc_R30.transform(R30_test)
-    R31_test = sc_R31.transform(R31_test)
-    R32_test = sc_R32.transform(R32_test)
-    R33_test = sc_R33.transform(R33_test)
-    R34_test = sc_R34.transform(R34_test)
-    R35_test = sc_R35.transform(R35_test)
-    R36_test = sc_R36.transform(R36_test)
-    R37_test = sc_R37.transform(R37_test)
-    R38_test = sc_R38.transform(R38_test)
-    R39_test = sc_R39.transform(R39_test)
-    R40_test = sc_R40.transform(R40_test)
-    R41_test = sc_R41.transform(R41_test)
-    R42_test = sc_R42.transform(R42_test)
-    R43_test = sc_R43.transform(R43_test)
-    R44_test = sc_R44.transform(R44_test)
-    R45_test = sc_R45.transform(R45_test)
-    R46_test = sc_R46.transform(R46_test)
-    R47_test = sc_R47.transform(R47_test)
-    Rat_test = sc_Rat.transform(Rat_test)
+    nat_train = sc_nat.fit_transform(nat_train)
+    rho_train = sc_rho.fit_transform(rho_train)
+    u_train   = sc_u.fit_transform(u_train)
+    p_train   = sc_p.fit_transform(p_train)
+    E_train   = sc_E.fit_transform(E_train)
+
+    R1_train  = sc_R1.fit_transform(R1_train)
+    R2_train  = sc_R2.fit_transform(R2_train)
+    R3_train  = sc_R3.fit_transform(R3_train)
+    R4_train  = sc_R4.fit_transform(R4_train)
+    R5_train  = sc_R5.fit_transform(R5_train)
+    R6_train  = sc_R6.fit_transform(R6_train)
+    R7_train  = sc_R7.fit_transform(R7_train)
+    R8_train  = sc_R8.fit_transform(R8_train)
+    R9_train  = sc_R9.fit_transform(R9_train)
+    R10_train = sc_R10.fit_transform(R10_train)
+    R11_train = sc_R11.fit_transform(R11_train)
+    R12_train = sc_R12.fit_transform(R12_train)
+    R13_train = sc_R13.fit_transform(R13_train)
+    R14_train = sc_R14.fit_transform(R14_train)
+    R15_train = sc_R15.fit_transform(R15_train)
+    R16_train = sc_R16.fit_transform(R16_train)
+    R17_train = sc_R17.fit_transform(R17_train)
+    R18_train = sc_R18.fit_transform(R18_train)
+    R19_train = sc_R19.fit_transform(R19_train)
+    R20_train = sc_R20.fit_transform(R20_train)
+    R21_train = sc_R21.fit_transform(R21_train)
+    R22_train = sc_R22.fit_transform(R22_train)
+    R23_train = sc_R23.fit_transform(R23_train)
+    R24_train = sc_R24.fit_transform(R24_train)
+    R25_train = sc_R25.fit_transform(R25_train)
+    R26_train = sc_R26.fit_transform(R26_train)
+    R27_train = sc_R27.fit_transform(R27_train)
+    R28_train = sc_R28.fit_transform(R28_train)
+    R29_train = sc_R29.fit_transform(R29_train)
+    R30_train = sc_R30.fit_transform(R30_train)
+    R31_train = sc_R31.fit_transform(R31_train)
+    R32_train = sc_R32.fit_transform(R32_train)
+    R33_train = sc_R33.fit_transform(R33_train)
+    R34_train = sc_R34.fit_transform(R34_train)
+    R35_train = sc_R35.fit_transform(R35_train)
+    R36_train = sc_R36.fit_transform(R36_train)
+    R37_train = sc_R37.fit_transform(R37_train)
+    R38_train = sc_R38.fit_transform(R38_train)
+    R39_train = sc_R39.fit_transform(R39_train)
+    R40_train = sc_R40.fit_transform(R40_train)
+    R41_train = sc_R41.fit_transform(R41_train)
+    R42_train = sc_R42.fit_transform(R42_train)
+    R43_train = sc_R43.fit_transform(R43_train)
+    R44_train = sc_R44.fit_transform(R44_train)
+    R45_train = sc_R45.fit_transform(R45_train)
+    R46_train = sc_R46.fit_transform(R46_train)
+    R47_train = sc_R47.fit_transform(R47_train)
+    Rat_train = sc_Rat.fit_transform(Rat_train)
+
+    # Testing set
+    x_test   = sc_x.fit_transform(x_test)
+
+    n1_test  = sc_n1.fit_transform(n1_test)
+    n2_test  = sc_n2.fit_transform(n2_test)
+    n3_test  = sc_n3.fit_transform(n3_test)
+    n4_test  = sc_n4.fit_transform(n4_test)
+    n5_test  = sc_n5.fit_transform(n5_test)
+    n6_test  = sc_n6.fit_transform(n6_test)
+    n7_test  = sc_n7.fit_transform(n7_test)
+    n8_test  = sc_n8.fit_transform(n8_test)
+    n9_test  = sc_n9.fit_transform(n9_test)
+    n10_test = sc_n10.fit_transform(n10_test)
+    n11_test = sc_n11.fit_transform(n11_test)
+    n12_test = sc_n12.fit_transform(n12_test)
+    n13_test = sc_n13.fit_transform(n13_test)
+    n14_test = sc_n14.fit_transform(n14_test)
+    n15_test = sc_n15.fit_transform(n15_test)
+    n16_test = sc_n16.fit_transform(n16_test)
+    n17_test = sc_n17.fit_transform(n17_test)
+    n18_test = sc_n18.fit_transform(n18_test)
+    n19_test = sc_n19.fit_transform(n19_test)
+    n20_test = sc_n20.fit_transform(n20_test)
+    n21_test = sc_n21.fit_transform(n21_test)
+    n22_test = sc_n22.fit_transform(n22_test)
+    n23_test = sc_n23.fit_transform(n23_test)
+    n24_test = sc_n24.fit_transform(n24_test)
+    n25_test = sc_n25.fit_transform(n25_test)
+    n26_test = sc_n26.fit_transform(n26_test)
+    n27_test = sc_n27.fit_transform(n27_test)
+    n28_test = sc_n28.fit_transform(n28_test)
+    n29_test = sc_n29.fit_transform(n29_test)
+    n30_test = sc_n30.fit_transform(n30_test)
+    n31_test = sc_n31.fit_transform(n31_test)
+    n32_test = sc_n32.fit_transform(n32_test)
+    n33_test = sc_n33.fit_transform(n33_test)
+    n34_test = sc_n34.fit_transform(n34_test)
+    n35_test = sc_n35.fit_transform(n35_test)
+    n36_test = sc_n36.fit_transform(n36_test)
+    n37_test = sc_n37.fit_transform(n37_test)
+    n38_test = sc_n38.fit_transform(n38_test)
+    n39_test = sc_n39.fit_transform(n39_test)
+    n40_test = sc_n40.fit_transform(n40_test)
+    n41_test = sc_n41.fit_transform(n41_test)
+    n42_test = sc_n42.fit_transform(n42_test)
+    n43_test = sc_n43.fit_transform(n43_test)
+    n44_test = sc_n44.fit_transform(n44_test)
+    n45_test = sc_n45.fit_transform(n45_test)
+    n46_test = sc_n46.fit_transform(n46_test)
+    n47_test = sc_n47.fit_transform(n47_test)
+
+    nat_test = sc_nat.fit_transform(nat_test)
+    rho_test = sc_rho.fit_transform(rho_test)
+    u_test   = sc_u.fit_transform(u_test)
+    p_test   = sc_p.fit_transform(p_test)
+    E_test   = sc_E.fit_transform(E_test)
+
+    R1_test  = sc_R1.fit_transform(R1_test)
+    R2_test  = sc_R2.fit_transform(R2_test)
+    R3_test  = sc_R3.fit_transform(R3_test)
+    R4_test  = sc_R4.fit_transform(R4_test)
+    R5_test  = sc_R5.fit_transform(R5_test)
+    R6_test  = sc_R6.fit_transform(R6_test)
+    R7_test  = sc_R7.fit_transform(R7_test)
+    R8_test  = sc_R8.fit_transform(R8_test)
+    R9_test  = sc_R9.fit_transform(R9_test)
+    R10_test = sc_R10.fit_transform(R10_test)
+    R11_test = sc_R11.fit_transform(R11_test)
+    R12_test = sc_R12.fit_transform(R12_test)
+    R13_test = sc_R13.fit_transform(R13_test)
+    R14_test = sc_R14.fit_transform(R14_test)
+    R15_test = sc_R15.fit_transform(R15_test)
+    R16_test = sc_R16.fit_transform(R16_test)
+    R17_test = sc_R17.fit_transform(R17_test)
+    R18_test = sc_R18.fit_transform(R18_test)
+    R19_test = sc_R19.fit_transform(R19_test)
+    R20_test = sc_R20.fit_transform(R20_test)
+    R21_test = sc_R21.fit_transform(R21_test)
+    R22_test = sc_R22.fit_transform(R22_test)
+    R23_test = sc_R23.fit_transform(R23_test)
+    R24_test = sc_R24.fit_transform(R24_test)
+    R25_test = sc_R25.fit_transform(R25_test)
+    R26_test = sc_R26.fit_transform(R26_test)
+    R27_test = sc_R27.fit_transform(R27_test)
+    R28_test = sc_R28.fit_transform(R28_test)
+    R29_test = sc_R29.fit_transform(R29_test)
+    R30_test = sc_R30.fit_transform(R30_test)
+    R31_test = sc_R31.fit_transform(R31_test)
+    R32_test = sc_R32.fit_transform(R32_test)
+    R33_test = sc_R33.fit_transform(R33_test)
+    R34_test = sc_R34.fit_transform(R34_test)
+    R35_test = sc_R35.fit_transform(R35_test)
+    R36_test = sc_R36.fit_transform(R36_test)
+    R37_test = sc_R37.fit_transform(R37_test)
+    R38_test = sc_R38.fit_transform(R38_test)
+    R39_test = sc_R39.fit_transform(R39_test)
+    R40_test = sc_R40.fit_transform(R40_test)
+    R41_test = sc_R41.fit_transform(R41_test)
+    R42_test = sc_R42.fit_transform(R42_test)
+    R43_test = sc_R43.fit_transform(R43_test)
+    R44_test = sc_R44.fit_transform(R44_test)
+    R45_test = sc_R45.fit_transform(R45_test)
+    R46_test = sc_R46.fit_transform(R46_test)
+    R47_test = sc_R47.fit_transform(R47_test)
+    Rat_test = sc_Rat.fit_transform(Rat_test)
 
     # Training the NN based on the training set, randomly chosen above model
     # = PINN(..) passes the necessary training data to the 'NN' class (model
@@ -1852,7 +1665,7 @@ if __name__ == "__main__":
                  R31_train, R32_train, R33_train, R34_train, R35_train, R36_train, R37_train, R38_train, R39_train, R40_train,
                  R41_train, R42_train, R43_train, R44_train, R45_train, R46_train, R47_train, Rat_train, layers)
 
-    model.train(1000)
+    model.train(10000)
 
     # Plotting Loss
     plt.plot(loss_vector, label='Loss value')
@@ -1982,9 +1795,6 @@ error_Rat = np.linalg.norm(Rat_test-Rat_pred,2)/np.linalg.norm(Rat_test,2)
 
 print("Test Error in n1: "+str(error_n1))
 print("Test Error in n2: "+str(error_n2))
-print("Test Error in n3: "+str(error_n3))
-print("Test Error in n4: "+str(error_n4))
-print("Test Error in n5: "+str(error_n5))
 # ...
 print("Test Error in rho: "+str(error_rho))
 print("Test Error in u: "+str(error_u))
@@ -1993,9 +1803,6 @@ print("Test Error in E: "+str(error_E))
 # ...
 print("Test Error in R1: "+str(error_R1))
 print("Test Error in R2: "+str(error_R2))
-print("Test Error in R3: "+str(error_R3))
-print("Test Error in R4: "+str(error_R4))
-print("Test Error in R5: "+str(error_R5))
 
 x_train_sb   = sc_x.inverse_transform(x_train)
 n1_train_sb  = sc_n1.inverse_transform(n1_train)
@@ -2046,10 +1853,12 @@ n45_train_sb = sc_n45.inverse_transform(n45_train)
 n46_train_sb = sc_n46.inverse_transform(n46_train)
 n47_train_sb = sc_n47.inverse_transform(n47_train)
 nat_train_sb = sc_nat.inverse_transform(nat_train)
+
 rho_train_sb = sc_rho.inverse_transform(rho_train)
 u_train_sb   = sc_u.inverse_transform(u_train)
 p_train_sb   = sc_p.inverse_transform(p_train)
 E_train_sb   = sc_E.inverse_transform(E_train)
+
 R1_train_sb  = sc_R1.inverse_transform(R1_train)
 R2_train_sb  = sc_R2.inverse_transform(R2_train)
 R3_train_sb  = sc_R3.inverse_transform(R3_train)
@@ -2147,11 +1956,13 @@ n44_test_sb = sc_n44.inverse_transform(n44_test)
 n45_test_sb = sc_n45.inverse_transform(n45_test)
 n46_test_sb = sc_n46.inverse_transform(n46_test)
 n47_test_sb = sc_n47.inverse_transform(n47_test)
+
 nat_test_sb = sc_nat.inverse_transform(nat_test)
 rho_test_sb = sc_rho.inverse_transform(rho_test)
 u_test_sb   = sc_u.inverse_transform(u_test)
 p_test_sb   = sc_p.inverse_transform(p_test)
 E_test_sb   = sc_E.inverse_transform(E_test)
+
 R1_test_sb  = sc_R1.inverse_transform(R1_test)
 R2_test_sb  = sc_R2.inverse_transform(R2_test)
 R3_test_sb  = sc_R3.inverse_transform(R3_test)
@@ -2249,10 +2060,12 @@ n45_pred_sb = sc_n45.inverse_transform(n45_pred)
 n46_pred_sb = sc_n46.inverse_transform(n46_pred)
 n47_pred_sb = sc_n47.inverse_transform(n47_pred)
 nat_pred_sb = sc_nat.inverse_transform(nat_pred)
+
 rho_pred_sb = sc_rho.inverse_transform(rho_pred)
 u_pred_sb   = sc_u.inverse_transform(u_pred)
 p_pred_sb   = sc_p.inverse_transform(p_pred)
 E_pred_sb   = sc_E.inverse_transform(E_pred)
+
 R1_pred_sb  = sc_R1.inverse_transform(R1_pred)
 R2_pred_sb  = sc_R2.inverse_transform(R2_pred)
 R3_pred_sb  = sc_R3.inverse_transform(R3_pred)
@@ -2303,17 +2116,11 @@ R47_pred_sb = sc_R47.inverse_transform(R47_pred)
 Rat_pred_sb = sc_Rat.inverse_transform(Rat_pred)
 
 # Plot Nci
-plt.plot(x_test_sb, n3_pred_sb, 'o', color='black', label='NN, i=3', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, n3_test_sb, 'o', color='red',   label='Exact, i=3', markersize=4)
-plt.plot(x_test_sb, n6_pred_sb, 'o', color='black', label='NN, i=6', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, n6_test_sb, 'o', color='blue',   label='Exact, i=6', markersize=4)
-plt.plot(x_test_sb, n9_pred_sb, 'o', color='black', label='NN, i=9', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, n9_test_sb, 'o', color='green',   label='Exact, i=9', markersize=4)
-plt.plot(x_test_sb, n12_pred_sb, 'o', color='black', label='NN, i=12', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, n12_test_sb, 'o', color='magenta',   label='Exact, i=12', markersize=4)
-plt.plot(x_test_sb, n15_pred_sb, 'o', color='black', label='NN, i=15', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, n15_test_sb, 'o', color='yellow',   label='Exact, i=15', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Molecular Number Density')
+plt.plot(x_test_sb, n1_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+plt.plot(x_test_sb, n1_test_sb, 'o', color='red',   label='Exact', markersize=4)
+plt.plot(x_test_sb, n2_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+plt.plot(x_test_sb, n2_test_sb, 'o', color='red',   label='Exact', markersize=4)
+plt.title('Comparison of NN and Exact solution for Molecular Number Density')
 plt.xlabel('X [mm]')
 plt.ylabel('$n_{ci}$ $[m^-3]$')
 #plt.legend()
@@ -2324,7 +2131,7 @@ plt.show()
 # Plot Nat
 plt.plot(x_test_sb, nat_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
 plt.plot(x_test_sb, nat_test_sb, 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Atomic Number Density')
+plt.title('Comparison of NN and Exact solution for Atomic Number Density')
 plt.xlabel('X [mm]')
 plt.ylabel('$n_{at}$ $[m^-3]$')
 plt.legend()
@@ -2335,8 +2142,8 @@ plt.show()
 # Plot RHO
 plt.plot(x_test_sb, rho_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
 plt.plot(x_test_sb, rho_test_sb, 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Density')
-plt.xlabel('X [mm]')
+plt.title('Comparison of NN and Exact solution for Density')
+plt.xlabel('X []')
 plt.ylabel(r'$\rho$ $[kg/m^3]$')
 plt.legend()
 plt.tight_layout()
@@ -2346,8 +2153,8 @@ plt.show()
 # Plot P
 plt.plot(x_test_sb, p_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
 plt.plot(x_test_sb, p_test_sb, 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Pressure')
-plt.xlabel('X [mm]')
+plt.title('Comparison of NN and Exact solution for Pressure')
+plt.xlabel('X []')
 plt.ylabel('P [Pa]')
 plt.legend()
 plt.tight_layout()
@@ -2357,8 +2164,8 @@ plt.show()
 # Plot U
 plt.plot(x_test_sb, u_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
 plt.plot(x_test_sb, u_test_sb, 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Velocity')
-plt.xlabel('X [mm]')
+plt.title('Comparison of NN and Exact solution for Velocity')
+plt.xlabel('X []')
 plt.ylabel('U [m/s]')
 plt.legend()
 plt.tight_layout()
@@ -2368,28 +2175,22 @@ plt.show()
 # Plot E
 plt.plot(x_test_sb, E_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
 plt.plot(x_test_sb, E_test_sb, 'o', color='red',   label='Exact', markersize=4)
-#plt.title('Comparison of NN and Exact solution for Energy')
-plt.xlabel('X [mm]')
-plt.ylabel('E [eV]')
+plt.title('Comparison of NN and Exact solution for Energy')
+plt.xlabel('X []')
+plt.ylabel('E []')
 plt.legend()
 plt.tight_layout()
 savefig('./figures/E', crop = False)
 plt.show()
 
 # Plot Rci
-plt.plot(x_test_sb, R3_pred_sb,  'o', color='black',   label='NN, i=3',  linewidth=4,  markersize=5, fillstyle='none')
-plt.plot(x_test_sb, R3_test_sb,  'o', color='red',     label='Exact, i=3',            markersize=4)
-plt.plot(x_test_sb, R6_pred_sb,  'o', color='black',   label='NN, i=6',  linewidth=4,  markersize=5, fillstyle='none')
-plt.plot(x_test_sb, R6_test_sb,  'o', color='blue',    label='Exact, i=6',            markersize=4)
-plt.plot(x_test_sb, R9_pred_sb,  'o', color='black',   label='NN, i=9',  linewidth=4,  markersize=5, fillstyle='none')
-plt.plot(x_test_sb, R9_test_sb,  'o', color='green',   label='Exact, i=9',            markersize=4)
-plt.plot(x_test_sb, R12_pred_sb, 'o', color='black',   label='NN, i=12', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, R12_test_sb, 'o', color='magenta', label='Exact, i=12',           markersize=4)
-plt.plot(x_test_sb, R15_pred_sb, 'o', color='black',   label='NN, i=15', linewidth=4, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, R15_test_sb, 'o', color='yellow',  label='Exact, i=15',           markersize=4)
-#plt.title('Comparison of NN and Exact solution for $R_{ci}$')
-plt.xlabel('X [mm]')
-plt.ylabel(r'$R_{ci} [J/m^3/s]$')
+#plt.plot(x_test_sb, Rci_pred_sb[:,1:46:2], 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+#plt.plot(x_test_sb, Rci_test_sb[:,1:46:2], 'o', color='red',   label='Exact', markersize=4)
+plt.plot(x_test_sb, R1_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
+plt.plot(x_test_sb, R1_test_sb, 'o', color='red',   label='Exact', markersize=4)
+plt.title('Comparison of NN and Exact solution for $R_{ci}$')
+plt.xlabel('X []')
+plt.ylabel('$R_{ci}$ $[]$')
 #plt.legend()
 plt.tight_layout()
 savefig('./figures/Rci', crop = False)
@@ -2397,10 +2198,10 @@ plt.show()
 
 # Plot Rat
 plt.plot(x_test_sb, Rat_pred_sb, 'o', color='black', label='NN', linewidth=2, markersize=5, fillstyle='none')
-plt.plot(x_test_sb, Rat_test_sb, 'o', color='red',   label='Exact',           markersize=4 )
-#plt.title('Comparison of NN and Exact solution for $R_{at}$')
-plt.xlabel('X [mm]')
-plt.ylabel(r'$R_{at} [J/m^3/s]$')
+plt.plot(x_test_sb, Rat_test_sb, 'o', color='red',   label='Exact', markersize=4 )
+plt.title('Comparison of NN and Exact solution for $R_{at}$')
+plt.xlabel('X []')
+plt.ylabel(r'$R_{at}$ $[]$')
 plt.legend()
 plt.tight_layout()
 savefig('./figures/Rat', crop='false')
