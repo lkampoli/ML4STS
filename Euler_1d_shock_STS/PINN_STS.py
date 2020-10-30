@@ -806,6 +806,8 @@ class PINN:
         Rat = nci_rho_u_p_E[:,99:100]
 
         n1_u_x  = tf.gradients(n1 *u, x)[0]
+        print("TEST GRADIENTS")
+        print(n1_u_x)
         n2_u_x  = tf.gradients(n2 *u, x)[0]
         n3_u_x  = tf.gradients(n3 *u, x)[0]
         n4_u_x  = tf.gradients(n4 *u, x)[0]
@@ -1186,7 +1188,7 @@ if __name__ == "__main__":
     # layers is a vector of all the node in each of the neural network layers
     # First value, 1 respresents the input layer with 1 parameter (x) while
     # last value 100 is the number of outputs desired
-    layers = [1, 100]
+    layers = [1, 100, 100]
     ###layers = [1, 10, 25, 15, 100]
     #layers = [1, 20, 20, 20, 20, 20, 20, 20, 20, 20, 100]
     #layers = [1, 40, 40, 40, 40, 100]
