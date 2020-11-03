@@ -1,7 +1,12 @@
 # :warning: :construction: Repository under construction
 
 # Machine Learning for State-to-State
-This project aims at investigating the usage of machine learning algorithms (MLAs) for the solution of high-speed (viscous and inviscid, reacting and non-reacting) non-equilibrium flows according to the state-to-state (STS) formulation. Several machine learning methods, including neural networks (NNs) will be considered. In this framework, the following tasks have been identified:
+This project aims at investigating the usage of machine learning
+algorithms (MLAs) for the solution of high-speed (viscous and inviscid,
+reacting and non-reacting) non-equilibrium flows according to the
+state-to-state (STS) formulation. Several machine learning methods,
+including neural networks (NNs) will be considered. In this framework,
+the following tasks have been identified:
 
 * Regression of transport coefficients
 * Regression of chemical reaction rate coefficients
@@ -10,7 +15,8 @@ This project aims at investigating the usage of machine learning algorithms (MLA
 * Solution of Euler and Navier-Stokes equations with NN
 
 # Requisites
-Assuming an available python3 version, the following packages are necessary:
+Assuming an available python3 version, the following packages may be required
+in order to be able to run some tasks:
 * [scikit-learn 0.23](https://scikit-learn.org/stable/)
 * [keras](https://keras.io/)
 * [tensorflow 1.14.0](https://www.tensorflow.org/)
@@ -62,8 +68,9 @@ https://machinelearningmastery.com/deep-learning-models-for-multi-output-regress
 https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
 # Copyrights
-ML4STS is an open source project, it is distributed under the GPL v3. Anyone is interest to use, to develop or to contribute to ML4STS is welcome.
-Take a look at the contributing guidelines for starting to contribute to the project.
+ML4STS is an open source project, it is distributed under the GPL v3.
+Anyone is interest to use, to develop or to contribute to ML4STS is
+welcome. Take a look at the contributing guidelines for starting to contribute to the project.
 
 # Bibliography
 [1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
