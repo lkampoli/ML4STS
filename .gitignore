@@ -22,6 +22,9 @@
 *.conf
 *.dat
 *.mat
+*.dms
+*.zip
+*.sgy
 #
 OLDREPO/*
 #
