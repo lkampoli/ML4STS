@@ -1,6 +1,6 @@
 function kvv_ssh(t)
 
-mu = 0.5 * m[1]
+mu    = 0.5  * m[1]
 m_osc = 0.25 * m[1]
 
 if sw_o == 1
@@ -30,10 +30,10 @@ elseif sw_o == 1
   dE     = om_x_e*1.4388e-2
   delta  = 0.427 / aA * sqrt(mu_amu / t) * dE
   for i_down = 1:Lmax
-    kdown[i_down,:] = i_down * (j_up+1) * k10 .* exp(-delta .* abs(i_down-1-j_up)) .*
-    (1.5-0.5 * exp(-delta .* abs(i_down-1-j_up))) .* exp((j_up-i_down+1) * h * c * om_x_e / (k * t))
+  @. kdown[i_down,:] = i_down * (j_up+1) * k10 .* exp.(-delta .* abs(i_down-1-j_up)) .*
+    (1.5-0.5 .* exp.(-delta .* abs(i_down-1-j_up))) .* exp.((j_up-i_down+1) * h * c * om_x_e / (k * t))
     end
 end
-
+print("kdown = ", kdown)
 return kdown
 end

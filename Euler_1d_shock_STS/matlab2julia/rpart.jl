@@ -17,37 +17,38 @@ ef_b = 0.5*D/T0
 ei_b = e_i./(k*T0)
 e0_b = e_0/(k*T0)
 
-sigma = 2
+sigma   = 2
 Theta_r = Be*h*c/k
-Z_rot = temp./(sigma.*Theta_r)
+Z_rot   = temp./(sigma.*Theta_r)
 
-M = sum(m)
+M  = sum(m)
 mb = m/M
 
 A = zeros(l+3,l+3)
 
-for i=1:l
-  A[i,i] = v_b
+for i = 1:l
+  A[i,i]   = v_b
   A[i,l+2] = ni_b[i]
 end
 
 A[l+1,l+1] = v_b
 A[l+1,l+2] = na_b
 
-for i=1:l+1
+for i = 1:l+1
   A[l+2,i] = T_b
 end
 A[l+2,l+2] = M*v0^2/k/T0*(mb[1]*nm_b+mb[2]*na_b)*v_b
 A[l+2,l+3] = nm_b+na_b
 
-for i=1:l
+for i = 1:l
   A[l+3,i] = 2.5*T_b+ei_b[i]+e0_b
 end
 A[l+3,l+1] = 1.5*T_b+ef_b
 A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
 A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-AA  = sparse(A)
+AA   = A
+#AA  = sparse(A)
 #spy = spy(A)
 #img = grayim(spy(A))
 #save("spy.jld","spy",spy)
@@ -61,7 +62,6 @@ Kvt = exp.((e_i[1:end-1]-e_i[2:end])/(k*temp))
 # Dissociation processes
 kd = kdis(temp) * Delta*n0/v0
 
-
 # Recombination processes
 kr = zeros(2,l)
 for iM = 1:2
@@ -70,17 +70,17 @@ end
 
 # VT processes: i+1 -> i
 kvt_down = kvt_ssh(temp) * Delta*n0/v0
-kvt_up = zeros(2,Lmax)
+kvt_up   = zeros(2,Lmax)
 for ip = 1:2
   kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
 end
 
 # VV processes
 kvv_down = kvv_ssh(temp) * Delta*n0/v0
-kvv_up = zeros(Lmax,Lmax)
-deps = e_i[1:end-1]-e_i[2:end]
+kvv_up   = zeros(Lmax,Lmax)
+deps     = e_i[1:end-1]-e_i[2:end]
 for ip = 1:Lmax
-  kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip]-deps) / (k*temp))
+@. kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip].-deps) / (k*temp))
 end
 
 RD  = zeros(l)
@@ -93,33 +93,38 @@ for i1 = 1:l
 
     if i1 == 1 # 0<->1
 
-      RVT[i1] = nm_b*(ni_b[i1+1]*kvt_down[1,i1]-ni_b(i1)*kvt_up[1,i1])+na_b*(ni_b[i1+1]*kvt_down[2,i1]-ni_b[i1]*kvt_up[2,i1])
-      RVV[i1] = ni_b[i1+1]*sum(ni_b[1:end-1] .* kvv_down[i1,:]) - ni_b[i1]*sum(ni_b[2:end] .* kvv_up[i1,:])
+      RVT[i1] = nm_b*(ni_b[i1+1]*kvt_down[1,i1]-ni_b[i1]*kvt_up[1,i1])+
+                na_b*(ni_b[i1+1]*kvt_down[2,i1]-ni_b[i1]*kvt_up[2,i1])
+
+      RVV[i1] = ni_b[i1+1]*sum(ni_b[1:end-1] .* kvv_down[i1,:]) -
+                ni_b[i1]  *sum(ni_b[2:end]   .* kvv_up[i1,:])
 
     elseif i1 == l # Lmax <-> Lmax-1
 
-      RVT[i1] = nm_b*(ni_b[i1-1]*kvt_up[1,i1-1]-ni_b[i1]*kvt_down[1,i1-1])+na_b*(ni_b[i1-1]*kvt_up[2,i1-1]-ni_b[i1]*kvt_down[2,i1-1])
-      RVV[i1] = ni_b[i1-1]*sum(ni_b[2:end] .* kvv_up[i1-1,:]) - ni_b[i1]*sum(ni_b[1:end-1] .* kvv_down[i1-1,:])
+      RVT[i1] = nm_b*(ni_b[i1-1]*kvt_up[1,i1-1]-ni_b[i1]*kvt_down[1,i1-1]) +
+                na_b*(ni_b[i1-1]*kvt_up[2,i1-1]-ni_b[i1]*kvt_down[2,i1-1])
+
+      RVV[i1] = ni_b[i1-1]*sum(ni_b[2:end]   .* kvv_up[i1-1,:]) -
+                ni_b[i1]  *sum(ni_b[1:end-1] .* kvv_down[i1-1,:])
 
     else
 
-      RVT[i1] = nm_b*(ni_b[i1+1] * kvt_down[1,i1] + ni_b[i1-1] * kvt_up[1,i1-1] - ni_b[i1] * (kvt_up[1,i1] + kvt_down[1,i1-1])) +
-                na_b*(ni_b[i1+1] * kvt_dow[2,i1]  + ni_b[i1-1] * kvt_up[2,i1-1] - ni_b[i1] * (kvt_up[2,i1] + kvt_down[2,i1-1]))
+      RVT[i1] = nm_b*(ni_b[i1+1] * kvt_down[1,i1] + ni_b[i1-1] * kvt_up[1,i1-1] -
+                      ni_b[i1]   * (kvt_up[1,i1]  + kvt_down[1,i1-1])) +
+                na_b*(ni_b[i1+1] * kvt_down[2,i1] + ni_b[i1-1] * kvt_up[2,i1-1] -
+                      ni_b[i1]   * (kvt_up[2,i1]  + kvt_down[2,i1-1]))
 
-      RVV[i1] = ni_b[i1+1] * sum(ni_b[1:end-1] .* kvv_down[i1,:]) + ni_b[i1-1] * sum(ni_b[2:end] .* kvv_up[i1-1,:]) -
-                ni_b[i1] * (sum(ni_b[2:end] .* kvv_up[i1,:]) + sum(ni_b[1:end-1] .* kvv_down[i1-1,:]))
+      RVV[i1] = ni_b[i1+1] * sum(ni_b[1:end-1]  .* kvv_down[i1,:]) +
+                ni_b[i1-1] * sum(ni_b[2:end]    .* kvv_up[i1-1,:]) -
+                ni_b[i1]   * (sum(ni_b[2:end]   .* kvv_up[i1,:]) +
+                              sum(ni_b[1:end-1] .* kvv_down[i1-1,:]))
     end
 end
 
-dy = zeros(l+3)
+dy      = zeros(l+3)
 dy[1:l] = RD + RVT + RVV
 dy[l+1] = - 2*sum(RD)
 
-#B = zeros(l+3)
-#B[1:l] = RD + RVT + RVV
-#B[l+1] = - 2*sum(RD)
-#return inv(AA)*B
-#
 return inv(AA)*dy
 
 end
