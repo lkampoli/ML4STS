@@ -34,6 +34,6 @@ elseif sw_o == 1
     (1.5-0.5 .* exp.(-delta .* abs(i_down-1-j_up))) .* exp.((j_up-i_down+1) * h * c * om_x_e / (k * t))
     end
 end
-print("kdown = ", kdown)
+println("kvv_down_ssh = ", kdown)
 return kdown
 end

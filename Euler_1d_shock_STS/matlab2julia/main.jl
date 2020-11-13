@@ -77,12 +77,12 @@ e_i = en_vibr()
 include("en_vibr_0.jl")
 e_0 = en_vibr_0()
 
-mu     = [MU[sw_sp] 0.5*MU[sw_sp]]*1e-3
-m      = mu / N_a
-sigma0 = pi*R0[sw_sp,1]^2
-r0     = [R0[sw_sp,1] 0.5*(R0[sw_sp,1]+R0[sw_sp,2])]
-em     = [EM[sw_sp,1] sqrt(EM[sw_sp,1]*EM[sw_sp,2]*R0[sw_sp,1]^6*R0[sw_sp,2]^6)/r0[2]^6]
-re     = RE[sw_sp]
+mu     = [MU[sw_sp] 0.5*MU[sw_sp]]*1e-3;                                                  println("mu = ", mu, "\n")
+m      = mu / N_a;                                                                        println("m = ", m, "\n")
+sigma0 = pi*R0[sw_sp,1]^2;                                                                println("sigma0 = ", sigma0, "\n")
+r0     = [R0[sw_sp,1] 0.5*(R0[sw_sp,1]+R0[sw_sp,2])];                                     println("r0 = ", r0, "\n")
+em     = [EM[sw_sp,1] sqrt(EM[sw_sp,1]*EM[sw_sp,2]*R0[sw_sp,1]^6*R0[sw_sp,2]^6)/r0[2]^6]; println("em = ", em, "\n")
+re     = RE[sw_sp];                                                                       println("re = ", re, "\n")
 
 # ICs
 p0  = 0.8*133.322 # p₀
@@ -128,7 +128,7 @@ include("kdis.jl")
 include("kvt_ssh.jl")
 include("kvv_ssh.jl")
 prob = ODEProblem(rpart!, Y0_bar, xspan)
-#sol  = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-8, abstol=1e-8, save_everystep=true)
+#sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-8, abstol=1e-8, save_everystep=true)
 sol  = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true)
 
 X = sol.t
@@ -175,22 +175,23 @@ println("mass = ", d1);
 println("momentum = ", d2);
 println("energy = ", d3);
 
-RDm  = zeros(Npoint,l);
-RDa  = zeros(Npoint,l);
-RVTm = zeros(Npoint,l);
-RVTa = zeros(Npoint,l);
-RVV  = zeros(Npoint,l);
-
+#include("rpart_post.jl")
+#RDm  = zeros(Npoint,l);
+#RDa  = zeros(Npoint,l);
+#RVTm = zeros(Npoint,l);
+#RVTa = zeros(Npoint,l);
+#RVV  = zeros(Npoint,l);
+#
 #for i = 1:Npoint
-# input = Y[i,:];
-# rdm, rda, rvtm, rvta, rvv = rpart_post(input)
-# RDm[i,:]  = rdm;
-# RDa[i,:]  = rda;
-# RVTm[i,:] = rvtm;
-# RVTa[i,:] = rvta;
-# RVV[i,:]  = rvv;
+#  input = Y[i,:]
+#  rdm, rda, rvtm, rvta, rvv = rpart_post(input)
+#  RDm[i,:]  = rdm
+#  RDa[i,:]  = rda
+#  RVTm[i,:] = rvtm
+#  RVTa[i,:] = rvta
+#  RVV[i,:]  = rvv
 #end
-
-RD_mol = RDm+RDa;
-RVT    = RVTm+RVTa;
-RD_at  = -2*sum(RD_mol,2);
+#
+#RD_mol = RDm+RDa
+#RVT    = RVTm+RVTa
+#RD_at  = -2*sum(RD_mol,2)
