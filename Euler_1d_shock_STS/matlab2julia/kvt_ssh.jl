@@ -27,19 +27,19 @@ if sw_o == 2
 
 elseif sw_o == 1
 
-  aA       = a * 1e-10
-@. mu_amu  = m[1]*m ./ (m[1].+m)/1.6605e-27
-@. diffE   = (om_e-2*(i+1)*om_x_e)*h*c
-@. E1      = (om_e-2*om_x_e)*1.4388e-2
-@. dE      = om_x_e*1.4388e-2
-@. gamma_n = pi ./ a / h_bar .* sqrt.(mu./(2*k*t))
-@. gamma_n = gamma_n * diffE
-@. gamma_0 = 0.32 ./ aA .* sqrt.(mu_amu/t)*E1
-   delta   = zeros(2,length(i))
-#  delta[1,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] < 20) .* (4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] >= 20)
-#  delta[2,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] < 20) .* (4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] >= 20)
-#  k_down[1,:] = (i+1) * k10[1] .* exp(i .* delta[1,:]) .* exp(-i*h*c*om_x_e / (k*t))
-#  k_down[2,:] = (i+1) * k10[2] .* exp(i .* delta[2,:]) .* exp(-i*h*c*om_x_e / (k*t))
+  aA      = a * 1e-10
+# mu_amu  = m[1]*m ./ (m[1].+m)/1.6605e-27
+# diffE   = (om_e-2*(i+1)*om_x_e)*h*c
+# E1      = (om_e-2*om_x_e)*1.4388e-2
+# dE      = om_x_e*1.4388e-2
+# gamma_n = pi ./ a / h_bar .* sqrt.(mu./(2*k*t))
+# gamma_n = gamma_n * diffE
+# gamma_0 = 0.32 ./ aA .* sqrt.(mu_amu/t)*E1
+# delta   = zeros(2,length(i))
+# delta[1,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] < 20) .* (4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] >= 20)
+# delta[2,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] < 20) .* (4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] >= 20)
+# k_down[1,:] = (i+1) * k10[1] .* exp(i .* delta[1,:]) .* exp(-i*h*c*om_x_e / (k*t))
+# k_down[2,:] = (i+1) * k10[2] .* exp(i .* delta[2,:]) .* exp(-i*h*c*om_x_e / (k*t))
 
 end
 
