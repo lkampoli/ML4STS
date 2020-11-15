@@ -1,28 +1,27 @@
 function rpart!(dy,y,p,t)
 
-Lmax = l-1
+Lmax = l-1;       println("Lmax = ", Lmax, "\n")
 
-ni_b = y[1:l]   ; print("ni_b = ", ni_b, "\n")
-na_b = y[l+1]   ; print("na_b = ", na_b, "\n")
+ni_b = y[1:l];    print("ni_b = ", ni_b, "\n")
+na_b = y[l+1];    print("na_b = ", na_b, "\n")
 nm_b = sum(ni_b); print("nm_b = ", nm_b, "\n")
-v_b  = y[l+2]   ; print("v_b = ",  v_b,  "\n")
-T_b  = y[l+3]   ; print("T_b = ",  T_b,  "\n")
+v_b  = y[l+2];    print("v_b = ",  v_b,  "\n")
+T_b  = y[l+3];    print("T_b = ",  T_b,  "\n")
 
-xx = t*Delta
+xx = t*Delta;     #println("xx = ", xx, "\n")
+temp = T_b*T0;    #print("T = ", temp, "\n")
 
-temp = T_b*T0; print("T = ", temp, "\n")
+ef_b = 0.5*D/T0;  #println("ef_b = ", ef_b, "\n")
 
-ef_b = 0.5*D/T0
+ei_b = e_i./(k*T0); #println("ei_b = ", ei_b, "\n")
+e0_b = e_0/(k*T0);  #println("e0_b = ", e0_b, "\n")
 
-ei_b = e_i./(k*T0)
-e0_b = e_0/(k*T0)
+sigma   = 2;                      println("sigma = ", sigma, "\n")
+Theta_r = Be*h*c/k;               println("Theta_r = ", Theta_r, "\n")
+Z_rot   = temp./(sigma.*Theta_r); println("Z_rot = ", Z_rot, "\n")
 
-sigma   = 2
-Theta_r = Be*h*c/k
-Z_rot   = temp./(sigma.*Theta_r)
-
-M  = sum(m)
-mb = m/M
+M  = sum(m); println("M = ", M, "\n")
+mb = m/M;    println("mb = ", mb, "\n")
 
 A = zeros(l+3,l+3)
 
@@ -47,20 +46,16 @@ A[l+3,l+1] = 1.5*T_b+ef_b
 A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
 A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-AA   = A
-#AA  = sparse(A)
-#spy = spy(A)
-#img = grayim(spy(A))
-#save("spy.jld","spy",spy)
+AA = A
 
 # Equilibrium constant for DR processes
-Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp)
+Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp); println("Kdr = ", Kdr, "\n")
 
 # Equilibrium constant for VT processes
-Kvt = exp.((e_i[1:end-1]-e_i[2:end])/(k*temp))
+Kvt = exp.((e_i[1:end-1]-e_i[2:end])/(k*temp)); println("Kvt = ", Kvt, "\n")
 
 # Dissociation processes
-kd = kdis(temp) * Delta*n0/v0
+kd = kdis(temp) * Delta*n0/v0; println("kd = ", kd, "\n")
 
 # Recombination processes
 kr = zeros(2,l)
