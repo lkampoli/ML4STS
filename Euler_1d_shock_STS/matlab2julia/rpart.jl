@@ -46,7 +46,8 @@ A[l+3,l+1] = 1.5*T_b+ef_b
 A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
 A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-AA = A
+println("A = ", A, "\n")
+AA = A; #println("AA = ", AA, "\n")
 
 # Equilibrium constant for DR processes
 Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp); println("Kdr = ", Kdr, "\n")
@@ -62,13 +63,15 @@ kr = zeros(2,l)
 for iM = 1:2
   kr[iM,:] = kd[iM,:] .* Kdr * n0
 end
+println("kr = ", kr, "\n")
 
 # VT processes: i+1 -> i
-kvt_down = kvt_ssh(temp) * Delta*n0/v0
+kvt_down = kvt_ssh(temp) * Delta*n0/v0; println("kvt_down = ", kvt_down, "\n")
 kvt_up   = zeros(2,Lmax)
 for ip = 1:2
   kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
 end
+println("kvt_up = ", kvt_up, "\n")
 
 # VV processes
 kvv_down = kvv_ssh(temp) * Delta*n0/v0
