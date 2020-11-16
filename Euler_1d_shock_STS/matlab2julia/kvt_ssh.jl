@@ -30,31 +30,32 @@ elseif sw_o == 1
   dE      = om_x_e*1.4388e-2;                       println("dE = ", dE, "\n")
   # https://julialang.org/blog/2017/01/moredots/
   diffE = zeros(length(i))
-  for ii in length(i)
+  for ii in 1:length(i)
     println("i = ", ii, "\n")
     diffE[ii] = (om_e - 2 * om_x_e * (i[ii] + 1)) * h * c
   end
+  println("diffE = ", diffE, "\n", size(diffE), "\n")
   gamma_n = pi ./ a ./ h_bar .* sqrt.(mu./(2*k*t));
-  gamma_n = gamma_n .* diffE;                       println("gamma_n = ", gamma_n, "\n")
+  gamma_n = gamma_n .* diffE;                       println("gamma_n = ", gamma_n, "\n", size(gamma_n), "\n")
+  gamma_n = gamma_n';                               println("gamma_n = ", gamma_n, "\n", size(gamma_n), "\n")
   gamma_0 = 0.32 ./ aA .* sqrt.(mu_amu./t).*E1;     println("gamma_0 = ", gamma_0, "\n")
   delta   = zeros(2,length(i));
   k_down  = zeros(2,length(i))
-  delta[1,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] .< 20).*(4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] .>= 20);
-  delta[2,:] = (4/3*gamma_0[1] * dE/E1).^(gamma_n[1,:] .< 20).*(4*(gamma_0[1])^(2/3) * dE/E1).^(gamma_n[1,:] .>= 20);
-#  for ii in length(i)
-#    if gamma_n[1,ii] < 20
-#      delta[1,ii] = (4/3*gamma_0[1] * dE/E1)
-#      delta[2,ii] = (4/3*gamma_0[1] * dE/E1)
-#    elseif gamma_n[1,ii] >= 20
-#      delta[1,ii] = 4*(gamma_0[1])^(2/3) * dE/E1
-#      delta[2,ii] = 4*(gamma_0[1])^(2/3) * dE/E1
-#    end
-#  end
-  for ii in length(i)
+  for ii in 1:length(i)
+    if gamma_n[1,ii] < 20
+      delta[1,ii] = 4/3*gamma_0[1] * dE/E1
+      delta[2,ii] = 4/3*gamma_0[1] * dE/E1
+    elseif gamma_n[1,ii] >= 20
+      delta[1,ii] = 4*(gamma_0[1])^(2/3) * dE/E1
+      delta[2,ii] = 4*(gamma_0[1])^(2/3) * dE/E1
+    end
+  end
+  println("delta = ", delta, "\n", size(delta), "\n")
+  for ii in 1:length(i)
     k_down[1,ii] = (i[ii]+1) * k10[1] * exp(i[ii] * delta[1,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
     k_down[2,ii] = (i[ii]+1) * k10[2] * exp(i[ii] * delta[2,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
   end
 end
-println("k_down = ", k_down, "\n")
+println("k_down = ", k_down, "\n", size(k_down))
 return k_down
 end
