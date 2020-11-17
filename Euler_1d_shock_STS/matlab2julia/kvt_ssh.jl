@@ -56,6 +56,6 @@ elseif sw_o == 1
     k_down[2,ii] = (i[ii]+1) * k10[2] * exp(i[ii] * delta[2,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
   end
 end
-println("k_down = ", k_down, "\n", size(k_down))
+println("k_down = ", k_down, "\n", size(k_down), "\n")
 return k_down
 end

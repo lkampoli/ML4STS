@@ -1,12 +1,13 @@
-function rpart!(dy,y,p,t)
+#function rpart!(du,u,p,t)
+function rpart(du,u,p,t)
 
 Lmax = l-1;       println("Lmax = ", Lmax, "\n")
 
-ni_b = y[1:l];    print("ni_b = ", ni_b, "\n")
-na_b = y[l+1];    print("na_b = ", na_b, "\n")
+ni_b = u[1:l];    print("ni_b = ", ni_b, "\n")
+na_b = u[l+1];    print("na_b = ", na_b, "\n")
 nm_b = sum(ni_b); print("nm_b = ", nm_b, "\n")
-v_b  = y[l+2];    print("v_b = ",  v_b,  "\n")
-T_b  = y[l+3];    print("T_b = ",  T_b,  "\n")
+v_b  = u[l+2];    print("v_b = ",  v_b,  "\n")
+T_b  = u[l+3];    print("T_b = ",  T_b,  "\n")
 
 xx = t*Delta;     #println("xx = ", xx, "\n")
 temp = T_b*T0;    #print("T = ", temp, "\n")
@@ -46,8 +47,11 @@ A[l+3,l+1] = 1.5*T_b+ef_b
 A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
 A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-println("A = ", A, "\n")
-AA = A; #println("AA = ", AA, "\n")
+AA = A; println("AA = ", AA, "\n")
+display(UnicodePlots.spy(AA))
+#spy(sparse(A), ms=5)
+#PyPlot.spy(A)
+#Plots.spy(A)
 
 # Equilibrium constant for DR processes
 Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp); println("Kdr = ", Kdr, "\n")
@@ -63,7 +67,7 @@ kr = zeros(2,l)
 for iM = 1:2
   kr[iM,:] = kd[iM,:] .* Kdr * n0
 end
-println("kr = ", kr, "\n")
+println("kr = ", kr, "\n", size(kr), "\n")
 
 # VT processes: i+1 -> i
 kvt_down = kvt_ssh(temp) * Delta*n0/v0; println("kvt_down = ", kvt_down, "\n")
@@ -71,13 +75,13 @@ kvt_up   = zeros(2,Lmax)
 for ip = 1:2
   kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
 end
-println("kvt_up = ", kvt_up, "\n")
+println("kvt_up = ", kvt_up, "\n", size(kvt_up), "\n")
 
 # VV processes
 kvv_down = kvv_ssh(temp) * Delta*n0/v0
 kvv_up   = zeros(Lmax,Lmax)
 deps     = e_i[1:end-1]-e_i[2:end]
-for ip = 1:Lmax
+for ip in 1:Lmax
 @. kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip].-deps) / (k*temp))
 end
 
@@ -119,10 +123,10 @@ for i1 = 1:l
     end
 end
 
-dy      = zeros(l+3)
-dy[1:l] = RD + RVT + RVV
-dy[l+1] = - 2*sum(RD)
+du      = zeros(l+3)
+du[1:l] = RD + RVT + RVV
+du[l+1] = - 2*sum(RD)
 
-return inv(AA)*dy
+return inv(AA)*du
 
 end

@@ -1,14 +1,14 @@
-# Used packages
 using Unitful
 using BenchmarkTools
 using MAT
-using SymPy;
-using Plots
+using SymPy
+using Plots; gr() #call the GR backend
 using UnicodePlots
-using PyPlot
+using PyPlot; pygui(true)
 using Images
 using JLD
 using DifferentialEquations
+using DiffEqParamEstim
 using StaticArrays
 using ModelingToolkit
 using SparsityDetection
@@ -107,7 +107,7 @@ Y0_bar[1:l] = xc[1]*n1/Zvibr_0*exp.(-e_i./Tv0./k)
 Y0_bar[l+1] = xc[2]*n1
 Y0_bar[l+2] = v1
 Y0_bar[l+3] = T1
-println("Y0_bar = ", Y0_bar, "\n")
+println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n")
 
 Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
 xspan = [0, x_w]./Delta;       println("xspan = ", xspan, "\n")
@@ -116,26 +116,40 @@ include("rpart.jl")
 include("kdis.jl")
 include("kvt_ssh.jl")
 include("kvv_ssh.jl")
-prob = ODEProblem(rpart!, Y0_bar, xspan)
-sol  = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true)
+#prob = ODEProblem(rpart!, Y0_bar, xspan)
+prob = ODEProblem(rpart, Y0_bar, xspan)
+#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true)
+sol  = DifferentialEquations.solve(prob)
+#@btime sol  = DifferentialEquations.solve(prob)
+#@benchmark sol  = DifferentialEquations.solve(prob)
 
-X      = sol.t
-x_s    = X*Delta*100;
+# The last value of sol is the timestep, and the beginning values are for the component.
+#display(Plots.plot(sol))
+#display(Plots.plot(sol,vars=(0,1)))
+println("sol: ", size(sol), "\n")
+
+X      = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
+x_s    = X*Delta*100;                                          println("x_s = ", x_s, "\n")
 Temp   = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
 v      = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
 n_i    = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
-n_a    = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n")
-n_m    = sum(n_i,1);                                           println("n_m = ", n_m, "\n")
+n_a    = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
+n_m    = sum(n_i,dims=1);                                      println("n_m = ", n_m, "\n", "Size of n_m = ", size(n_m), "\n")
 time_s = X*Delta/v0;                                           println("time_s = ", time_s, "\n")
 Npoint = length(X);                                            println("Npoint = ", Npoint, "\n")
-Nall   = sum(n_i,2)+n_a;                                       println("Nall = ", Nall, "\n")
+Nall   = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
+Nall   = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
 ni_n   = n_i ./ repmat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
-nm_n   = sum(ni_n,2);                                          println("nm_n = ", nm_n, "\n")
+#ni_n  = n_i ./ repmat(Nall,l,1);                              println("ni_n = ", ni_n, "\n")
+#ni_n  = n_i ./ repeat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
+#ni_n  = n_i ./ repeat(Nall,l);                                println("ni_n = ", ni_n, "\n")
+nm_n   = sum(ni_n,dims=2);                                     println("nm_n = ", nm_n, "\n")
 na_n   = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
 rho    = m[1]*n_m + m[2]*n_a;                                  println("rho = ", rho, "\n")
 p      = Nall*k .* Temp;                                       println("p = ", p, "\n")
-e_v    = repmat(e_i+e_0,Npoint,1) .* n_i;
-e_v    = sum(e_v,2);                                           println("eᵥ = ", e_v, "\n")
+#e_v   = repeat(e_i+e_0,Npoint,1) .* n_i;
+e_v    = repeat(e_i+e_0,Npoint) .* n_i;
+e_v    = sum(e_v,dims=2);                                      println("eᵥ = ", e_v, "\n")
 e_v0   = n0*xc[1]/Zvibr_0*sum(exp.(-e_i./Tv0/k) .* (e_i+e_0)); println("eᵥ₀ = ", e_v0, "\n")
 e_f    = 0.5*D*n_a*k;                                          println("e_f = ", e_f, "\n")
 e_f0   = 0.5*D*xc[2]*n0*k;                                     println("e_f0 = ", e_f0, "\n")
