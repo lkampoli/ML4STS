@@ -10,5 +10,5 @@ else
   #e = h*c*om_e*(0:l-1)'
   e = h*c*om_e*(0:l-1)
 end
-return e
+#return e
 end

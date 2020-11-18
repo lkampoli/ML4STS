@@ -5,5 +5,5 @@ if sw_o == 1
 else
   e = h*c*0.5*om_e
 end
-return e
+#return e
 end
