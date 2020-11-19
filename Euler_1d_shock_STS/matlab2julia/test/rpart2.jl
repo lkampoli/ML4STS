@@ -1,21 +1,13 @@
-function rpart!(dy,y,p,t)
+f = (du,u,p,t) -> begin
+  @inbounds begin
+  ni_b = view(u,1:l)
+  na_b = view(u,l+1)
+  v_b  = view(u,l+2)
+  T_b  = view(u,l+3)
 
-  u    = @view y[1:l+3]
-
-  ni_b = @view u[1:l];      #print("ni_b = ", ni_b, "\n")
-  na_b = @view u[l+1];      #print("na_b = ", na_b, "\n")
-  v_b  = @view u[l+2];      #print("v_b = ",  v_b,  "\n")
-  T_b  = @view u[l+3];      #print("T_b = ",  T_b,  "\n")
-
-  #ni_b = @view y[1:l];      #print("ni_b = ", ni_b, "\n")
-  #na_b = @view y[l+1];      #print("na_b = ", na_b, "\n")
-  #v_b  = @view y[l+2];      #print("v_b = ",  v_b,  "\n")
-  #T_b  = @view y[l+3];      #print("T_b = ",  T_b,  "\n")
-
-  du = @view dy[1:l+3]
-
-  nm_b = sum(ni_b);   #print("nm_b = ", nm_b, "\n")
+  nm_b = sum(ni_b)
   Lmax = l-1;         #println("Lmax = ", Lmax, "\n")
+
   xx   = t*Delta;     #println("xx = ", xx, "\n")
   temp = T_b*T0;      #print("T = ", temp, "\n")
 
@@ -54,11 +46,7 @@ function rpart!(dy,y,p,t)
   A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
   A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-  AA = A; #println("AA = ", AA, "\n")
-  #display(UnicodePlots.spy(AA))
-  #spy(sparse(A), ms=5)
-  #display(PyPlot.spy(A))
-  #display(Plots.spy(A))
+  AA = A
 
   # Equilibrium constant for DR processes
   Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp); println("Kdr = ", Kdr, "\n")
@@ -134,17 +122,16 @@ function rpart!(dy,y,p,t)
                                 sum(ni_b[1:end-1] .* kvv_down[i1-1,:]))
       end
   end
-
+  #
   println("RD = ",  RD,  "\n", size(RD))
   println("RVT = ", RVT, "\n", size(RVT))
   println("RVV = ", RVV, "\n", size(RVV))
-
-  # If I comment this line, I get an error
-  B      = zeros(l+3)
-  B[1:l] = RD + RVT + RVV
-  B[l+1] = - 2*sum(RD)
-  #dy    = inv(AA)*B
-  du     = inv(AA)*B
   #
-  #return dy
+  # If I comment this line, I get an error
+  du[1:l+3] .= 0 # = zeros(l+3)
+  du[1:l]    = RD + RVT + RVV
+  du[l+1]    = - 2*sum(RD)
+  du         = inv(AA)*du
+  #
+  end
 end
