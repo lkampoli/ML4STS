@@ -1,18 +1,23 @@
 function rpart!(dy,y,p,t)
 
-  u    = @view y[1:l+3]
+  #u    = @view y[1:l+3]
 
-  ni_b = @view u[1:l];      #print("ni_b = ", ni_b, "\n")
-  na_b = @view u[l+1];      #print("na_b = ", na_b, "\n")
-  v_b  = @view u[l+2];      #print("v_b = ",  v_b,  "\n")
-  T_b  = @view u[l+3];      #print("T_b = ",  T_b,  "\n")
+  #ni_b = @view u[1:l];      #print("ni_b = ", ni_b, "\n")
+  #na_b = @view u[l+1];      #print("na_b = ", na_b, "\n")
+  #v_b  = @view u[l+2];      #print("v_b = ",  v_b,  "\n")
+  #T_b  = @view u[l+3];      #print("T_b = ",  T_b,  "\n")
 
-  #ni_b = @view y[1:l];      #print("ni_b = ", ni_b, "\n")
-  #na_b = @view y[l+1];      #print("na_b = ", na_b, "\n")
-  #v_b  = @view y[l+2];      #print("v_b = ",  v_b,  "\n")
-  #T_b  = @view y[l+3];      #print("T_b = ",  T_b,  "\n")
+  println("p = ", p, "\n")
+  println("t = ", t, "\n")
+  u    = y[1:l+3]; println("u = ", u, "\n", size(u), "\n", typeof(u), "\n")
 
-  du = @view dy[1:l+3]
+  ni_b = u[1:l];      #print("ni_b = ", ni_b, "\n")
+  na_b = u[l+1];      #print("na_b = ", na_b, "\n")
+  v_b  = u[l+2];      #print("v_b = ",  v_b,  "\n")
+  T_b  = u[l+3];      #print("T_b = ",  T_b,  "\n")
+
+  #du = @view dy[1:l+3]
+  du = dy[1:l+3]
 
   nm_b = sum(ni_b);   #print("nm_b = ", nm_b, "\n")
   Lmax = l-1;         #println("Lmax = ", Lmax, "\n")
