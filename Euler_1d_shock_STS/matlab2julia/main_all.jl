@@ -446,12 +446,16 @@ function rpart!(u,p,t)
   B      = zeros(l+3)
   B[1:l] = RD + RVT + RVV
   B[l+1] = - 2*sum(RD)
-  u     .= inv(AA)*B
+  println("B = ", B, "\n", size(B))
+  u      = inv(AA)*B
+  #println("inv(A) = ", inv(A), "\n", size(inv(A)))
+  #println("u = ", u, "\n", size(u))
   # du = u
 end
 
 prob = ODEProblem(rpart!, Y0_bar, xspan)
-sol  = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=false)
+#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=false)
+sol  = DifferentialEquations.solve(prob)
 println("sol: ", size(sol), "\n")
 
 #display(Plots.plot(sol))

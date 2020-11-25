@@ -1,4 +1,4 @@
-function rpart!(dy,y,p,t)
+function rpart!(du,u,p,t)
 
   #u    = @view y[1:l+3]
 
@@ -6,18 +6,22 @@ function rpart!(dy,y,p,t)
   #na_b = @view u[l+1];      #print("na_b = ", na_b, "\n")
   #v_b  = @view u[l+2];      #print("v_b = ",  v_b,  "\n")
   #T_b  = @view u[l+3];      #print("T_b = ",  T_b,  "\n")
+  #u    = y[1:l+3];          #println("u = ", u, "\n", size(u), "\n", typeof(u), "\n")
+
+  p = 1.;
 
   println("p = ", p, "\n")
   println("t = ", t, "\n")
-  u    = y[1:l+3]; println("u = ", u, "\n", size(u), "\n", typeof(u), "\n")
 
-  ni_b = u[1:l];      #print("ni_b = ", ni_b, "\n")
+  ni_b = zeros(l);
+
+  ni_b[1:l] = u[1:l]; #print("ni_b = ", ni_b, "\n")
   na_b = u[l+1];      #print("na_b = ", na_b, "\n")
   v_b  = u[l+2];      #print("v_b = ",  v_b,  "\n")
   T_b  = u[l+3];      #print("T_b = ",  T_b,  "\n")
 
   #du = @view dy[1:l+3]
-  du = dy[1:l+3]
+  #du = dy[1:l+3]
 
   nm_b = sum(ni_b);   #print("nm_b = ", nm_b, "\n")
   Lmax = l-1;         #println("Lmax = ", Lmax, "\n")
@@ -37,6 +41,7 @@ function rpart!(dy,y,p,t)
   mb = m/M;    #println("mb = ", mb, "\n")
 
   A = zeros(l+3,l+3)
+  #A = @SMatrix zeros(l+3,l+3)
 
   for i = 1:l
     A[i,i]   = v_b
@@ -59,7 +64,8 @@ function rpart!(dy,y,p,t)
   A[l+3,l+2] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+sum((ei_b.+e0_b).*ni_b)+ef_b*na_b)
   A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
-  AA = A; #println("AA = ", AA, "\n")
+  #AA = A; println("AA = ", AA, "\n", size(AA), "\n")
+  AA = inv(A); println("AA = ", AA, "\n", size(AA), "\n")
   #display(UnicodePlots.spy(AA))
   #spy(sparse(A), ms=5)
   #display(PyPlot.spy(A))
@@ -110,34 +116,34 @@ function rpart!(dy,y,p,t)
 
     RD[i1] = nm_b*(na_b*na_b*kr[1,i1]-ni_b[i1]*kd[1,i1]) + na_b*(na_b*na_b*kr[2,i1]-ni_b[i1]*kd[2,i1])
 
-      if i1 == 1 # 0<->1
-
-        RVT[i1] = nm_b*(ni_b[i1+1]*kvt_down[1,i1]-ni_b[i1]*kvt_up[1,i1])+
-                  na_b*(ni_b[i1+1]*kvt_down[2,i1]-ni_b[i1]*kvt_up[2,i1])
-
-        RVV[i1] = ni_b[i1+1]*sum(ni_b[1:end-1] .* kvv_down[i1,:]) -
-                  ni_b[i1]  *sum(ni_b[2:end]   .* kvv_up[i1,:])
-
-      elseif i1 == l # Lmax <-> Lmax-1
-
-        RVT[i1] = nm_b*(ni_b[i1-1]*kvt_up[1,i1-1]-ni_b[i1]*kvt_down[1,i1-1]) +
-                  na_b*(ni_b[i1-1]*kvt_up[2,i1-1]-ni_b[i1]*kvt_down[2,i1-1])
-
-        RVV[i1] = ni_b[i1-1]*sum(ni_b[2:end]   .* kvv_up[i1-1,:]) -
-                  ni_b[i1]  *sum(ni_b[1:end-1] .* kvv_down[i1-1,:])
-
-      else
-
-        RVT[i1] = nm_b*(ni_b[i1+1] * kvt_down[1,i1] + ni_b[i1-1] * kvt_up[1,i1-1] -
-                        ni_b[i1]   * (kvt_up[1,i1]  + kvt_down[1,i1-1])) +
-                  na_b*(ni_b[i1+1] * kvt_down[2,i1] + ni_b[i1-1] * kvt_up[2,i1-1] -
-                        ni_b[i1]   * (kvt_up[2,i1]  + kvt_down[2,i1-1]))
-
-        RVV[i1] = ni_b[i1+1] * sum(ni_b[1:end-1]  .* kvv_down[i1,:]) +
-                  ni_b[i1-1] * sum(ni_b[2:end]    .* kvv_up[i1-1,:]) -
-                  ni_b[i1]   * (sum(ni_b[2:end]   .* kvv_up[i1,:]) +
-                                sum(ni_b[1:end-1] .* kvv_down[i1-1,:]))
-      end
+#      if i1 == 1 # 0<->1
+#
+#        RVT[i1] = nm_b*(ni_b[i1+1]*kvt_down[1,i1]-ni_b[i1]*kvt_up[1,i1])+
+#                  na_b*(ni_b[i1+1]*kvt_down[2,i1]-ni_b[i1]*kvt_up[2,i1])
+#
+#        RVV[i1] = ni_b[i1+1]*sum(ni_b[1:end-1] .* kvv_down[i1,:]) -
+#                  ni_b[i1]  *sum(ni_b[2:end]   .* kvv_up[i1,:])
+#
+#      elseif i1 == l # Lmax <-> Lmax-1
+#
+#        RVT[i1] = nm_b*(ni_b[i1-1]*kvt_up[1,i1-1]-ni_b[i1]*kvt_down[1,i1-1]) +
+#                  na_b*(ni_b[i1-1]*kvt_up[2,i1-1]-ni_b[i1]*kvt_down[2,i1-1])
+#
+#        RVV[i1] = ni_b[i1-1]*sum(ni_b[2:end]   .* kvv_up[i1-1,:]) -
+#                  ni_b[i1]  *sum(ni_b[1:end-1] .* kvv_down[i1-1,:])
+#
+#      else
+#
+#        RVT[i1] = nm_b*(ni_b[i1+1] * kvt_down[1,i1] + ni_b[i1-1] * kvt_up[1,i1-1] -
+#                        ni_b[i1]   * (kvt_up[1,i1]  + kvt_down[1,i1-1])) +
+#                  na_b*(ni_b[i1+1] * kvt_down[2,i1] + ni_b[i1-1] * kvt_up[2,i1-1] -
+#                        ni_b[i1]   * (kvt_up[2,i1]  + kvt_down[2,i1-1]))
+#
+#        RVV[i1] = ni_b[i1+1] * sum(ni_b[1:end-1]  .* kvv_down[i1,:]) +
+#                  ni_b[i1-1] * sum(ni_b[2:end]    .* kvv_up[i1-1,:]) -
+#                  ni_b[i1]   * (sum(ni_b[2:end]   .* kvv_up[i1,:]) +
+#                                sum(ni_b[1:end-1] .* kvv_down[i1-1,:]))
+#      end
   end
 
   println("RD = ",  RD,  "\n", size(RD))
@@ -146,10 +152,21 @@ function rpart!(dy,y,p,t)
 
   # If I comment this line, I get an error
   B      = zeros(l+3)
-  B[1:l] = RD + RVT + RVV
+  for i  = 1:l
+    B[i] = RD[i] + RVT[i] + RVV[i]
+  end
   B[l+1] = - 2*sum(RD)
   #dy    = inv(AA)*B
-  du     = inv(AA)*B
+  du     = AA*B
+  ###
+#  for i = 1:l+3
+#    #dy[i] = inv(AA)*B[i]*y[i]
+#    dy[i] = B[i]*y[i]
+#  end
+
+  #f(du,u,p,t) = mul!(dy,inv(AA),y)
+  #mul!(dy,inv(AA),y)
+  ###
   #
   #return dy
 end

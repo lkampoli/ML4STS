@@ -1,11 +1,11 @@
 using BenchmarkTools
 using MAT
 using SymPy
-using Plots; gr(fmt=:png)
-using UnicodePlots
-using PyPlot; pygui(true)
-using Images
-using JLD
+using Plots; #gr(fmt=:png)
+#using UnicodePlots
+#using PyPlot; pygui(true)
+#using Images
+#using JLD
 using DifferentialEquations
 using DiffEqOperators
 using DiffEqParamEstim
@@ -129,11 +129,11 @@ const Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
 xspan       = [0, x_w]./Delta;       println("xspan = ", xspan, "\n", size(xspan), "\n")
 
 using OrdinaryDiffEq
-include("rpart.jl")
 include("kdis.jl")
 #include("kvt_ssh.jl")
 #include("kvv_ssh.jl")
-prob = ODEProblem(rpart!,Y0_bar,(0.0,10000))
+include("rpart.jl")
+prob = ODEProblem(rpart!,Y0_bar,xspan)
 #@benchmark DifferentialEquations.solve(prob,Tsit5())
 sol = DifferentialEquations.solve(prob,Tsit5())
 #prob = ODEProblem(f, Y0_bar, xspan)
@@ -148,12 +148,12 @@ sol = DifferentialEquations.solve(prob,Tsit5())
 #benchmark sol = DifferentialEquations.solve(prob)
 #
 # The last value of sol is the timestep, and the beginning values are for the component.
-#Plots.plot!(sol)
-#display(Plots.plot(sol))
+Plots.plot!(sol)
+display(Plots.plot(sol))
 #display(PyPlot.plot(sol))
-PyPlot.plot(sol)
+#PyPlot.plot(sol)
 #display(UnicodePlots.plot(sol))
-#display(Plots.plot(sol,vars=(0,1)))
+display(Plots.plot(sol,vars=(0,1)))
 println("sol: ", size(sol), "\n")
 #
 #X      = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
