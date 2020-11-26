@@ -252,7 +252,8 @@ class PINN:
     def callback(self, loss):
         print('Loss: %.3e' % (loss))
 
-    def train(self, nIter):
+    #def train(self, nIter):
+    def train(self, nIter, learning_rate):
 
         tf_dict = {self.x_tf: self.x}
         tf_dict.update(dict(zip(self.n_tf, self.n)))
@@ -335,11 +336,13 @@ class PINN:
 if __name__ == "__main__":
 
     # NN Architecture
-    layers = [1, 100, 100]
+    #layers = [1, 100, 100]
+    layers = [1, 100, 100, 100, 100, 100]
     #layers = [1, 25, 50, 75, 50, 25, 100]
 
     # Loading data
     data = np.loadtxt("dataset_STS.txt")
+    #data = np.loadtxt("data/bi_mix_sts/dataset_STS.txt")
 
     # Slicing of dataset to get all required parameters
     x   = data[:,0:1].flatten()[:,None]
