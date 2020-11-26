@@ -1,8 +1,7 @@
 function rpart!(du,u,p,t)
 # https://flow.byu.edu/posts/julia-c++
-
-  #ni_b = zeros(l);
-  ni_b = Array{Float64}(undef, l)
+# https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/
+  ni_b = zeros(l);
   ni_b = u[1:l]; #print("ni_b = ", ni_b, "\n")
   na_b = u[l+1]; #print("na_b = ", na_b, "\n")
   v_b  = u[l+2]; #print("v_b = ",  v_b,  "\n")
@@ -25,7 +24,6 @@ function rpart!(du,u,p,t)
   mb = m/M;    #println("mb = ", mb, "\n")
 
   A = zeros(l+3,l+3)
-  #A = @SMatrix zeros(l+3,l+3)
   #spy(A, markersize=1, colorbar=false, color=:deep)
 
   for i = 1:l
@@ -77,22 +75,21 @@ function rpart!(du,u,p,t)
   # VT processes: i+1 -> i
   kvt_down = zeros(2,Lmax)
   kvt_up   = zeros(2,Lmax)
-  #kvt_down = kvt_ssh(temp) #* Delta*n0/v0; #println("kvt_down = ", kvt_down, "\n")
-  #kvt_down = kvt_down .* Delta*n0/v0
-  #for ip = 1:2
-  #  kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
-  #end
+  kvt_down = kvt_ssh!(temp) * Delta*n0/v0; #println("kvt_down = ", kvt_down, "\n")
+  for ip = 1:2
+    kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
+  end
   #println("kvt_up = ", kvt_up, "\n", size(kvt_up), "\n")
 
   # VV processes
   kvv_down = zeros(Lmax,Lmax)
   kvv_up   = zeros(Lmax,Lmax)
-  #kvv_down = kvv_ssh(temp) * Delta*n0/v0
-  #deps     = e_i[1:end-1]-e_i[2:end]
-  #for ip in 1:Lmax
-  #@. kvv_up[ip,:] = kvv_down[ip,:] * exp((deps[ip]-deps) / (k*temp))
-  ##@. kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip].-deps) / (k*temp))
-  #end
+  kvv_down = kvv_ssh!(temp) * Delta*n0/v0
+  deps     = e_i[1:end-1]-e_i[2:end]
+  for ip in 1:Lmax
+  @. kvv_up[ip,:] = kvv_down[ip,:] * exp((deps[ip]-deps) / (k*temp))
+  #@. kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip].-deps) / (k*temp))
+  end
   #println("kvv_up = ", kvv_up, "\n", size(kvv_up), "\n")
 
   RD  = zeros(l)
@@ -142,7 +139,7 @@ function rpart!(du,u,p,t)
     B[i] = RD[i] + RVT[i] + RVV[i]
   end
   B[l+1] = - 2*sum(RD)
-  du    .= AA*B
-  #mul!(du,AA,B)
+  #du    .= AA*B
+  mul!(du,AA,B)
 
 end

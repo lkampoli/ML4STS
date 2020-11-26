@@ -1,4 +1,4 @@
-function kvt_ssh(t)
+function kvt_ssh!(t)
 
 if sw_o == 1
   om10 = om_e-2*om_x_e;          #println("om10 = ", om10, "\n")
@@ -57,5 +57,5 @@ elseif sw_o == 1
   end
 end
 #println("k_down = ", k_down, "\n", size(k_down), "\n")
-#return k_down
+return k_down
 end

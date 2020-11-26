@@ -129,6 +129,7 @@ println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n", typeof(Y0_bar), "\n")
 const Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
 xspan       = [0, x_w]./Delta;       println("xspan = ", xspan, "\n", size(xspan), "\n")
 
+# https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/
 include("kdis.jl")
 include("kvt_ssh.jl")
 include("kvv_ssh.jl")
@@ -139,33 +140,30 @@ include("rpart.jl")
 prob = ODEProblem(rpart!, Y0_bar, xspan, 1.)
 #sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
 #sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
-bm = @benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#bm  = @benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta; println("xspan = ", xspan, "\n", size(xspan), "\n")
 #sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
-display(bm)
-#display(Plots.plot(sol))
-#println("sol: ", size(sol), "\n")
 
-#X      = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
-#x_s    = X*Delta*100;                                          println("x_s = ", x_s, "\n")
-#Temp   = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
-#v     = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
-#display(Plots.plot!(x_s,Temp)true) #veat=1000), progress=truesavefig("T.pdf")
+println("sol: ", size(sol), "\n")
 
-#n_i    = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
-#n_a    = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
-#n_m    = sum(n_i,dims=1);                                      println("n_m = ", n_m, "\n", "Size of n_m = ", size(n_m), "\n")
-#time_s = X*Delta/v0;                                           println("time_s = ", time_s, "\n")
-#Npoint = length(X);                                            println("Npoint = ", Npoint, "\n")
-#Nall   = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
-#Nall   = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
+X       = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
+x_s     = X*Delta*100;                                          println("x_s = ", x_s, "\n")
+Temp    = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
+v       = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
+n_i     = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
+n_a     = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
+n_m     = sum(n_i,dims=1);                                      println("n_m = ", n_m, "\n", "Size of n_m = ", size(n_m), "\n")
+time_s  = X*Delta/v0;                                           println("time_s = ", time_s, "\n")
+Npoint  = length(X);                                            println("Npoint = ", Npoint, "\n")
+Nall    = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
+Nall    = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
 #ni_n   = n_i ./ repeat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
-##ni_n  = n_i ./ repeat(Nall,l,1);                              println("ni_n = ", ni_n, "\n")
 #nm_n   = sum(ni_n,dims=2);                                     println("nm_n = ", nm_n, "\n")
-#na_n   = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
+na_n    = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
 #rho    = m[1]*n_m + m[2]*n_a;                                  println("rho = ", rho, "\n")
-#p      = Nall*k .* Temp;                                       println("p = ", p, "\n")
-##e_v   = repeat(e_i+e_0,Npoint,1) .* n_i;
+#p      = Nall .* k .* Temp;                                       println("p = ", p, "\n")
+#e_v    = repeat(e_i+e_0,Npoint,1) .* n_i;
 #e_v    = repeat(e_i+e_0,1,Npoint) .* n_i;
 #e_v    = sum(e_v,dims=2);                                      println("eᵥ = ", e_v, "\n")
 #e_v0   = n0*xc[1]/Zvibr_0*sum(exp.(-e_i./Tv0/k) .* (e_i+e_0)); println("eᵥ₀ = ", e_v0, "\n")
@@ -193,6 +191,20 @@ display(bm)
 #println("mass = ", d1);
 #println("momentum = ", d2);
 #println("energy = ", d3);
+
+#display(Plots.plot(sol))
+
+display(Plots.plot!(x_s,Temp))
+savefig("T.pdf")
+
+display(Plots.plot!(x_s,v))
+savefig("V.pdf")
+
+display(Plots.plot!(x_s,n_i))
+savefig("n_i.pdf")
+
+display(Plots.plot!(x_s,n_a))
+savefig("n_a.pdf")
 
 #include("rpart_post.jl")
 #RDm  = zeros(Npoint,l);
