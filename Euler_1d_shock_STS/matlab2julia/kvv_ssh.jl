@@ -1,4 +1,4 @@
-function kvv_ssh!(t)
+function kvv_ssh(t)
 
 mu    = 0.5  * m[1]
 m_osc = 0.25 * m[1]
@@ -24,7 +24,7 @@ if sw_o == 2
   for i_down = 1:Lmax
     kdown[i_down,:] = i_down * (j_up+1) * k10
   end
-println("kdown = ", kdown, "\n", size(kdown), "\n")
+#println("kdown = ", kdown, "\n", size(kdown), "\n")
 elseif sw_o == 1
   aA     = a * 1e-10
   mu_amu = mu / 1.6605e-27

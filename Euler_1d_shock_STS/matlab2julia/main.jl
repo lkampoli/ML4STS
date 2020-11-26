@@ -7,27 +7,28 @@ using Plots; #gr(fmt=:png)
 #using Images
 #using JLD
 using DifferentialEquations
-using DiffEqOperators
-using DiffEqParamEstim
-using DiffEqDevTools
+#using DiffEqOperators
+#using DiffEqParamEstim
+#using DiffEqDevTools
 using StaticArrays
 using OrdinaryDiffEq
 using LinearAlgebra
+# https://diffeq.sciml.ai/v2.0.0/solvers/ode_solve.html
 using ODE
 using ODEInterface
 using ODEInterfaceDiffEq
-using MATLABDiffEq
-using LSODA
+#using MATLABDiffEq
+#using LSODA
 #using SciPyDiffEq
 #using deSolveDiffEq
-using ModelingToolkit
-using SparsityDetection
-using SparseArrays
+#using ModelingToolkit
+#using SparsityDetection
+#using SparseArrays
 #using AlgebraicMultigrid
-using Sundials
-using Test
-using Distributed
-using ParameterizedFunctions
+#using Sundials
+#using Test
+#using Distributed
+#using ParameterizedFunctions
 #
 #addprocs()
 #@everywhere using DifferentialEquations
@@ -128,39 +129,28 @@ println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n", typeof(Y0_bar), "\n")
 const Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
 xspan       = [0, x_w]./Delta;       println("xspan = ", xspan, "\n", size(xspan), "\n")
 
-using OrdinaryDiffEq
 include("kdis.jl")
-#include("kvt_ssh.jl")
-#include("kvv_ssh.jl")
+include("kvt_ssh.jl")
+include("kvv_ssh.jl")
 include("rpart.jl")
-prob = ODEProblem(rpart!,Y0_bar,xspan)
-#@benchmark DifferentialEquations.solve(prob,Tsit5())
-sol = DifferentialEquations.solve(prob,Tsit5())
-#prob = ODEProblem(f, Y0_bar, xspan)
-#prob = ODEProblem(rpart!, Y0_bar, xspan)
-#prob = ODEProblem(rpart!, Y0_bar, (0.0,10))
-#prob = ODEProblem(ODEFunction(rpart), Y0_bar, xspan)
-#sol  = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true)
-#sol = OrdinaryDiffEq.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true) #, saveat=100)
-#sol = DifferentialEquations.solve(prob)
-#
-#@btime    sol = DifferentialEquations.solve(prob)
-#benchmark sol = DifferentialEquations.solve(prob)
-#
-# The last value of sol is the timestep, and the beginning values are for the component.
-Plots.plot!(sol)
-display(Plots.plot(sol))
-#display(PyPlot.plot(sol))
-#PyPlot.plot(sol)
-#display(UnicodePlots.plot(sol))
-display(Plots.plot(sol,vars=(0,1)))
-println("sol: ", size(sol), "\n")
-#
+# https://diffeq.sciml.ai/v1.10/basics/common_solver_opts.html
+# https://discourse.julialang.org/t/handling-instability-when-solving-ode-problems/9019/5
+# https://discourse.julialang.org/t/differentialequations-what-goes-wrong/30960
+prob = ODEProblem(rpart!, Y0_bar, xspan, 1.)
+#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
+#sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
+bm = @benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta; println("xspan = ", xspan, "\n", size(xspan), "\n")
+#sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
+display(bm)
+#display(Plots.plot(sol))
+#println("sol: ", size(sol), "\n")
+
 #X      = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
 #x_s    = X*Delta*100;                                          println("x_s = ", x_s, "\n")
 #Temp   = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
-#v      = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
-#display(Plots.plot(x_s,Temp, xaxis=:log, yaxis=:log))
+#v     = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
+#display(Plots.plot!(x_s,Temp)true) #veat=1000), progress=truesavefig("T.pdf")
 
 #n_i    = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
 #n_a    = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
