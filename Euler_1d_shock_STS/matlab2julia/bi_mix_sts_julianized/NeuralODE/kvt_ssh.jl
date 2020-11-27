@@ -1,5 +1,4 @@
 function kvt_ssh!(t)
-#function kvt_ssh!(t, kvt_down)
 
 if sw_o == 1
   om10 = om_e-2*om_x_e;          #println("om10 = ", om10, "\n")
@@ -22,10 +21,8 @@ r_c_r_02 = (0.5 .* sqrt.(1 .+ (chi.*t) ./ em) .+ 0.5).^(-1/3);         #println(
 P10      = Const .* r_c_r_02 .* (1 .+ 1.1 .* em ./ t).^(-1) .* mu ./ a.^2 .* chi.^0.5 .* exp.(-3 .* chi .+ h_bar*om0/(2*k*t) .+ em ./ t)
 k10      = Z .* P10;                                                   #println("k10 = ", k10, "\n")
 
-kvt_down = zeros(2,length(i))
-
 if sw_o == 2
-  kvt_down = k10.*(i.+1);                             #println("kvt_down = ", kvt_down, "\n")
+  k_down = k10.*(i.+1);                             #println("k_down = ", k_down, "\n")
 elseif sw_o == 1
   aA      = a .* 1e-10;                             #println("aA = ", aA, "\n")
   mu_amu  = m[1].*m ./ (m[1].+m)./1.6605e-27;       #println("mu_amu = ", mu_amu, "\n")
@@ -33,7 +30,8 @@ elseif sw_o == 1
   dE      = om_x_e*1.4388e-2;                       #println("dE = ", dE, "\n")
   # https://julialang.org/blog/2017/01/moredots/
   diffE = zeros(length(i))
-  @fastmath @inbounds for ii in 1:length(i)
+  for ii in 1:length(i)
+    #println("i = ", ii, "\n")
     diffE[ii] = (om_e - 2 * om_x_e * (i[ii] + 1)) * h * c
   end
   #println("diffE = ", diffE, "\n", size(diffE), "\n")
@@ -41,9 +39,9 @@ elseif sw_o == 1
   gamma_n = gamma_n .* diffE;                       #println("gamma_n = ", gamma_n, "\n", size(gamma_n), "\n")
   gamma_n = gamma_n';                               #println("gamma_n = ", gamma_n, "\n", size(gamma_n), "\n")
   gamma_0 = 0.32 ./ aA .* sqrt.(mu_amu./t).*E1;     #println("gamma_0 = ", gamma_0, "\n")
-  delta    = zeros(2,length(i));
-  #kvt_down = zeros(2,length(i))
-  @fastmath @inbounds for ii in 1:length(i)
+  delta   = zeros(2,length(i));
+  k_down  = zeros(2,length(i))
+  for ii in 1:length(i)
     if gamma_n[1,ii] < 20
       delta[1,ii] = 4/3*gamma_0[1] * dE/E1
       delta[2,ii] = 4/3*gamma_0[1] * dE/E1
@@ -53,11 +51,11 @@ elseif sw_o == 1
     end
   end
   #println("delta = ", delta, "\n", size(delta), "\n")
-  @fastmath @inbounds for ii in 1:length(i)
-    kvt_down[1,ii] = (i[ii]+1) * k10[1] * exp(i[ii] * delta[1,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
-    kvt_down[2,ii] = (i[ii]+1) * k10[2] * exp(i[ii] * delta[2,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
+  for ii in 1:length(i)
+    k_down[1,ii] = (i[ii]+1) * k10[1] * exp(i[ii] * delta[1,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
+    k_down[2,ii] = (i[ii]+1) * k10[2] * exp(i[ii] * delta[2,ii]) * exp(-i[ii]*h*c*om_x_e / (k*t))
   end
 end
-#println("kvt_down = ", kvt_down, "\n", size(kvt_down), "\n")
-return kvt_down
+#println("k_down = ", k_down, "\n", size(k_down), "\n")
+return k_down
 end

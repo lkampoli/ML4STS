@@ -132,26 +132,6 @@ println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n", typeof(Y0_bar), "\n")
 const Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
 xspan       = [0, x_w]./Delta;       println("xspan = ", xspan, "\n", size(xspan), "\n")
 
-#A  = Matrix{Float64}(undef, l+3, l+3)
-#AA = Matrix{Float64}(undef, l+3, l+3)
-
-#ni_b = Vector{Float64}(undef, l)
-
-#kd = Array{Float64}(undef, 2, l)
-#kr = Array{Float64}(undef, 2, l)
-
-#kvt_down = Array{Float64}(undef, 2, l-1)
-#kvt_up   = Array{Float64}(undef, 2, l-1)
-
-#kvv_down = Array{Float64}(undef, l-1, l-1)
-#kvv_up   = Array{Float64}(undef, l-1, l-1)
-
-#RD  = Vector{Float64}(undef, l)
-#RVT = Vector{Float64}(undef, l)
-#RVV = Vector{Float64}(undef, l)
-
-#B = Vector{Float64}(undef, l+3)
-
 # https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/
 include("kdis.jl")
 include("kvt_ssh.jl")
@@ -163,27 +143,71 @@ include("rpart.jl")
 prob = ODEProblem(rpart!, Y0_bar, xspan, 1.)
 #sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
 #sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
-display(@benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true))
+#bm  = @benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta; println("xspan = ", xspan, "\n", size(xspan), "\n")
 #sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
 
-println("sol: ", size(sol), "\n")
+# https://github.com/FluxML/model-zoo/tree/da4156b4a9fb0d5907dcb6e21d0e78c72b6122e0/other/diffeq
+# https://sebastiancallh.github.io/post/neural-ode-weather-forecast/
+#
+# Build a neural network that sets the cost as the difference from the
+# generated data and 1
 
-X       = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
-x_s     = X*Delta*100;                                          println("x_s = ", x_s, "\n")
-Temp    = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
-v       = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
-n_i     = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
-n_a     = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
-n_m     = sum(n_i,dims=1);                                      println("n_m = ", n_m, "\n", "Size of n_m = ", size(n_m), "\n")
-time_s  = X*Delta/v0;                                           println("time_s = ", time_s, "\n")
-Npoint  = length(X);                                            println("Npoint = ", Npoint, "\n")
-Nall    = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
-Nall    = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
+p = param([2.2, 1.0, 2.0, 0.4]) # Initial Parameter Vector
+function predict_rd() # Our 1-layer neural network
+  diffeq_rd(p,prob,radau())[1,:]
+end
+loss_rd() = sum(abs2,x-1 for x in predict_rd()) # loss function
+#loss_n_ode() = sum(abs2,ode_data .- predict_n_ode())
+
+#dudt = Chain(x -> x.^3,
+#             Dense(2,50,tanh),
+#             Dense(50,2))
+#ps = Flux.params(dudt)
+#n_ode = x->neural_ode(dudt,x,tspan,Tsit5(),saveat=t,reltol=1e-7,abstol=1e-9)
+#
+#pred = n_ode(u0) # Get the prediction using the correct initial condition
+#scatter(t,ode_data[1,:],label="data")
+#scatter!(t,Flux.data(pred[1,:]),label="prediction")
+#
+#function predict_n_ode()
+#  n_ode(u0)
+#end
+
+# Optimize the parameters so the ODE's solution stays near 1
+data = Iterators.repeated((), 100)
+opt = ADAM(0.1)
+cb = function () #callback function to observe training
+  display(loss_rd())
+  # using `remake` to re-create our `prob` with current parameters `p`
+  display(plot(solve(remake(prob,p=Flux.data(p)),radau()),ylim=(0,6)))
+  # plot current prediction against data
+  #cur_pred = Flux.data(predict_n_ode())
+  #pl = scatter(t,ode_data[1,:],label="data")
+  #scatter!(pl,t,cur_pred[1,:],label="prediction")
+  #display(plot(pl))
+end
+# Display the ODE with the initial parameter values.
+cb()
+Flux.train!(loss_rd, [p], data, opt, cb = cb)
+
+#println("sol: ", size(sol), "\n")
+#
+#X       = sol.t;                                                println("X = ", X, "\n", size(X), "\n")
+#x_s     = X*Delta*100;                                          println("x_s = ", x_s, "\n")
+#Temp    = sol[l+3,:]*T0;                                        println("Temp = ", Temp, "\n")
+#v       = sol[l+2,:]*v0;                                        println("v = ", v, "\n")
+#n_i     = sol[1:l,:]*n0;                                        println("n_i = ", n_i, "\n", "Size of n_i = ", size(n_i), "\n")
+#n_a     = sol[l+1,:]*n0;                                        println("n_a = ", n_a, "\n", "Size of n_a = ", size(n_a), "\n")
+#n_m     = sum(n_i,dims=1);                                      println("n_m = ", n_m, "\n", "Size of n_m = ", size(n_m), "\n")
+#time_s  = X*Delta/v0;                                           println("time_s = ", time_s, "\n")
+#Npoint  = length(X);                                            println("Npoint = ", Npoint, "\n")
+#Nall    = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
+#Nall    = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
 #ni_n   = n_i ./ repeat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
 #nm_n   = sum(ni_n,dims=2);                                     println("nm_n = ", nm_n, "\n")
-na_n    = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
+#na_n    = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
 #rho    = m[1]*n_m + m[2]*n_a;                                  println("rho = ", rho, "\n")
 #p      = Nall .* k .* Temp;                                       println("p = ", p, "\n")
 #e_v    = repeat(e_i+e_0,Npoint,1) .* n_i;
@@ -217,24 +241,17 @@ na_n    = n_a ./ Nall;                                          println("na_n = 
 
 #display(Plots.plot(sol))
 
-display(Plots.plot(x_s,Temp))
-savefig("T.pdf")
-
-display(Plots.plot(x_s,v))
-savefig("V.pdf")
-
+#display(Plots.plot!(x_s,Temp))
+#savefig("T.pdf")
+#
+#display(Plots.plot!(x_s,v))
+#savefig("V.pdf")
+#
 #display(Plots.plot!(x_s,n_i))
 #savefig("n_i.pdf")
-
+#
 #display(Plots.plot!(x_s,n_a))
 #savefig("n_a.pdf")
-
-# Load Matlab solution
-file  = matopen("solution.mat")
-const X_    = read(file, "X");
-const x_s_  = read(file, "x_s");
-const Temp_ = read(file, "Temp");
-
 
 #include("rpart_post.jl")
 #RDm  = zeros(Npoint,l);

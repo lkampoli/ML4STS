@@ -24,10 +24,9 @@ function rpart!(du,u,p,t)
   mb = m/M;    #println("mb = ", mb, "\n")
 
   A = zeros(l+3,l+3)
-  #println(typeof(A), "\n")
   #spy(A, markersize=1, colorbar=false, color=:deep)
 
-  @fastmath @inbounds for i in 1:l
+  for i = 1:l
     A[i,i]   = v_b
     A[i,l+2] = ni_b[i]
   end
@@ -35,13 +34,13 @@ function rpart!(du,u,p,t)
   A[l+1,l+1] = v_b
   A[l+1,l+2] = na_b
 
-  @fastmath @inbounds for i in 1:l+1
+  for i = 1:l+1
     A[l+2,i] = T_b
   end
   A[l+2,l+2] = M*v0^2/k/T0*(mb[1]*nm_b+mb[2]*na_b)*v_b
   A[l+2,l+3] = nm_b+na_b
 
-  @fastmath @inbounds for i in 1:l
+  for i = 1:l
     A[l+3,i] = 2.5*T_b+ei_b[i]+e0_b
   end
   A[l+3,l+1] = 1.5*T_b+ef_b
@@ -49,6 +48,11 @@ function rpart!(du,u,p,t)
   A[l+3,l+3] = 2.5*nm_b+1.5*na_b
 
   AA = inv(A); #println("AA = ", AA, "\n", size(AA), "\n")
+  #AA = A; println("AA = ", AA, "\n", size(AA), "\n")
+  #display(UnicodePlots.spy(AA))
+  #spy(sparse(A), ms=5)
+  #display(PyPlot.spy(A))
+  #display(Plots.spy(A))
 
   # Equilibrium constant for DR processes
   Kdr = (m[1]*h^2/(m[2]*m[2]*2*pi*k*temp))^(3/2)*Z_rot*exp.(-e_i/(k*temp))*exp(D/temp); #println("Kdr = ", Kdr, "\n")
@@ -58,21 +62,23 @@ function rpart!(du,u,p,t)
 
   # Dissociation processes
   kd = zeros(2,l)
-  kd = kdis!(temp) * Delta*n0/v0;
+  kd = kdis(temp) * Delta*n0/v0;
   #println("kd = ", kd, "\n", size(kd), "\n")
 
   # Recombination processes
   kr = zeros(2,l)
-  kr[1,:] = kd[1,:] .* Kdr * n0
-  kr[2,:] = kd[2,:] .* Kdr * n0
+  for iM = 1:2
+    kr[iM,:] = kd[iM,:] .* Kdr * n0
+  end
   #println("kr = ", kr, "\n", size(kr), "\n")
 
   # VT processes: i+1 -> i
   kvt_down = zeros(2,Lmax)
   kvt_up   = zeros(2,Lmax)
   kvt_down = kvt_ssh!(temp) * Delta*n0/v0; #println("kvt_down = ", kvt_down, "\n")
-  kvt_up[1,:] = kvt_down[1,:] .* Kvt
-  kvt_up[2,:] = kvt_down[2,:] .* Kvt
+  for ip = 1:2
+    kvt_up[ip,:] = kvt_down[ip,:] .* Kvt
+  end
   #println("kvt_up = ", kvt_up, "\n", size(kvt_up), "\n")
 
   # VV processes
@@ -80,8 +86,9 @@ function rpart!(du,u,p,t)
   kvv_up   = zeros(Lmax,Lmax)
   kvv_down = kvv_ssh!(temp) * Delta*n0/v0
   deps     = e_i[1:end-1]-e_i[2:end]
-  @fastmath @inbounds for ip in 1:Lmax
+  for ip in 1:Lmax
   @. kvv_up[ip,:] = kvv_down[ip,:] * exp((deps[ip]-deps) / (k*temp))
+  #@. kvv_up[ip,:] = kvv_down[ip,:] .* exp.((deps[ip].-deps) / (k*temp))
   end
   #println("kvv_up = ", kvv_up, "\n", size(kvv_up), "\n")
 
@@ -127,7 +134,7 @@ function rpart!(du,u,p,t)
   #println("RVT = ", RVT, "\n", size(RVT))
   #println("RVV = ", RVV, "\n", size(RVV))
 
-  B = zeros(l+3)
+  B      = zeros(l+3)
   @fastmath @inbounds for i in eachindex(RD)
     B[i] = RD[i] + RVT[i] + RVV[i]
   end
