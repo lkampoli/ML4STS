@@ -86,32 +86,40 @@ for i=1:l3 # NO
 end
 A[lall+4,lall+1] = 1.5*T_b+efn_b; # N
 A[lall+4,lall+2] = 1.5*T_b+efo_b; # O
-A[lall+4,lall+3] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b+
-                   sum((en2i_b+en20_b).*nn2i_b)+sum((eo2i_b+eo20_b).*no2i_b)+
-                   sum((enoi_b+eno0_b).*nnoi_b)+efno_b*nno_b+efn_b*nn_b+efo_b*no_b);
+A[lall+4,lall+3] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b + sum((en2i_b.+en20_b).*nn2i_b)
+                                                    + sum((eo2i_b.+eo20_b).*no2i_b)
+                                                    + sum((enoi_b.+eno0_b).*nnoi_b)
+                                                    + efno_b*nno_b
+                                                    + efn_b *nn_b
+                                                    + efo_b *no_b);
 A[lall+4,lall+4] = 2.5*nm_b+1.5*na_b;
 
 AA = sparse(A);
 
 # k_rec / k_di
-Kdr_n2 = (m[1]*h^2/(m[4]*m[4]*2*pi*k*temp))^(3/2)*Z_rot[1]* exp(-en2_i'/(k*temp))*exp(D[1]/temp);
-Kdr_o2 = (m[2]*h^2/(m[5]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[2]* exp(-eo2_i'/(k*temp))*exp(D[2]/temp);
-Kdr_no = (m[3]*h^2/(m[4]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[3]* exp(-eno_i'/(k*temp))*exp(D[3]/temp);
+Kdr_n2 = (m[1]*h^2/(m[4]*m[4]*2*pi*k*temp))^(3/2)*Z_rot[1]* exp.(-en2_i./(k*temp))*exp(D[1]/temp);
+Kdr_o2 = (m[2]*h^2/(m[5]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[2]* exp.(-eo2_i./(k*temp))*exp(D[2]/temp);
+Kdr_no = (m[3]*h^2/(m[4]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[3]* exp.(-eno_i./(k*temp))*exp(D[3]/temp);
 
 # kb_exchange / kf_exchange
-Kz_n2 = (m[1]*m[5]/(m[3]*m[4]))^1.5*Z_rot[1]/Z_rot[3]* exp((repmat(eno_i',l[1],1)-repmat(en2_i,1,l[3]))/(k*temp))*exp((D[1]-D[3])/temp);
-Kz_o2 = (m[2]*m[4]/(m[3]*m[5]))^1.5*Z_rot[2]/Z_rot[3]* exp((repmat(eno_i',l[2],1)-repmat(eo2_i,1,l[3]))/(k*temp))*exp((D[2]-D[3])/temp);
+# https://discourse.julialang.org/t/julia-1-0-2-reapeat-function-cost-many-times-than-matlab-s-repmat/17708/3
+# https://stackoverflow.com/questions/24846899/tiling-or-repeating-n-dimensional-arrays-in-julia
+Kz_n2 = (m[1]*m[5]/(m[3]*m[4]))^1.5*Z_rot[1]/Z_rot[3]* exp.((repeat(eno_i',l[1],1)-repeat(en2_i,1,l[3]))/(k*temp))*exp((D[1]-D[3])/temp);
+Kz_o2 = (m[2]*m[4]/(m[3]*m[5]))^1.5*Z_rot[2]/Z_rot[3]* exp.((repeat(eno_i',l[2],1)-repeat(eo2_i,1,l[3]))/(k*temp))*exp((D[2]-D[3])/temp);
+# repeat((@view a1[i,:])',outer = (clen-i+1,1));
 
 # kb_VT(i-1->i) / kf_VT(i->i-1)
-Kvt_n2 = exp((en2_i[1:end-1]-en2_i[2:end])/(k*temp))';
-Kvt_o2 = exp((eo2_i[1:end-1]-eo2_i[2:end])/(k*temp))';
-Kvt_no = exp((eno_i[1:end-1]-eno_i[2:end])/(k*temp))';
+Kvt_n2 = exp.((en2_i[1:end-1]-en2_i[2:end])/(k*temp))';
+Kvt_o2 = exp.((eo2_i[1:end-1]-eo2_i[2:end])/(k*temp))';
+Kvt_no = exp.((eno_i[1:end-1]-eno_i[2:end])/(k*temp))';
 
 kd_n2 = kdis(temp,1) * Delta*n0/v0;
 kd_o2 = kdis(temp,2) * Delta*n0/v0;
 kd_no = kdis(temp,3) * Delta*n0/v0;
 
-kr_n2 = zeros(5,l1); kr_o2 = zeros(5,l2); kr_no = zeros(5,l3);
+kr_n2 = zeros(5,l1);
+kr_o2 = zeros(5,l2);
+kr_no = zeros(5,l3);
 for iM = 1:5
   kr_n2(iM,:) = kd_n2(iM,:) .* Kdr_n2 * n0;
   kr_o2(iM,:) = kd_o2(iM,:) .* Kdr_o2 * n0;

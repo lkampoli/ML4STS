@@ -1,3 +1,4 @@
+# https://diffeq.sciml.ai/v2.0.0/solvers/ode_solve.html#Stiff-Problems-1
 using BenchmarkTools
 using MAT
 #using CSV
@@ -16,18 +17,18 @@ using DifferentialEquations
 #using StaticArrays
 #using OrdinaryDiffEq
 using LinearAlgebra
-#using ODE
-#using ODEInterface
-#using ODEInterfaceDiffEq
+using ODE
+using ODEInterface
+using ODEInterfaceDiffEq
 #using MATLABDiffEq
-#using LSODA
+using LSODA
 #using SciPyDiffEq
 #using deSolveDiffEq
 using ModelingToolkit
 using SparsityDetection
 using SparseArrays
 #using AlgebraicMultigrid
-#using Sundials
+using Sundials
 #using Test
 #using Distributed
 #using ParameterizedFunctions
@@ -246,7 +247,7 @@ const M0 = v0/a0;
 
 include("in_con.jl")
 #NN = in_con();
-NN = [1 1 1]
+NN = [5.761793697284453e+00 1.735570644383367e-01 2.445965060176968e+01]
 n1 = NN[1]; println("n1 = ", n1, "\n")
 v1 = NN[2]; println("v1 = ", v1, "\n")
 T1 = NN[3]; println("T1 = ", T1, "\n")
@@ -270,7 +271,7 @@ include("kvt_fho.jl")
 include("kvv_fho.jl")
 include("rpart_fho.jl")
 prob = ODEProblem(rpart_fho!, Y0_bar, xspan, 1.)
-#sol = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 
 #x_s = X*Delta*100;
 #Temp = Y(:,sum(l)+4)*T0;
