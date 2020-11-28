@@ -38,7 +38,7 @@ delE1 = Ei1-Ef1;
 delE2 = Ei2-Ef2;
 
 if i1 == f1
-  th1 = ome_ab*(1.-2.*(omexe_ab/ome_ab)*i1); # K
+  th1 = ome_ab*(1. -2. *(omexe_ab/ome_ab)*i1); # K
   z1 = 0;
 else
   th1 = abs(delE1/(i1-f1)); # K
@@ -52,7 +52,7 @@ else
   z2 = 1;
 end
 
-if (z1 ~= 0) || (z2 ~= 0)
+if (z1 /= 0) || (z2 /= 0)
   Evib = (th1*z1+th2*z2)/(z1+z2); # K
 end
 if (z1 == 0) && (z2 == 0)

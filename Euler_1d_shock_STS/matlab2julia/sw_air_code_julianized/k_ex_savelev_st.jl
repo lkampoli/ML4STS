@@ -37,8 +37,8 @@ sum2_n2 = zeros(lno,1);
 sum1_o2 = zeros(lno,1);
 sum2_o2 = zeros(lno,1);
 for ix = 1:lno
-  i_sw_n2 = find(en2 < Ear_n2_J[ix],1,'last');
-  i_sw_o2 = find(eo2 < Ear_o2_J[ix],1,'last');
+  i_sw_n2 = find(en2 < Ear_n2_J[ix],1,"last");
+  i_sw_o2 = find(eo2 < Ear_o2_J[ix],1,"last");
   sum1_n2[ix] = sum(exp(-(Ear_n2_J[ix]-en2[1:i_sw_n2])/(k*U)));
   sum2_n2[ix] = sum(exp((Ear_n2_J[ix]-en2[i_sw_n2+1:end])/(k*T)));
   sum1_o2[ix] = sum(exp(-(Ear_o2_J[ix]-eo2[1:i_sw_o2])/(k*U)));
@@ -48,12 +48,13 @@ end
 # normalizing coefficient
 C_n2 = Zv_n2 * (sum1_n2+sum2_n2).^(-1);
 C_o2 = Zv_o2 * (sum1_o2+sum2_o2).^(-1);
-B1_n2 = C_n2.*k_eq_n2.*exp(-Ear_n2_J/(k*U));
-B2_n2 = C_n2.*k_eq_n2.*exp(Ear_n2_J/(k*T));
-B1_o2 = C_o2.*k_eq_o2.*exp(-Ear_o2_J/(k*U));
-B2_o2 = C_o2.*k_eq_o2.*exp(Ear_o2_J/(k*T));
+B1_n2 = C_n2 .* k_eq_n2 .* exp(-Ear_n2_J/(k*U));
+B2_n2 = C_n2 .* k_eq_n2 .* exp(Ear_n2_J/(k*T));
+B1_o2 = C_o2 .* k_eq_o2 .* exp(-Ear_o2_J/(k*U));
+B2_o2 = C_o2 .* k_eq_o2 .* exp(Ear_o2_J/(k*T));
 
-kf_n2 = zeros(ln2,lno); kf_o2 = zeros(lo2,lno);
+kf_n2 = zeros(ln2,lno);
+kf_o2 = zeros(lo2,lno);
 for ix = 1:ln2
   kf_n2[ix,:] = (B1_n2'*exp(en2[ix]/k*(1/T+1/U))).^(en2[ix] < Ear_n2_J').* B2_n2'.^(en2[ix] > Ear_n2_J');
 end

@@ -4,34 +4,36 @@ using MAT
 using DataFrames
 using SymPy
 using Plots; #gr(fmt=:png)
-using UnicodePlots
-using PyPlot; pygui(true)
-using Images
-using JLD
+#using UnicodePlots
+#using PyPlot; pygui(true)
+#using Images
+#using JLD
 using DifferentialEquations
-using DiffEqOperators
-using DiffEqParamEstim
-using DiffEqDevTools
-using DiffEqSensitivity
-using StaticArrays
-using OrdinaryDiffEq
+#using DiffEqOperators
+#using DiffEqParamEstim
+#using DiffEqDevTools
+#using DiffEqSensitivity
+#using StaticArrays
+#using OrdinaryDiffEq
 using LinearAlgebra
-using ODE
-using ODEInterface
-using ODEInterfaceDiffEq
-using MATLABDiffEq
-using LSODA
-using SciPyDiffEq
+#using ODE
+#using ODEInterface
+#using ODEInterfaceDiffEq
+#using MATLABDiffEq
+#using LSODA
+#using SciPyDiffEq
 #using deSolveDiffEq
 using ModelingToolkit
 using SparsityDetection
 using SparseArrays
-using AlgebraicMultigrid
-using Sundials
-using Test
-using Distributed
-using ParameterizedFunctions
-
+#using AlgebraicMultigrid
+#using Sundials
+#using Test
+#using Distributed
+#using ParameterizedFunctions
+using PolynomialRoots
+using Polynomials
+using Roots
 #addprocs()
 #@everywhere using DifferentialEquations
 #using Unitful
@@ -243,7 +245,8 @@ const a0 = sqrt(gamma0*R_bar*T0);
 const M0 = v0/a0;
 
 include("in_con.jl")
-NN = in_con();
+#NN = in_con();
+NN = [1 1 1]
 n1 = NN[1]; println("n1 = ", n1, "\n")
 v1 = NN[2]; println("v1 = ", v1, "\n")
 T1 = NN[3]; println("T1 = ", T1, "\n")
@@ -261,6 +264,11 @@ Y0_bar[sum(l)+4] = T1;
 const x_w = 2.; # m
 const xspan = [0., x_w]./Delta;
 
+include("k_ex_savelev_st.jl")
+include("kdis.jl")
+include("kvt_fho.jl")
+include("kvv_fho.jl")
+include("rpart_fho.jl")
 prob = ODEProblem(rpart_fho!, Y0_bar, xspan, 1.)
 #sol = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 

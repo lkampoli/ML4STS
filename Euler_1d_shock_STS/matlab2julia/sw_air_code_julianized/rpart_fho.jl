@@ -1,9 +1,12 @@
-function rpart_fho(dy, y, t, p)
+function rpart_fho!(dy, y, t, p)
 
-l1   = l[1]; l2 = l[2]; l3 = l[3];
-lall = l1+l2+l3;
-
-Lmax1 = l1-1; Lmax2 = l2-1; Lmax3 = l3-1;
+l1    = l[1];
+l2    = l[2];
+l3    = l[3];
+lall  = l1+l2+l3;
+Lmax1 = l1-1;
+Lmax2 = l2-1;
+Lmax3 = l3-1;
 
 nn2i_b = y[1:l1];
 no2i_b = y[l1+1:l1+l2];
@@ -90,7 +93,7 @@ A[lall+4,lall+4] = 2.5*nm_b+1.5*na_b;
 
 AA = sparse(A);
 
-# k_rec / k_dis, ì^3
+# k_rec / k_di
 Kdr_n2 = (m[1]*h^2/(m[4]*m[4]*2*pi*k*temp))^(3/2)*Z_rot[1]* exp(-en2_i'/(k*temp))*exp(D[1]/temp);
 Kdr_o2 = (m[2]*h^2/(m[5]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[2]* exp(-eo2_i'/(k*temp))*exp(D[2]/temp);
 Kdr_no = (m[3]*h^2/(m[4]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[3]* exp(-eno_i'/(k*temp))*exp(D[3]/temp);
@@ -115,28 +118,28 @@ for iM = 1:5
   kr_no(iM,:) = kd_no(iM,:) .* Kdr_no * n0;
 end
 
-if strcmp(sw_z,"Savelev")
+if sw_z == "Savelev"
 
   # STELLAR database
-  [kf_n2, kf_o2] = k_ex_savelev_st(temp);
+  kf_n2, kf_o2 = k_ex_savelev_st(temp);
   kf_n2 = kf_n2 * Delta*n0/v0;
   kf_o2 = kf_o2 * Delta*n0/v0;
   kb_n2 = kf_n2 .* Kz_n2;
   kb_o2 = kf_o2 .* Kz_o2;
 
-elseif strcmp(sw_z,"Starik")
+elseif sw_z == "Starik"
 
   # NO DATA
-  [kf_n2, kb_o2] = k_ex_starik(temp);
+  kf_n2, kb_o2 = k_ex_starik(temp);
   kf_n2 = kf_n2 * Delta*n0/v0;
   kb_o2 = kb_o2 * Delta*n0/v0;
   kb_n2 = kf_n2 .* Kz_n2;
   kf_o2 = kb_o2 ./ Kz_o2;
 
-elseif strcmp(sw_z,"Stellar")
+elseif sw_z == "Stellar"
 
     # STELLAR database -- NO DATA
-    [kf_n2, kf_o2] = k_ex_st_interp(temp);
+    kf_n2, kf_o2 = k_ex_st_interp(temp);
     kf_n2 = kf_n2 * Delta*n0/v0;
     kf_o2 = kf_o2 * Delta*n0/v0;
     kb_n2 = kf_n2 .* Kz_n2;
@@ -488,3 +491,5 @@ B[lall+1]       = - sum(RDno) - 2*sum(RDn2) - sum(RZn2) + sum(RZo2);
 B[lall+2]       = - sum(RDno) - 2*sum(RDo2) + sum(RZn2) - sum(RZo2);
 
 dy = inv(AA)*B;
+
+end

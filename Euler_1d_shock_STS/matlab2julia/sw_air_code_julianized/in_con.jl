@@ -9,7 +9,7 @@ C1 = v0^2*sum(xc.*m)/(k*T0)
 C2 = 0.5*C1;
 
 S = [n*v == 1, n*t+n*v^2*C1 == 1+C1, 3.5*sum(xc[1:3])*t+2.5*sum(xc[4:5])*t+C2*v^2 == 3.5*sum(xc[1:3])+2.5*sum(xc[4:5])+C2]
-N = SymPy.solve(S, n, v, t)
+N = solve(S, n, v, t)
 
 sol1 = collect(values(N[2]))
 sol2 = collect(values(N[1]))

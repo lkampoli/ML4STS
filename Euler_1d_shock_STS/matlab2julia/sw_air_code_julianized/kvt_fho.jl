@@ -48,13 +48,15 @@ s = abs(i-f);
 sf = factorial(s);
 ns = (factorial(max(i,f))/factorial(min(i,f)))^(1/s);
 
-vm0 = (2.*pi*om*s*k*t/alpha/mu)^(1./3.);
+vm0 = (2. *pi*om*s*k*t/alpha/mu)^(1. / 3.);
 
-const = 1/s * (nu+2*ns^(1/s)/(s+1))*Svt*theta1/theta;
+const1 = 1/s * (nu+2*ns^(1/s)/(s+1))*Svt*theta1/theta;
 const2 = (ns^(1/s)/(s+1)*Svt*theta1/theta)^2;
-fun = @(x) x-nthroot(1-const*exp(-2*pi*om./(alpha*vm0*x))-const2*exp(-4*pi*om./(alpha*vm0*x)), 3);
+#fun = @(x) x-nthroot(1-const1*exp(-2*pi*om./(alpha*vm0*x))-const2*exp(-4*pi*om./(alpha*vm0*x)), 3);
+fun(x) = x - cbrt(1-const1*exp(-2*pi*om./(alpha*vm0*x))-const2*exp(-4*pi*om./(alpha*vm0*x)))
 x0 = 2.;
-Cvt = fzero(fun,x0);
+#Cvt = fzero(fun,x0);
+Cvt = find_zero(fun, x0);
 
 delta = (1-Cvt^3)/Cvt^3 * 2*pi*om/alpha/vm0/Cvt;
 phi = 2/pi * atan(sqrt(2*depth/mu)/vm0);
