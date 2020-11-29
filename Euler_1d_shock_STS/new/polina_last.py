@@ -341,7 +341,7 @@ if __name__ == "__main__":
     #layers = [1, 25, 50, 75, 50, 25, 100]
 
     # Loading data
-    data = np.loadtxt("dataset_STS.txt")
+    data = np.loadtxt("data/dataset_STS.txt")
     #data = np.loadtxt("data/bi_mix_sts/dataset_STS.txt")
 
     # Slicing of dataset to get all required parameters
