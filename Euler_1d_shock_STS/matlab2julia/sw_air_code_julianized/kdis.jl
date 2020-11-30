@@ -1,4 +1,5 @@
 function kdis(t,sp)
+println("Entering ... kdis")
 
 # equil. coef-s
 kd_eq = CA[sp,:].*t.^nA[sp,:]*exp(-D[sp]/t); # m^3/sec
@@ -46,7 +47,7 @@ end
 
 # dis. rates
 kd = kd_eq .* Z'; # m^3/sec
-#kd = kd_eq' .* Z'; # m^3/sec
-# kd = Z';
-#
+println("kd = ", kd, "\n", size(kd), "\n", typeof(kd), "\n")
+println("Exiting ... kdis")
+return kd
 end

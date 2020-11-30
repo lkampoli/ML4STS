@@ -1,4 +1,5 @@
 function k_ex_savelev_st(T)
+  println("Entering ... k_ex_savelev_st")
 
 # constants for N2,O2
 # A = [3e-17 4e-16]; % m^3/sec
@@ -118,7 +119,8 @@ for i = 1:lo2
     end
   end
 end
-
+println("kf_n2 = ", kf_n2, "\n", size(kf_n2), "\n", typeof(kf_n2), "\n")
+println("kf_o2 = ", kf_o2, "\n", size(kf_o2), "\n", typeof(kf_o2), "\n")
+println("Exiting ... k_ex_savelev_st")
 return [kf_n2, kf_o2]
-
 end

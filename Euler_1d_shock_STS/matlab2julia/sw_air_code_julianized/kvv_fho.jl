@@ -1,5 +1,6 @@
 function kvv_fho(AB, CD, t, i1, i2, f1, f2)
 # AB(i1) + CD(i2) = AB(f1) + CD(f2)
+println("Entering ... kvv_fho")
 
 p1 = AB;
 p2 = CD;
@@ -68,5 +69,7 @@ delE = delE1+delE2;
 lambda = 2/3*sqrt(4*pi^2*mu*Omega^2/(alpha^2*k*t)) * abs(delE)/(Evib*sqrt(8)*s);
 G = 0.5*(3-exp(-2/3 * lambda))*exp(-2/3 * lambda);
 kvv = Z * (ns1*ns2*P1001)^s/sf/(1+2*ns1*ns2*P1001/(s+1))^(s+1) * G;
-
+println("kvv = ", kvv, "\n", size(kvv), "\n", typeof(kvv), "\n")
+println("Exiting ... kvv_fho")
+return kvv
 end

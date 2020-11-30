@@ -101,19 +101,28 @@ AA = inv(A);
 Kdr_n2 = (m[1]*h^2/(m[4]*m[4]*2*pi*k*temp))^(3/2)*Z_rot[1]* exp.(-en2_i./(k*temp))*exp(D[1]/temp);
 Kdr_o2 = (m[2]*h^2/(m[5]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[2]* exp.(-eo2_i./(k*temp))*exp(D[2]/temp);
 Kdr_no = (m[3]*h^2/(m[4]*m[5]*2*pi*k*temp))^(3/2)*Z_rot[3]* exp.(-eno_i./(k*temp))*exp(D[3]/temp);
+println("Kdr_n2 = ", Kdr_n2, "\n", size(Kdr_n2), "\n")
+println("Kdr_o2 = ", Kdr_o2, "\n", size(Kdr_o2), "\n")
+println("Kdr_no = ", Kdr_no, "\n", size(Kdr_no), "\n")
 
 # kb_exchange / kf_exchange
 # https://discourse.julialang.org/t/julia-1-0-2-reapeat-function-cost-many-times-than-matlab-s-repmat/17708/3
 # https://stackoverflow.com/questions/24846899/tiling-or-repeating-n-dimensional-arrays-in-julia
 Kz_n2 = (m[1]*m[5]/(m[3]*m[4]))^1.5*Z_rot[1]/Z_rot[3]* exp.((repeat(eno_i',l[1],1)-repeat(en2_i,1,l[3]))/(k*temp))*exp((D[1]-D[3])/temp);
 Kz_o2 = (m[2]*m[4]/(m[3]*m[5]))^1.5*Z_rot[2]/Z_rot[3]* exp.((repeat(eno_i',l[2],1)-repeat(eo2_i,1,l[3]))/(k*temp))*exp((D[2]-D[3])/temp);
+println("Kz_n2 = ", Kz_n2, "\n", size(Kz_n2), "\n")
+println("Kz_o2 = ", Kz_o2, "\n", size(Kz_o2), "\n")
 # repeat((@view a1[i,:])',outer = (clen-i+1,1));
 
 # kb_VT(i-1->i) / kf_VT(i->i-1)
 Kvt_n2 = exp.((en2_i[1:end-1]-en2_i[2:end])/(k*temp));
 Kvt_o2 = exp.((eo2_i[1:end-1]-eo2_i[2:end])/(k*temp));
 Kvt_no = exp.((eno_i[1:end-1]-eno_i[2:end])/(k*temp));
+println("Kvt_n2 = ", Kvt_n2, "\n", size(Kvt_n2), "\n")
+println("Kvt_o2 = ", Kvt_o2, "\n", size(Kvt_o2), "\n")
+println("Kvt_no = ", Kvt_no, "\n", size(Kvt_no), "\n")
 
+# Dissociation/Recombination processes
 kd_n2 = kdis(temp,1) * Delta*n0/v0;
 kd_o2 = kdis(temp,2) * Delta*n0/v0;
 kd_no = kdis(temp,3) * Delta*n0/v0;
@@ -127,6 +136,7 @@ for iM = 1:5
   kr_no[iM,:] = kd_no[iM,:] .* Kdr_no * n0;
 end
 
+# Exchange processes
 if sw_z == "Savelev"
 
   # STELLAR database
@@ -156,7 +166,7 @@ elseif sw_z == "Stellar"
 
 else
 
-  disp("Error! Check switch on Zeldovich reaction model.");
+  println("Error! Check switch on Zeldovich reaction model.");
   return;
 
 end
@@ -494,14 +504,23 @@ for i3 = 1:l3
   end
 end
 
-B = zeros(lall+4,1);
-B[1:l1]         = RDn2 + RZn2 + RVTn2 + RVVn2 + RVVsn2;
-B[l1+1:l1+l2]   = RDo2 + RZo2 + RVTo2 + RVVo2 + RVVso2;
-B[l1+l2+1:lall] = RDno + RZno + RVTno + RVVno + RVVsno;
-B[lall+1]       = - sum(RDno) - 2*sum(RDn2) - sum(RZn2) + sum(RZo2);
-B[lall+2]       = - sum(RDno) - 2*sum(RDo2) + sum(RZn2) - sum(RZo2);
+B = zeros(lall+4);
+#B[1:l1] = RDn2 + RZn2 + RVTn2 + RVVn2 + RVVsn2;
+@fastmath @inbounds for i = 1:l1
+  B[i] = RDn2[i] + RZn2[i] + RVTn2[i] + RVVn2[i] + RVVsn2[i];
+end
+#B[l1+1:l1+l2] = RDo2 + RZo2 + RVTo2 + RVVo2 + RVVso2;
+@fastmath @inbounds for i = l1+1:l1+l2
+  B[i] = RDo2[i] + RZo2[i] + RVTo2[i] + RVVo2[i] + RVVso2[i];
+end
+#B[l1+l2+1:lall] = RDno + RZno + RVTno + RVVno + RVVsno;
+@fastmath @inbounds for i = l1+l2+1:lall
+  B[i] = RDno[i] + RZno[i] + RVTno[i] + RVVno[i] + RVVsno[i];
+end
+B[lall+1] = - sum(RDno) - 2*sum(RDn2) - sum(RZn2) + sum(RZo2);
+B[lall+2] = - sum(RDno) - 2*sum(RDo2) + sum(RZn2) - sum(RZo2);
 
-#dy = inv(AA)*B;
+#dy .= inv(AA)*B;
 #mul!(dy,inv(AA),B)
 mul!(dy,AA,B)
 

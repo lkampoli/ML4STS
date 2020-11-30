@@ -1,5 +1,6 @@
 function kvt_fho(AB, C, t, i, f)
 # AB(i) + C = AB(f) + C
+println("Entering ... kvt_fho")
 
 if i == f
   println("Error. The same states.")
@@ -67,5 +68,7 @@ rate = rate * Cvt * (Svt*theta1/theta)^s * (theta1/t)^(1/6);
 rate = rate*exp(-s^(2/3)*(theta1/t)^(1/3)*(0.5*Cvt^2+1/Cvt)*(1-phi)^(2/3)-s*(1-Cvt^3));
 rate = rate * exp(theta*s/2/t);
 kvt = rate * Z; # m^3/sec
-
+println("kvt = ", kvt, "\n", size(kvt), "\n", typeof(kvt), "\n")
+println("Exiting ... kvt_fho")
+return kvt
 end

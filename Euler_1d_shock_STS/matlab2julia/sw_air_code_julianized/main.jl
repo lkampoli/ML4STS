@@ -10,12 +10,12 @@ using Plots; #gr(fmt=:png)
 #using Images
 #using JLD
 using DifferentialEquations
-#using DiffEqOperators
-#using DiffEqParamEstim
-#using DiffEqDevTools
-#using DiffEqSensitivity
-#using StaticArrays
-#using OrdinaryDiffEq
+using DiffEqOperators
+using DiffEqParamEstim
+using DiffEqDevTools
+using DiffEqSensitivity
+using StaticArrays
+using OrdinaryDiffEq
 using LinearAlgebra
 using ODE
 using ODEInterface
@@ -31,7 +31,7 @@ using SparseArrays
 using Sundials
 #using Test
 #using Distributed
-#using ParameterizedFunctions
+using ParameterizedFunctions
 using PolynomialRoots
 using Polynomials
 using Roots
@@ -82,9 +82,10 @@ if (sw_arr == "Park")
   #const ARR_Z_data = readtable("arr_z_park.dat");
 
   #const D  = ARR_D_data([3,6,9],1)';
-  const D  = [113200  113200  113200  113200  113200;
-              59500 59500 59500 59500 59500;
-              75500 75500 75500 75500 75500];
+  #const D  = [113200  113200  113200  113200  113200;
+  #            59500 59500 59500 59500 59500;
+  #            75500 75500 75500 75500 75500];
+  const D  = [113200; 59500; 75500];
   println("D = ", D, "\n", size(D), "\n");
   #const CA = ARR_D_data([1,4,7],:);
   const CA = [1.162385214460072e-08 1.162385214460072e-08 1.162385214460072e-08 4.981650919114595e-08 4.981650919114595e-08;
@@ -147,26 +148,31 @@ const osc_mass = [0.5*m[4], 0.5*m[5], m[4]*m[5]/(m[4]+m[5])];
 const ram_masses = [0.5 0.5;        # 'N2'
                     0.5 0.5;        # 'O2'
                     0.4668 0.5332]; # 'NO'
+println("ram_masses = ", ram_masses, "\n", size(ram_masses), "\n");
 
 const fho_data_n2 = [3.9e10  1   * k  0.9;    # 'N2+N2'
                      3.9e10  6   * k  0.95;   # 'N2+O2'
                      4e10    2   * k  0.75;   # 'N2+NO'
                      4.6e10  1   * k  0.99;   # 'N2+N'
                      7.3e10  500 * k  0.175]; # 'N2+O'
+println("fho_data_n2 = ", fho_data_n2, "\n", size(fho_data_n2), "\n");
 
 const fho_data_o2 = [4.1e10  150   * k  0.333333; # 'O2+N2'
                      4.3e10  40    * k  0.99;     # 'O2+O2'
                      4.1e10  150   * k  0.333333; # 'O2+NO'
                      7.3e10  10    * k  0.25;     # 'O2+N'
                      2.6e10  17000 * k  0.2];     # 'O2+O'
+println("fho_data_o2 = ", fho_data_o2, "\n", size(fho_data_o2), "\n");
 
 const fho_data_no = [4.4e10  20 * k  0.9;      # 'NO+N2'
                      6.75e10  1500 * k  0.2;   # 'NO+O2'
                      6.25e10  4500 * k  0.03;  # 'NO+NO'
                      5e10  200 * k  0.3183;    # 'NO+N'
                      7.9e10  16000 * k  0.06]; # 'NO+O'
+println("fho_data_no = ", fho_data_no, "\n", size(fho_data_no), "\n");
 
 const FHO_data = cat(fho_data_n2,fho_data_o2,fho_data_no, dims=3);
+println("FHO_data = ", FHO_data, "\n", size(FHO_data), "\n");
 
 # VSS: dref [i], omega
 const vss_data_n2 = [4.04e-10 0.686;                # 'N2+N2'
@@ -174,34 +180,41 @@ const vss_data_n2 = [4.04e-10 0.686;                # 'N2+N2'
                      4.391e-10 0.756;               # 'N2+NO'
                      4.088e-10 0.762;               # 'N2+N'
                      3.2220000000000004e-10 0.702]; # 'N2+O'
+println("vss_data_n2 = ", vss_data_n2, "\n", size(vss_data_n2), "\n");
 
 const vss_data_o2 = [3.604e-10 0.703;              # 'O2+N2'
                      3.8960000000000003e-10 0.7;   # 'O2+O2'
                      4.054e-10 0.718;              # 'O2+NO'
                      3.7210000000000004e-10 0.757; # 'O2+N'
                      3.734e-10 0.76];              # 'O2+O'
+println("vss_data_o2 = ", vss_data_o2, "\n", size(vss_data_o2), "\n");
 
 const vss_data_no = [4.391e-10 0.756;              # 'NO+N2'
                      4.054e-10 0.718;              # 'NO+O2'
                      4.2180000000000003e-10 0.737; # 'NO+NO'
                      4.028e-10 0.788;              # 'NO+N'
                      3.693e-10 0.752];             # 'NO+O'
+println("vss_data_no = ", vss_data_no, "\n", size(vss_data_no), "\n");
 
 const vss_data = cat(vss_data_n2,vss_data_o2,vss_data_no, dims=3);
+println("vss_data = ", vss_data, "\n", size(vss_data), "\n");
 
 # N2-N2, O2-O2, NO-NO, N-N, O-O
 const R0 = [3.621e-10 3.458e-10 3.47e-10 3.298e-10 2.75e-10]; # m
 
 # N2-N2, O2-O2, NO-NO, N-N, O-O
-const EM = [97.5 107.4 119 71.4 80]; # K
+const EM = [97.5; 107.4; 119; 71.4; 80]; # K
+println("EM = ", EM, "\n", size(EM), "\n");
 
 const r0 = 0.5 .* [R0[1].+R0; R0[2].+R0; R0[3].+R0]; println("r0 = ", r0, "\n", size(r0), "\n")
 
-const em = [sqrt.(EM[1]*R0[1]^6 .* EM.*R0.^6)./r0[1,:].^6;
-            sqrt.(EM[2]*R0[2]^6 .* EM.*R0.^6)./r0[2,:].^6;
-            sqrt.(EM[3]*R0[3]^6 .* EM.*R0.^6)./r0[3,:].^6];
+# unused and wrong dimensions
+#const em = [sqrt.(EM[1]*R0[1]^6 * EM.*R0.^6)./r0[1,:].^6;
+#            sqrt.(EM[2]*R0[2]^6 * EM.*R0.^6)./r0[2,:].^6;
+#            sqrt.(EM[3]*R0[3]^6 * EM.*R0.^6)./r0[3,:].^6];
+#println("em = ", em, "\n", size(em), "\n");
 
-const re = [1.097 1.207 1.151] .* 1e-10; # N2-O2-NO
+const re = [1.097; 1.207; 1.151] .* 1e-10; # N2-O2-NO
 
 # Wurster, 1991
 const us_95_5_exp  = [3.87; 3.49; 3.15; 2.97];
@@ -209,7 +222,7 @@ const us_78_22_exp = [3.85; 3.52; 3.26; 2.99];
 const us_60_40_exp = [3.85; 3.47; 3.24; 3.06];
 
 # xN2-xO2-us
-const incon = [0.95 0.05 us_95_5_exp[1]];
+const incon = [0.95; 0.05; us_95_5_exp[1]];
 #const incon = [0.777, 0.223, us_78_22_exp[1]];
 #const incon = [0.6, 0.4, us_60_40_exp[1]];
 
@@ -223,13 +236,18 @@ const Tv0no = T0;     # K
 const Zv0_n2 = sum(exp.(-en2_i./Tv0n2/k));
 const Zv0_o2 = sum(exp.(-eo2_i./Tv0o2/k));
 const Zv0_no = sum(exp.(-eno_i./Tv0no/k));
+println("Zv0_n2 = ", Zv0_n2, "\n");
+println("Zv0_o2 = ", Zv0_o2, "\n");
+println("Zv0_no = ", Zv0_no, "\n");
 
 const n0 = p0/(k*T0);
+println("n0 = ", n0, "\n")
 
 # N2-N2
 const sigma0 = pi*R0[1]^2;
 const lambda0 = 1/(sqrt(2)*n0*sigma0);
 const Delta = lambda0;
+println("Delta = ", Delta, "\n", size(Delta), "\n");
 
 # xc = nc/n
 const xc = zeros(5);
@@ -246,7 +264,7 @@ const a0 = sqrt(gamma0*R_bar*T0);
 const M0 = v0/a0;
 
 include("in_con.jl")
-#NN = in_con();
+#NN = in_con(); FIXME
 NN = [5.761793697284453e+00 1.735570644383367e-01 2.445965060176968e+01]
 n1 = NN[1]; println("n1 = ", n1, "\n")
 v1 = NN[2]; println("v1 = ", v1, "\n")
@@ -261,6 +279,7 @@ Y0_bar[sum(l)+1] = xc[4];                                           # N
 Y0_bar[sum(l)+2] = xc[5];                                           # O
 Y0_bar[sum(l)+3] = v1;
 Y0_bar[sum(l)+4] = T1;
+println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n");
 
 const x_w = 2.; # m
 const xspan = [0., x_w]./Delta;
@@ -271,32 +290,45 @@ include("kvt_fho.jl")
 include("kvv_fho.jl")
 include("rpart_fho.jl")
 prob = ODEProblem(rpart_fho!, Y0_bar, xspan, 1.)
-sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+# https://diffeq.sciml.ai/stable/
+# https://diffeq.sciml.ai/stable/solvers/ode_solve/#ode_solve
+#sol = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, RadauIIA(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Rosenbrock23(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, TRBDF2(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+sol = DifferentialEquations.solve(prob, ABDF2(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Rodas5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Rodas4P(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Rodas3(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, Kvaerno5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, KenCarp4(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 
-#x_s = X*Delta*100;
-#Temp = Y(:,sum(l)+4)*T0;
-#v = Y(:,sum(l)+3)*v0;
+X    = sol.t;
+x_s  = X*Delta*100;
+Temp = sol[sum(l)+4,:]*T0;
+v    = sol[sum(l)+3,:]*v0;
 #
-#nn2_i = Y(:,1:l(1))*n0;
-#no2_i = Y(:,l(1)+1:l(1)+l(2))*n0;
-#nno_i = Y(:,l(1)+l(2)+1:sum(l))*n0;
+nn2_i = sol[1:l[1],:]*n0;
+no2_i = sol[l[1]+1:l[1]+l[2],:]*n0;
+nno_i = sol[l[1]+l[2]+1:sum(l),:]*n0;
 #
-## [i^-3]
-#nn2 = sum(nn2_i,2);
-#no2 = sum(no2_i,2);
-#nno = sum(nno_i,2);
+# [i^-3]
+nn2 = sum(nn2_i,dims=1);
+no2 = sum(no2_i,dims=1);
+nno = sum(nno_i,dims=1);
 #
-#nn = Y(:,sum(l)+1)*n0; # N
-#no = Y(:,sum(l)+2)*n0; # O
+nn = sol[sum(l)+1,:]*n0; # N
+no = sol[sum(l)+2,:]*n0; # O
 #
-#n_a = nn+no;
-#n_m = nn2+no2+nno;
+n_a = nn+no;
+n_m = nn2+no2+nno;
 #
-#time_s = X*Delta/v0;   # sec
-#time_mcs = time_s*1e6; # mcsec
+time_s   = X*Delta/v0; # sec
+time_mcs = time_s*1e6; # mcsec
 #
-#Npoint = length(X);
-#Nall = n_m+n_a;
+Npoint = length(X);
+Nall   = n_m+n_a;
 #nn2i_n = nn2_i./repmat(Nall,1,l(1));
 #no2i_n = no2_i./repmat(Nall,1,l(2));
 #nnoi_n = nno_i./repmat(Nall,1,l(3));
