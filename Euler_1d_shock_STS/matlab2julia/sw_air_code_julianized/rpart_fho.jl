@@ -94,7 +94,8 @@ A[lall+4,lall+3] = 1/v_b*(3.5*nm_b*T_b+2.5*na_b*T_b + sum((en2i_b.+en20_b).*nn2i
                                                     + efo_b *no_b);
 A[lall+4,lall+4] = 2.5*nm_b+1.5*na_b;
 
-AA = sparse(A);
+#AA = sparse(A);
+AA = inv(A);
 
 # k_rec / k_di
 Kdr_n2 = (m[1]*h^2/(m[4]*m[4]*2*pi*k*temp))^(3/2)*Z_rot[1]* exp.(-en2_i./(k*temp))*exp(D[1]/temp);
@@ -109,9 +110,9 @@ Kz_o2 = (m[2]*m[4]/(m[3]*m[5]))^1.5*Z_rot[2]/Z_rot[3]* exp.((repeat(eno_i',l[2],
 # repeat((@view a1[i,:])',outer = (clen-i+1,1));
 
 # kb_VT(i-1->i) / kf_VT(i->i-1)
-Kvt_n2 = exp.((en2_i[1:end-1]-en2_i[2:end])/(k*temp))';
-Kvt_o2 = exp.((eo2_i[1:end-1]-eo2_i[2:end])/(k*temp))';
-Kvt_no = exp.((eno_i[1:end-1]-eno_i[2:end])/(k*temp))';
+Kvt_n2 = exp.((en2_i[1:end-1]-en2_i[2:end])/(k*temp));
+Kvt_o2 = exp.((eo2_i[1:end-1]-eo2_i[2:end])/(k*temp));
+Kvt_no = exp.((eno_i[1:end-1]-eno_i[2:end])/(k*temp));
 
 kd_n2 = kdis(temp,1) * Delta*n0/v0;
 kd_o2 = kdis(temp,2) * Delta*n0/v0;
@@ -121,9 +122,9 @@ kr_n2 = zeros(5,l1);
 kr_o2 = zeros(5,l2);
 kr_no = zeros(5,l3);
 for iM = 1:5
-  kr_n2(iM,:) = kd_n2(iM,:) .* Kdr_n2 * n0;
-  kr_o2(iM,:) = kd_o2(iM,:) .* Kdr_o2 * n0;
-  kr_no(iM,:) = kd_no(iM,:) .* Kdr_no * n0;
+  kr_n2[iM,:] = kd_n2[iM,:] .* Kdr_n2 * n0;
+  kr_o2[iM,:] = kd_o2[iM,:] .* Kdr_o2 * n0;
+  kr_no[iM,:] = kd_no[iM,:] .* Kdr_no * n0;
 end
 
 if sw_z == "Savelev"
@@ -177,11 +178,13 @@ for iM = 1:5
 end
 
 # VT: i -> i+1
-kvt_up_n2 = zeros(5,Lmax1); kvt_up_o2 = zeros(5,Lmax2); kvt_up_no = zeros(5,Lmax3);
+kvt_up_n2 = zeros(5,Lmax1);
+kvt_up_o2 = zeros(5,Lmax2);
+kvt_up_no = zeros(5,Lmax3);
 for ip = 1:5
-  kvt_up_n2[ip,:] = kvt_down_n2(ip,:) .* Kvt_n2;
-  kvt_up_o2[ip,:] = kvt_down_o2(ip,:) .* Kvt_o2;
-  kvt_up_no[ip,:] = kvt_down_no(ip,:) .* Kvt_no;
+  kvt_up_n2[ip,:] = kvt_down_n2[ip,:] .* Kvt_n2;
+  kvt_up_o2[ip,:] = kvt_down_o2[ip,:] .* Kvt_o2;
+  kvt_up_no[ip,:] = kvt_down_no[ip,:] .* Kvt_no;
 end
 
 # VV: (i,j)->(i-1,j+1)
@@ -212,13 +215,13 @@ deps_n2 = en2_i[1:end-1]-en2_i[2:end];
 deps_o2 = eo2_i[1:end-1]-eo2_i[2:end];
 deps_no = eno_i[1:end-1]-eno_i[2:end];
 for ip = 1:Lmax1
-  kvv_up_n2[ip,:] = kvv_down_n2[ip,:] .* exp((deps_n2[ip]-deps_n2') / (k*temp));
+  kvv_up_n2[ip,:] = kvv_down_n2[ip,:] .* exp.((deps_n2[ip].-deps_n2) / (k*temp));
 end
 for ip = 1:Lmax2
-  kvv_up_o2[ip,:] = kvv_down_o2[ip,:] .* exp((deps_o2[ip]-deps_o2') / (k*temp));
+  kvv_up_o2[ip,:] = kvv_down_o2[ip,:] .* exp.((deps_o2[ip].-deps_o2) / (k*temp));
 end
 for ip = 1:Lmax3
-  kvv_up_no[ip,:] = kvv_down_no[ip,:] .* exp((deps_no[ip]-deps_no') / (k*temp));
+  kvv_up_no[ip,:] = kvv_down_no[ip,:] .* exp.((deps_no[ip].-deps_no) / (k*temp));
 end
 
 # VV': (i,j)->(i-1,j+1)
@@ -261,65 +264,65 @@ kvvs_u_o2_no = zeros(Lmax2,Lmax3);
 kvvs_u_no_n2 = zeros(Lmax3,Lmax1);
 kvvs_u_no_o2 = zeros(Lmax3,Lmax2);
 for ip = 1:Lmax1
-  kvvs_u_n2_o2[ip,:] = kvvs_d_n2_o2[ip,:] .* exp((deps_n2[ip]-deps_o2') / (k*temp));
-  kvvs_u_n2_no[ip,:] = kvvs_d_n2_no[ip,:] .* exp((deps_n2[ip]-deps_no') / (k*temp));
+  kvvs_u_n2_o2[ip,:] = kvvs_d_n2_o2[ip,:] .* exp.((deps_n2[ip].-deps_o2) / (k*temp));
+  kvvs_u_n2_no[ip,:] = kvvs_d_n2_no[ip,:] .* exp.((deps_n2[ip].-deps_no) / (k*temp));
 end
 for ip = 1:Lmax2
-  kvvs_u_o2_n2[ip,:] = kvvs_d_o2_n2[ip,:] .* exp((deps_o2[ip]-deps_n2') / (k*temp));
-  kvvs_u_o2_no[ip,:] = kvvs_d_o2_no[ip,:] .* exp((deps_o2[ip]-deps_no') / (k*temp));
+  kvvs_u_o2_n2[ip,:] = kvvs_d_o2_n2[ip,:] .* exp.((deps_o2[ip].-deps_n2) / (k*temp));
+  kvvs_u_o2_no[ip,:] = kvvs_d_o2_no[ip,:] .* exp.((deps_o2[ip].-deps_no) / (k*temp));
 end
 for ip = 1:Lmax3
-  kvvs_u_no_n2[ip,:] = kvvs_d_no_n2[ip,:] .* exp((deps_no[ip]-deps_n2') / (k*temp));
-  kvvs_u_no_o2[ip,:] = kvvs_d_no_o2[ip,:] .* exp((deps_no[ip]-deps_o2') / (k*temp));
+  kvvs_u_no_n2[ip,:] = kvvs_d_no_n2[ip,:] .* exp.((deps_no[ip].-deps_n2) / (k*temp));
+  kvvs_u_no_o2[ip,:] = kvvs_d_no_o2[ip,:] .* exp.((deps_no[ip].-deps_o2) / (k*temp));
 end
 
-RDn2   = zeros(l1,1); RDo2   = zeros(l2,1); RDno   = zeros(l3,1);
-RZn2   = zeros(l1,1); RZo2   = zeros(l2,1); RZno   = zeros(l3,1);
-RVTn2  = zeros(l1,1); RVTo2  = zeros(l2,1); RVTno  = zeros(l3,1);
-RVVn2  = zeros(l1,1); RVVo2  = zeros(l2,1); RVVno  = zeros(l3,1);
-RVVsn2 = zeros(l1,1); RVVso2 = zeros(l2,1); RVVsno = zeros(l3,1);
+RDn2   = zeros(l1); RDo2   = zeros(l2); RDno   = zeros(l3);
+RZn2   = zeros(l1); RZo2   = zeros(l2); RZno   = zeros(l3);
+RVTn2  = zeros(l1); RVTo2  = zeros(l2); RVTno  = zeros(l3);
+RVVn2  = zeros(l1); RVVo2  = zeros(l2); RVVno  = zeros(l3);
+RVVsn2 = zeros(l1); RVVso2 = zeros(l2); RVVsno = zeros(l3);
 
 for i1 = 1:l1
 
   RDn2[i1] = nn2_b*(nn_b*nn_b*kr_n2[1,i1]-nn2i_b[i1]*kd_n2[1,i1]) +
-             no2_b*(nn_b*nn_b*kr_n2[2,i1]-nn2i_b(i1)*kd_n2[2,i1]) +
-             nno_b*(nn_b*nn_b*kr_n2[3,i1]-nn2i_b(i1)*kd_n2[3,i1]) +
-             nn_b *(nn_b*nn_b*kr_n2[4,i1]-nn2i_b(i1)*kd_n2[4,i1]) +
-             no_b *(nn_b*nn_b*kr_n2[5,i1]-nn2i_b(i1)*kd_n2[5,i1]);
+             no2_b*(nn_b*nn_b*kr_n2[2,i1]-nn2i_b[i1]*kd_n2[2,i1]) +
+             nno_b*(nn_b*nn_b*kr_n2[3,i1]-nn2i_b[i1]*kd_n2[3,i1]) +
+             nn_b *(nn_b*nn_b*kr_n2[4,i1]-nn2i_b[i1]*kd_n2[4,i1]) +
+             no_b *(nn_b*nn_b*kr_n2[5,i1]-nn2i_b[i1]*kd_n2[5,i1]);
 
-  RZn2[i1] = sum(nnoi_b*nn_b.*kb_n2[i1,:]' - nn2i_b[i1]*no_b*kf_n2[i1,:]');
+  RZn2[i1] = sum(nnoi_b*nn_b.*kb_n2[i1,:] - nn2i_b[i1]*no_b*kf_n2[i1,:]);
 
   if i1 == 1 # 0<->1
 
     RVTn2[i1] = nn2_b*(nn2i_b[i1+1]*kvt_down_n2[1,i1] - nn2i_b[i1]*kvt_up_n2[1,i1])+
                 no2_b*(nn2i_b[i1+1]*kvt_down_n2[2,i1] - nn2i_b[i1]*kvt_up_n2[2,i1])+
                 nno_b*(nn2i_b[i1+1]*kvt_down_n2[3,i1] - nn2i_b[i1]*kvt_up_n2[3,i1])+
-                nn_b*(nn2i_b[i1+1]*kvt_down_n2[4,i1] - nn2i_b[i1]*kvt_up_n2[4,i1])+
-                no_b*(nn2i_b[i1+1]*kvt_down_n2[5,i1] - nn2i_b[i1]*kvt_up_n2[5,i1]);
+                nn_b *(nn2i_b[i1+1]*kvt_down_n2[4,i1] - nn2i_b[i1]*kvt_up_n2[4,i1])+
+                no_b *(nn2i_b[i1+1]*kvt_down_n2[5,i1] - nn2i_b[i1]*kvt_up_n2[5,i1]);
 
-    RVVn2[i1] = nn2i_b[i1+1]*sum(nn2i_b[1:end-1] .* kvv_down_n2[i1,:]') -
-                nn2i_b[i1]*sum(nn2i_b[2:end] .* kvv_up_n2[i1,:]');
+    RVVn2[i1] = nn2i_b[i1+1]*sum(nn2i_b[1:end-1] .* kvv_down_n2[i1,:]) -
+                nn2i_b[i1]  *sum(nn2i_b[2:end]   .* kvv_up_n2[i1,:]);
 
-                RVVsn2[i1] = nn2i_b[i1+1]*(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1,:]')) -
-                             nn2i_b[i1]*(sum(no2i_b[2:end] .* kvvs_u_n2_o2[i1,:]')) +
-                             nn2i_b[i1+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1,:]')) -
-                             nn2i_b[i1]*(sum(nnoi_b[2:end] .* kvvs_u_n2_no[i1,:]'));
+    RVVsn2[i1] = nn2i_b[i1+1]*(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1,:])) -
+                 nn2i_b[i1]  *(sum(no2i_b[2:end]   .* kvvs_u_n2_o2[i1,:])) +
+                 nn2i_b[i1+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1,:])) -
+                 nn2i_b[i1]  *(sum(nnoi_b[2:end]   .* kvvs_u_n2_no[i1,:]));
 
   elseif i1 == l1 # Lmax <-> Lmax-1
 
     RVTn2[i1] = nn2_b*(nn2i_b[i1-1]*kvt_up_n2[1,i1-1] - nn2i_b[i1]*kvt_down_n2[1,i1-1])+
                 no2_b*(nn2i_b[i1-1]*kvt_up_n2[2,i1-1] - nn2i_b[i1]*kvt_down_n2[2,i1-1])+
                 nno_b*(nn2i_b[i1-1]*kvt_up_n2[3,i1-1] - nn2i_b[i1]*kvt_down_n2[3,i1-1])+
-                nn_b*(nn2i_b[i1-1]*kvt_up_n2[4,i1-1] - nn2i_b[i1]*kvt_down_n2[4,i1-1])+
-                no_b*(nn2i_b[i1-1]*kvt_up_n2[5,i1-1] - nn2i_b[i1]*kvt_down_n2[5,i1-1]);
+                nn_b *(nn2i_b[i1-1]*kvt_up_n2[4,i1-1] - nn2i_b[i1]*kvt_down_n2[4,i1-1])+
+                no_b *(nn2i_b[i1-1]*kvt_up_n2[5,i1-1] - nn2i_b[i1]*kvt_down_n2[5,i1-1]);
 
-    RVVn2[i1] = nn2i_b[i1-1]*sum(nn2i_b[2:end] .* kvv_up_n2[i1-1,:]') -
-                nn2i_b[i1]*sum(nn2i_b[1:end-1] .* kvv_down_n2[i1-1,:]');
+    RVVn2[i1] = nn2i_b[i1-1]*sum(nn2i_b[2:end]   .* kvv_up_n2[i1-1,:]) -
+                nn2i_b[i1]  *sum(nn2i_b[1:end-1] .* kvv_down_n2[i1-1,:]);
 
-    RVVsn2[i1] = nn2i_b[i1-1]*(sum(no2i_b[2:end] .* kvvs_u_n2_o2[i1-1,:]')) -
-                 nn2i_b[i1]*(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1-1,:]')) +
-                 nn2i_b[i1-1]*(sum(nnoi_b[2:end] .* kvvs_u_n2_no[i1-1,:]')) -
-                 nn2i_b[i1]*(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1-1,:]'));
+    RVVsn2[i1] = nn2i_b[i1-1]*(sum(no2i_b[2:end]   .* kvvs_u_n2_o2[i1-1,:])) -
+                 nn2i_b[i1]  *(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1-1,:])) +
+                 nn2i_b[i1-1]*(sum(nnoi_b[2:end]   .* kvvs_u_n2_no[i1-1,:])) -
+                 nn2i_b[i1]  *(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1-1,:]));
 
   else
 
@@ -334,19 +337,19 @@ for i1 = 1:l1
                 no_b*(nn2i_b[i1+1]*kvt_down_n2[5,i1]+nn2i_b[i1-1]*kvt_up_n2[5,i1-1]-
                       nn2i_b[i1]*(kvt_up_n2[5,i1]+kvt_down_n2[5,i1-1]));
 
-    RVVn2[i1] = nn2i_b[i1+1]*sum(nn2i_b[1:end-1] .* kvv_down_n2[i1,:]') +
-                nn2i_b[i1-1]*sum(nn2i_b[2:end] .* kvv_up_n2[i1-1,:]') -
-                nn2i_b[i1]*(sum(nn2i_b[2:end] .* kvv_up_n2[i1,:]') +
-                            sum(nn2i_b[1:end-1] .* kvv_down_n2[i1-1,:]'));
+    RVVn2[i1] = nn2i_b[i1+1]*sum(nn2i_b[1:end-1] .* kvv_down_n2[i1,:]) +
+                nn2i_b[i1-1]*sum(nn2i_b[2:end]   .* kvv_up_n2[i1-1,:]) -
+                nn2i_b[i1] *(sum(nn2i_b[2:end]   .* kvv_up_n2[i1,:]) +
+                             sum(nn2i_b[1:end-1] .* kvv_down_n2[i1-1,:]));
 
-                RVVsn2[i1] = nn2i_b[i1+1]*(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1,:]')) +
-                nn2i_b[i1-1]*(sum(no2i_b[2:end] .* kvvs_u_n2_o2[i1-1,:]')) -
-                nn2i_b[i1]*(sum(no2i_b[2:end] .* kvvs_u_n2_o2[i1,:]') +
-                            sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1-1,:]')) +
-                nn2i_b[i1+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1,:]')) +
-                nn2i_b[i1-1]*(sum(nnoi_b[2:end] .* kvvs_u_n2_no[i1-1,:]')) -
-                nn2i_b[i1]*(sum(nnoi_b[2:end] .* kvvs_u_n2_no[i1,:]') +
-                            sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1-1,:]'));
+    RVVsn2[i1] = nn2i_b[i1+1]*(sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1,:])) +
+                 nn2i_b[i1-1]*(sum(no2i_b[2:end]   .* kvvs_u_n2_o2[i1-1,:])) -
+                 nn2i_b[i1]  *(sum(no2i_b[2:end]   .* kvvs_u_n2_o2[i1,:]) +
+                               sum(no2i_b[1:end-1] .* kvvs_d_n2_o2[i1-1,:])) +
+                 nn2i_b[i1+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1,:])) +
+                 nn2i_b[i1-1]*(sum(nnoi_b[2:end]   .* kvvs_u_n2_no[i1-1,:])) -
+                 nn2i_b[i1]  *(sum(nnoi_b[2:end]   .* kvvs_u_n2_no[i1,:]) +
+                               sum(nnoi_b[1:end-1] .* kvvs_d_n2_no[i1-1,:]));
   end
 end
 for i2 = 1:l2
@@ -357,7 +360,7 @@ for i2 = 1:l2
              nn_b *(no_b*no_b*kr_o2[4,i2]-no2i_b[i2]*kd_o2[4,i2]) +
              no_b *(no_b*no_b*kr_o2[5,i2]-no2i_b[i2]*kd_o2[5,i2]);
 
-  RZo2[i2] = sum(nnoi_b*no_b.*kb_o2[i2,:]'-no2i_b[i2]*nn_b*kf_o2[i2,:]');
+  RZo2[i2] = sum(nnoi_b*no_b.*kb_o2[i2,:]-no2i_b[i2]*nn_b*kf_o2[i2,:]);
 
   if i2 == 1 # 0<->1
 
@@ -367,13 +370,13 @@ for i2 = 1:l2
                 nn_b *(no2i_b[i2+1]*kvt_down_o2[4,i2] - no2i_b[i2]*kvt_up_o2[4,i2])+
                 no_b *(no2i_b[i2+1]*kvt_down_o2[5,i2] - no2i_b[i2]*kvt_up_o2[5,i2]);
 
-    RVVo2[i2] = no2i_b[i2+1]*sum[no2i_b[1:end-1] .* kvv_down_o2[i2,:]'] -
-                no2i_b[i2]*sum[no2i_b[2:end] .* kvv_up_o2[i2,:]'];
+    RVVo2[i2] = no2i_b[i2+1]*sum(no2i_b[1:end-1] .* kvv_down_o2[i2,:]) -
+                no2i_b[i2]  *sum(no2i_b[2:end]   .* kvv_up_o2[i2,:]);
 
-    RVVso2[i2] = no2i_b[i2+1]*[sum[nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2,:]']] -
-                 no2i_b[i2]*[sum[nn2i_b[2:end] .* kvvs_u_o2_n2[i2,:]']] +
-                 no2i_b[i2+1]*[sum[nnoi_b[1:end-1] .* kvvs_d_o2_no[i2,:]']] -
-                 no2i_b[i2]*[sum[nnoi_b[2:end] .* kvvs_u_o2_no[i2,:]']];
+    RVVso2[i2] = no2i_b[i2+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2,:])) -
+                 no2i_b[i2]  *(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2,:])) +
+                 no2i_b[i2+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2,:])) -
+                 no2i_b[i2]  *(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2,:]));
 
   elseif i2 == l2 # Lmax <-> Lmax-1
 
@@ -383,13 +386,13 @@ for i2 = 1:l2
                 nn_b *(no2i_b[i2-1]*kvt_up_o2[4,i2-1] - no2i_b[i2]*kvt_down_o2[4,i2-1])+
                 no_b *(no2i_b[i2-1]*kvt_up_o2[5,i2-1] - no2i_b[i2]*kvt_down_o2[5,i2-1]);
 
-    RVVo2[i2] = no2i_b[i2-1]*sum(no2i_b[2:end] .* kvv_up_o2[i2-1,:]') -
-                no2i_b[i2]*sum(no2i_b[1:end-1] .* kvv_down_o2[i2-1,:]');
+    RVVo2[i2] = no2i_b[i2-1]*sum(no2i_b[2:end]   .* kvv_up_o2[i2-1,:]) -
+                no2i_b[i2]  *sum(no2i_b[1:end-1] .* kvv_down_o2[i2-1,:]);
 
-    RVVso2[i2] = no2i_b[i2-1]*(sum(nn2i_b[2:end] .* kvvs_u_o2_n2[i2-1,:]')) -
-                 no2i_b[i2]*(sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2-1,:]')) +
-                 no2i_b[i2-1]*(sum(nnoi_b[2:end] .* kvvs_u_o2_no[i2-1,:]')) -
-                 no2i_b[i2]*(sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2-1,:]'));
+    RVVso2[i2] = no2i_b[i2-1]*(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2-1,:])) -
+                 no2i_b[i2]  *(sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2-1,:])) +
+                 no2i_b[i2-1]*(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2-1,:])) -
+                 no2i_b[i2]  *(sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2-1,:]));
 
   else
 
@@ -404,19 +407,19 @@ for i2 = 1:l2
                 no_b*(no2i_b[i2+1]*kvt_down_o2[5,i2]+no2i_b[i2-1]*kvt_up_o2[5,i2-1]-
                       no2i_b[i2]*(kvt_up_o2[5,i2]+kvt_down_o2[5,i2-1]));
 
-    RVVo2[i2] = no2i_b[i2+1]*sum(no2i_b[1:end-1]  .* kvv_down_o2[i2,:]') +
-                no2i_b[i2-1]*sum(no2i_b[2:end]    .* kvv_up_o2[i2-1,:]') -
-                no2i_b[i2]  *(sum(no2i_b[2:end]   .* kvv_up_o2[i2,:]') +
-                              sum(no2i_b[1:end-1] .* kvv_down_o2[i2-1,:]'));
+    RVVo2[i2] = no2i_b[i2+1]*sum(no2i_b[1:end-1]  .* kvv_down_o2[i2,:]) +
+                no2i_b[i2-1]*sum(no2i_b[2:end]    .* kvv_up_o2[i2-1,:]) -
+                no2i_b[i2]  *(sum(no2i_b[2:end]   .* kvv_up_o2[i2,:]) +
+                              sum(no2i_b[1:end-1] .* kvv_down_o2[i2-1,:]));
 
-    RVVso2[i2] = no2i_b[i2+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2,:]')) +
-                 no2i_b[i2-1]*(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2-1,:]')) -
-                 no2i_b[i2]  *(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2,:]') +
-                               sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2-1,:]')) +
-                 no2i_b[i2+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2,:]')) +
-                 no2i_b[i2-1]*(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2-1,:]')) -
-                 no2i_b[i2]  *(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2,:]') +
-                               sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2-1,:]'));
+    RVVso2[i2] = no2i_b[i2+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2,:])) +
+                 no2i_b[i2-1]*(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2-1,:])) -
+                 no2i_b[i2]  *(sum(nn2i_b[2:end]   .* kvvs_u_o2_n2[i2,:]) +
+                               sum(nn2i_b[1:end-1] .* kvvs_d_o2_n2[i2-1,:])) +
+                 no2i_b[i2+1]*(sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2,:])) +
+                 no2i_b[i2-1]*(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2-1,:])) -
+                 no2i_b[i2]  *(sum(nnoi_b[2:end]   .* kvvs_u_o2_no[i2,:]) +
+                               sum(nnoi_b[1:end-1] .* kvvs_d_o2_no[i2-1,:]));
   end
 end
 for i3 = 1:l3
@@ -438,13 +441,13 @@ for i3 = 1:l3
                 nn_b *(nnoi_b[i3+1]*kvt_down_no[4,i3] - nnoi_b[i3]*kvt_up_no[4,i3])+
                 no_b *(nnoi_b[i3+1]*kvt_down_no[5,i3] - nnoi_b[i3]*kvt_up_no[5,i3]);
 
-    RVVno[i3] = nnoi_b[i3+1]*sum(nnoi_b[1:end-1] .* kvv_down_no[i3,:]') -
-                nnoi_b[i3]*sum(nnoi_b[2:end] .* kvv_up_no[i3,:]');
+    RVVno[i3] = nnoi_b[i3+1]*sum(nnoi_b[1:end-1] .* kvv_down_no[i3,:]) -
+                nnoi_b[i3]  *sum(nnoi_b[2:end]   .* kvv_up_no[i3,:]);
 
-    RVVsno[i3] = nnoi_b[i3+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3,:]')) -
-                 nnoi_b[i3]*(sum(nn2i_b[2:end] .* kvvs_u_no_n2[i3,:]')) +
-                 nnoi_b[i3+1]*(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3,:]')) -
-                 nnoi_b[i3]*(sum(no2i_b[2:end] .* kvvs_u_no_o2[i3,:]'));
+    RVVsno[i3] = nnoi_b[i3+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3,:])) -
+                 nnoi_b[i3]  *(sum(nn2i_b[2:end]   .* kvvs_u_no_n2[i3,:])) +
+                 nnoi_b[i3+1]*(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3,:])) -
+                 nnoi_b[i3]  *(sum(no2i_b[2:end]   .* kvvs_u_no_o2[i3,:]));
 
   elseif i3 == l3 # Lmax <-> Lmax-1
 
@@ -454,40 +457,40 @@ for i3 = 1:l3
                 nn_b *(nnoi_b[i3-1]*kvt_up_no[4,i3-1] - nnoi_b[i3]*kvt_down_no[4,i3-1])+
                 no_b *(nnoi_b[i3-1]*kvt_up_no[5,i3-1] - nnoi_b[i3]*kvt_down_no[5,i3-1]);
 
-    RVVno[i3] = nnoi_b[i3-1]*sum(nnoi_b[2:end] .* kvv_up_no[i3-1,:]') -
-                nnoi_b[i3]*sum(nnoi_b[1:end-1] .* kvv_down_no[i3-1,:]');
+    RVVno[i3] = nnoi_b[i3-1]*sum(nnoi_b[2:end]   .* kvv_up_no[i3-1,:]) -
+                nnoi_b[i3]  *sum(nnoi_b[1:end-1] .* kvv_down_no[i3-1,:]);
 
-    RVVsno[i3] = nnoi_b[i3-1]*(sum(nn2i_b[2:end] .* kvvs_u_no_n2[i3-1,:]')) -
-                 nnoi_b[i3]*(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3-1,:]')) +
-                 nnoi_b[i3-1]*(sum(no2i_b[2:end] .* kvvs_u_no_o2[i3-1,:]')) -
-                 nnoi_b[i3]*(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3-1,:]'));
+    RVVsno[i3] = nnoi_b[i3-1]*(sum(nn2i_b[2:end]   .* kvvs_u_no_n2[i3-1,:])) -
+                 nnoi_b[i3]  *(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3-1,:])) +
+                 nnoi_b[i3-1]*(sum(no2i_b[2:end]   .* kvvs_u_no_o2[i3-1,:])) -
+                 nnoi_b[i3]  *(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3-1,:]));
 
   else
 
     RVTno[i3] = nn2_b*(nnoi_b[i3+1]*kvt_down_no[1,i3]+nnoi_b[i3-1]*kvt_up_no[1,i3-1]-
                        nnoi_b[i3]*(kvt_up_no[1,i3]+kvt_down_no[1,i3-1]))+
-                no2_b*(nnoi_b[i3+1]*kvt_down_no(2,i3)+nnoi_b(i3-1)*kvt_up_no(2,i3-1)-
-                       nnoi_b(i3)*(kvt_up_no(2,i3)+kvt_down_no(2,i3-1)))+
-                nno_b*(nnoi_b(i3+1)*kvt_down_no(3,i3)+nnoi_b(i3-1)*kvt_up_no(3,i3-1)-
-                       nnoi_b(i3)*(kvt_up_no(3,i3)+kvt_down_no(3,i3-1)))+
-                nn_b*(nnoi_b(i3+1)*kvt_down_no(4,i3)+nnoi_b(i3-1)*kvt_up_no(4,i3-1)-
-                      nnoi_b(i3)*(kvt_up_no(4,i3)+kvt_down_no(4,i3-1)))+
-                no_b*(nnoi_b(i3+1)*kvt_down_no(5,i3)+nnoi_b(i3-1)*kvt_up_no(5,i3-1)-
-                      nnoi_b(i3)*(kvt_up_no(5,i3)+kvt_down_no(5,i3-1)));
+                no2_b*(nnoi_b[i3+1]*kvt_down_no[2,i3]+nnoi_b[i3-1]*kvt_up_no[2,i3-1]-
+                       nnoi_b[i3]*(kvt_up_no[2,i3]+kvt_down_no[2,i3-1]))+
+                nno_b*(nnoi_b[i3+1]*kvt_down_no[3,i3]+nnoi_b[i3-1]*kvt_up_no[3,i3-1]-
+                       nnoi_b[i3]*(kvt_up_no[3,i3]+kvt_down_no[3,i3-1]))+
+                nn_b*(nnoi_b[i3+1]*kvt_down_no[4,i3]+nnoi_b[i3-1]*kvt_up_no[4,i3-1]-
+                      nnoi_b[i3]*(kvt_up_no[4,i3]+kvt_down_no[4,i3-1]))+
+                no_b*(nnoi_b[i3+1]*kvt_down_no[5,i3]+nnoi_b[i3-1]*kvt_up_no[5,i3-1]-
+                      nnoi_b[i3]*(kvt_up_no[5,i3]+kvt_down_no[5,i3-1]));
 
-    RVVno[i3] = nnoi_b[i3+1]*sum(nnoi_b[1:end-1] .* kvv_down_no[i3,:]') +
-                nnoi_b[i3-1]*sum(nnoi_b[2:end] .* kvv_up_no[i3-1,:]') -
-                nnoi_b[i3]*(sum(nnoi_b[2:end] .* kvv_up_no[i3,:]') +
-                            sum(nnoi_b[1:end-1] .* kvv_down_no[i3-1,:]'));
+    RVVno[i3] = nnoi_b[i3+1]*sum(nnoi_b[1:end-1] .* kvv_down_no[i3,:]) +
+                nnoi_b[i3-1]*sum(nnoi_b[2:end]   .* kvv_up_no[i3-1,:]) -
+                nnoi_b[i3] *(sum(nnoi_b[2:end]   .* kvv_up_no[i3,:]) +
+                             sum(nnoi_b[1:end-1] .* kvv_down_no[i3-1,:]));
 
-    RVVsno[i3] = nnoi_b[i3+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3,:]')) +
-                 nnoi_b[i3-1]*(sum(nn2i_b[2:end] .* kvvs_u_no_n2[i3-1,:]')) -
-                 nnoi_b[i3]*(sum(nn2i_b[2:end] .* kvvs_u_no_n2[i3,:]') +
-                             sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3-1,:]')) +
-                 nnoi_b[i3+1]*(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3,:]')) +
-                 nnoi_b[i3-1]*(sum(no2i_b[2:end] .* kvvs_u_no_o2[i3-1,:]')) -
-                 nnoi_b[i3]*(sum(no2i_b[2:end] .* kvvs_u_no_o2[i3,:]') +
-                             sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3-1,:]'));
+    RVVsno[i3] = nnoi_b[i3+1]*(sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3,:])) +
+                 nnoi_b[i3-1]*(sum(nn2i_b[2:end]   .* kvvs_u_no_n2[i3-1,:])) -
+                 nnoi_b[i3]  *(sum(nn2i_b[2:end]   .* kvvs_u_no_n2[i3,:]) +
+                               sum(nn2i_b[1:end-1] .* kvvs_d_no_n2[i3-1,:])) +
+                 nnoi_b[i3+1]*(sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3,:])) +
+                 nnoi_b[i3-1]*(sum(no2i_b[2:end]   .* kvvs_u_no_o2[i3-1,:])) -
+                 nnoi_b[i3]  *(sum(no2i_b[2:end]   .* kvvs_u_no_o2[i3,:]) +
+                               sum(no2i_b[1:end-1] .* kvvs_d_no_o2[i3-1,:]));
   end
 end
 
@@ -498,6 +501,8 @@ B[l1+l2+1:lall] = RDno + RZno + RVTno + RVVno + RVVsno;
 B[lall+1]       = - sum(RDno) - 2*sum(RDn2) - sum(RZn2) + sum(RZo2);
 B[lall+2]       = - sum(RDno) - 2*sum(RDo2) + sum(RZn2) - sum(RZo2);
 
-dy = inv(AA)*B;
+#dy = inv(AA)*B;
+#mul!(dy,inv(AA),B)
+mul!(dy,AA,B)
 
 end

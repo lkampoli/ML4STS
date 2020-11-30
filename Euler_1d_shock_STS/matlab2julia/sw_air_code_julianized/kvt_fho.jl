@@ -2,7 +2,7 @@ function kvt_fho(AB, C, t, i, f)
 # AB(i) + C = AB(f) + C
 
 if i == f
-  error("Error. The same states.")
+  println("Error. The same states.")
 end
 
 p1 = AB;
@@ -16,8 +16,8 @@ Ef = ome*f - omexe*f*(f+1);
 
 mab = m[p1];
 mc = m[p2];
-ma = mab * ram_masses(p1,1);
-mb = mab * ram_masses(p1,2);
+ma = mab * ram_masses[p1,1];
+mb = mab * ram_masses[p1,2];
 
 mu = (ma+mb)*mc/(ma+mb+mc);
 
@@ -26,7 +26,7 @@ depth = 200.0*k;
 mpar = ma*mc/mb/(ma+mb+mc);
 Svt = 2*mpar/(1+mpar)^2; # Svt = 1/pi;
 
-R0 = r0(p1,p2); # m
+R0 = r0[p1,p2]; # m
 
 sigma = pi*R0^2;
 
@@ -46,7 +46,8 @@ theta1 = 4*pi^2*om^2*mu/alpha^2/k; # K
 
 s = abs(i-f);
 sf = factorial(s);
-ns = (factorial(max(i,f))/factorial(min(i,f)))^(1/s);
+#ns = (factorial(max(i,f))/factorial(min(i,f)))^(1/s);
+ns = (factorial(big(max(i,f)))/factorial(big(min(i,f))))^(1/s);
 
 vm0 = (2. *pi*om*s*k*t/alpha/mu)^(1. / 3.);
 

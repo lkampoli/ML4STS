@@ -19,20 +19,19 @@ mcd = m[p2];
 
 mu = mab*mcd/(mab+mcd);
 
-R0 = r0(p1,p2);
+R0 = r0[p1,p2];
 
 sigma = pi*R0^2;
 
 Z = sigma*sqrt(8*k*t/(pi*mu));
 
 alpha = 4e10;
-
 Svv = 1/16;
 
 s = abs(i1-f1);
 sf = factorial(s);
-ns1 = (factorial(max(i1,f1))/factorial(min(i1,f1)))^(1/s);
-ns2 = (factorial(max(i2,f2))/factorial(min(i2,f2)))^(1/s);
+ns1 = (factorial(big(max(i1,f1)))/factorial(big(min(i1,f1))))^(1/s);
+ns2 = (factorial(big(max(i2,f2)))/factorial(big(min(i2,f2))))^(1/s);
 
 delE1 = Ei1-Ef1;
 delE2 = Ei2-Ef2;
@@ -52,7 +51,7 @@ else
   z2 = 1;
 end
 
-if (z1 /= 0) || (z2 /= 0)
+if (z1 != 0) || (z2 != 0)
   Evib = (th1*z1+th2*z2)/(z1+z2); # K
 end
 if (z1 == 0) && (z2 == 0)
