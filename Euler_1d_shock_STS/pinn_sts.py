@@ -149,6 +149,10 @@ class PINN:
                                                                            'maxcor': 50,
                                                                            'maxls': 50,
                                                                            'ftol' : 1.0 * np.finfo(float).eps})
+        #self.optimizer = tf.contrib.opt.ScipyOptimizerInterface(self.loss,
+        #                                                        method = 'SLSQP',
+        #                                                        options = {'maxiter': 50000,
+        #                                                                   'ftol' : 1.0 * np.finfo(float).eps})
         # Adam
         self.optimizer_Adam = tf.train.AdamOptimizer()
         self.train_op_Adam = self.optimizer_Adam.minimize(self.loss)

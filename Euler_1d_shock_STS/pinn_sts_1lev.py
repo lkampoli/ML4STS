@@ -127,6 +127,7 @@ class PINN:
                     w*tf.reduce_sum(tf.square(self.e2))/(e2_norm**2) + \
                     w*tf.reduce_sum(tf.square(self.e3))/(e3_norm**2) + \
                     w*tf.reduce_sum(tf.square(self.e4))/(p_norm**2)
+        # mean_squared_error(self.c_data_pred, self.c_data_tf)
         i = 0
         while i<length:
           self.loss = self.loss + tf.reduce_sum(tf.square(self.n_tf[i] - self.n_pred[i]))/(n_norm[i]**2) + \
@@ -140,6 +141,8 @@ class PINN:
         # push after the internal has done its job. No need to change the default
         # options of the optimizers. We have used Adam optimizer in this case,
         # since, it is the most common and generally the fastest known converger
+        # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize
+        # http://tensorflow.biotecan.com/python/Python_1.8/tensorflow.google.cn/api_docs/python/tf/contrib/opt/ScipyOptimizerInterface.html
         self.optimizer = tf.contrib.opt.ScipyOptimizerInterface(self.loss,
                                                                 method = 'L-BFGS-B',
                                                                 options = {'maxiter': 50000,
