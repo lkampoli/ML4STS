@@ -68,7 +68,7 @@ with open('../../../Data/TCs_air5.txt') as f:
 
 #dataset = np.loadtxt("../../../Data/TCs_air5.txt")
 x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
-y = dataset[:,7:]  # D_Ti
+y = dataset[:,10:]  # D_Ti
 
 # The data is then split into training and test data
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)

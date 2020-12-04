@@ -61,21 +61,20 @@ from keras.optimizers import SGD, Adam, RMSprop, Adagrad
 import pickle
 
 import sys
-sys.path.insert(0, '../../../../../Utilities/')
+sys.path.insert(0, '../../../../Utilities/')
 
 from plotting import newfig, savefig
 
 from matplotlib import rc
 rc("text", usetex=False)
 
-with open('../../../../Data/TCs_air5.txt') as f:
+with open('../../../Data/TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 
 #dataset = np.loadtxt("../../../Data/TCs_air5.txt")
 x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
-y = dataset[:,7:8] # shear
-#y = dataset[:,7:10] # shear, bulk, conductivity
+y = dataset[:,10:] # TD
 
 # summarize the dataset
 in_dim  = x.shape[1]
@@ -111,7 +110,7 @@ model = Sequential()
 model.add(Dense(70, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
 model.add(Dense(35, activation='relu'))
 model.add(Dense(15, activation='relu'))
-model.add(Dense(out_dim, activation='linear')) # TODO:: improve architecture!
+model.add(Dense(out_dim, activation='linear'))
 
 #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
 #opt = keras.optimizers.Adam(learning_rate=0.01)
@@ -131,7 +130,7 @@ model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
 
 print("[INFO] training model...")
 #history = model.fit(x_train, y_train, epochs=100, batch_size=15, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
-history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
 
 #loss_history = np.array(history)
 #np.savetxt("loss_history.txt", loss_history, delimiter=",")

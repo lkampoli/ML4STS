@@ -75,8 +75,8 @@ print('Testing Labels Shape:', y_test.shape)
 
 # Extra Trees
 hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto',),
-                 'n_neighbors': (1, 2, 3, 4, 5, 6, 7, 8, 9, 10,),
-                 'leaf_size': (1, 10, 20, 30, 100,),
+                 'n_neighbors': (1, 5, 10,),
+                 'leaf_size': (1, 10, 100,),
                  'weights': ('uniform', 'distance',),
                  'p': (1, 2,),}]
 
