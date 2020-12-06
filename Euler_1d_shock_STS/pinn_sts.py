@@ -222,24 +222,34 @@ class PINN:
         p   = nci_rho_u_p_E[:,50:51]
         E   = nci_rho_u_p_E[:,51:52]
 
+        #h = tf.add(tf.divide(p,rho), E)
+
+        #p0   = 1.066576000000000e+02
+        #rho0 = 1.197240213899197e-03
+        #u0   = 4.732258900356151e+03
+        #h0   = 8.127927438210930e+05
+
         R = [nci_rho_u_p_E[:,i+52:i+53] for i in range(int(48))]
 
         n_u_x = [tf.gradients(n[i] *u, x)[0] for i in range(int(48))]
 
+        eqn = [n_u_x[i] - R[i] for i in range(int(48))]
+
         # autodiff gradient #1
         mass_flow_grad = tf.gradients(rho*u, x)[0]
+        #mass_flow_grad = tf.subtract((rho*u), (rho0*u0))
 
         # autodiff gradient #2
         momentum_grad = tf.gradients((rho*u*u + p), x)[0]
+        #momentum_grad = tf.subtract((rho*u*u + p), (rho0*u0*u0+p0))
 
         # autodiff gradient #3
         energy_grad = tf.gradients((rho*E + p)*u, x)[0]
+        #energy_grad = tf.subtract((h+0.5*u*u), (h0+0.5*u0*u0))
 
         # state residual
         gamma = 1.4
         state_res = p - rho*(gamma-1.0)*(E-0.5*gamma*u*u)
-
-        eqn = [n_u_x[i] - R[i] for i in range(int(48))]
 
         eq1 =  mass_flow_grad
         eq2 =  momentum_grad
