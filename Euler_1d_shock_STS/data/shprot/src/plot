@@ -1,4 +1,0 @@
-rm *.eps
-gnuplot plot_data.gnu
-#gnuplot plot_data_NEW.gnu
-okular *.eps

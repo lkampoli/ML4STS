@@ -71,8 +71,8 @@ for iy = 1:lo2
     kf_o2(iy,:) = (B1_o2'*exp(eo2(iy)/k*(1/T+1/U))).^(eo2(iy) < Ear_o2_J').*...
         B2_o2'.^(eo2(iy) > Ear_o2_J');
 end
-disp(kf_n2)
-disp(kf_o2)
-size(kf_n2)
-size(kf_o2)
+%disp(kf_n2)
+%disp(kf_o2)
+%size(kf_n2)
+%size(kf_o2)
 end
