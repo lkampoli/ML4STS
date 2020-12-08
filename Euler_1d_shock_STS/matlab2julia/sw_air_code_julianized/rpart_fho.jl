@@ -123,13 +123,16 @@ println("Kvt_o2 = ", Kvt_o2, "\n", size(Kvt_o2), "\n")
 println("Kvt_no = ", Kvt_no, "\n", size(Kvt_no), "\n")
 
 # Dissociation/Recombination processes
+kd_n2 = zeros(5,l1);
+kd_o2 = zeros(5,l2);
+kd_no = zeros(5,l3);
+kr_n2 = zeros(5,l1);
+kr_o2 = zeros(5,l2);
+kr_no = zeros(5,l3);
 kd_n2 = kdis(temp,1) * Delta*n0/v0;
 kd_o2 = kdis(temp,2) * Delta*n0/v0;
 kd_no = kdis(temp,3) * Delta*n0/v0;
 
-kr_n2 = zeros(5,l1);
-kr_o2 = zeros(5,l2);
-kr_no = zeros(5,l3);
 for iM = 1:5
   kr_n2[iM,:] = kd_n2[iM,:] .* Kdr_n2 * n0;
   kr_o2[iM,:] = kd_o2[iM,:] .* Kdr_o2 * n0;
@@ -137,6 +140,10 @@ for iM = 1:5
 end
 
 # Exchange processes
+kf_n2 = zeros(l1,l3)
+kb_n2 = zeros(l1,l3)
+kf_o2 = zeros(l2,l3)
+kb_o2 = zeros(l2,l3)
 if sw_z == "Savelev"
 
   # STELLAR database

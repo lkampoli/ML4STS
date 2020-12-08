@@ -1,0 +1,25 @@
+Training time: 0.001781 s
+Prediction time: 0.035442 s
+ 
+The model performance for training set
+--------------------------------------
+MAE is 7.052615194425786e-12
+MSE is 9.055184069068437e-20
+EVS is 0.9999999999999998
+R2 score is 0.9999999999999998
+ 
+The model performance for testing set
+--------------------------------------
+MAE is 1.1588286458739502e-06
+MSE is 3.974450944030018e-10
+EVS is 0.9999978324768282
+R2 score is 0.9999978284391521
+ 
+Adimensional test metrics
+--------------------------------------
+Mean Absolute Error (MAE): 0.0003713108035548364
+Mean Squared Error (MSE): 2.265190084844351e-06
+Root Mean Squared Error (RMSE): 0.0015050548444639322
+ 
+Best parameters set found on development set:
+{'algorithm': 'ball_tree', 'leaf_size': 100, 'n_neighbors': 5, 'p': 1, 'weights': 'distance'}

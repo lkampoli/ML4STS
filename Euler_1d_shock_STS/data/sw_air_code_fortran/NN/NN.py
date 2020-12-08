@@ -24,7 +24,7 @@ from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.preprocessing import PowerTransformer
 
-from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.models import Sequential, Model
 from tensorflow.python.keras.layers import Dense, Dropout
 from tensorflow.python.keras import initializers
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor
@@ -78,7 +78,7 @@ from convert_weights import txt_to_h5
 
 dataset=np.loadtxt("../data/dataset_STS_kd_kr_N2.txt")
 x = dataset[:,0:1]
-y = dataset[:,1:]
+y = dataset[:,1:2]
 
 # summarize the dataset
 in_dim  = x.shape[1]
@@ -110,31 +110,22 @@ print('Testing Labels Shape:'   , y_test.shape)
 
 print("[INFO] Model build ...")
 model = Sequential()
-#regularizers.l1(0.001)
-#regularizers.l1_l2(l1=0.001, l2=0.001)
-# https://keras.io/api/layers/initializers/
-#initializer = tf.keras.initializers.GlorotUniform()
-#model.add(Dense(100, input_dim=in_dim, kernel_initializer='glorot_uniform', activation='relu'))
-model.add(Dense(470, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
-#model.add(layers.Dropout(0.5))
-#model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
-#model.add(Dense(10, activation='linear'))
-#model.add(Dense(30, activation='linear'))
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-#model.add(layers.Dropout(0.5))
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-#model.add(layers.Dropout(0.5))
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-#model.add(layers.Dropout(0.5))
-#model.add(Dense(100, kernel_initializer='normal', activation='relu'))
+model.add(Dense(10, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
 model.add(Dense(out_dim, activation='linear'))
+
+# try different approach ... https://keras.io/api/models/model/
+#tf.keras.Model()
+#inputs = tf.keras.Input(shape=in_dim)
+#x = tf.keras.layers.Dense(470, activation=tf.nn.relu)(inputs)
+#outputs = tf.keras.layers.Dense(out_dim, activation=tf.keras.activations.linear)(x)
+#model = tf.keras.Model(inputs=inputs, outputs=outputs)
 
 #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
 #opt = keras.optimizers.Adam(learning_rate=0.01)
 opt = keras.optimizers.Adam(learning_rate=0.01, decay=1e-3/100)
 model.summary()
 
-keras2ascii(model)
+#keras2ascii(model)
 
 # mse:  loss = square(y_true - y_pred)
 # mae:  loss = abs(y_true - y_pred)
@@ -247,10 +238,14 @@ def chart_regression(pred, y, sort=True):
 chart_regression(pred.flatten(), y_test)
 
 model.save('model.sav')
-weights_file_name = 'NN.h5'
-txt_file_name     = weights_file_name.replace('h5', 'txt')
-model.save(weights_file_name)
-h5_to_txt(weights_file_name, txt_file_name)
+#dump(model, 'model.sav')
+#
+model_name_h5 = 'NN.h5'
+model_name_txt = model_name_h5.replace('h5', 'txt')
+model.save(model_name_h5)
+h5_to_txt(model_name_h5, model_name_txt)
+#plot_model(model, to_file="./model.png", show_shapes=True, show_layer_names=True)
+tf.keras.utils.plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=True)
 
 new_model = tf.keras.models.load_model('model.sav')
 new_model.summary()

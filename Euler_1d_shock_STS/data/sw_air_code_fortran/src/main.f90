@@ -86,7 +86,7 @@
 ! dlsode****************************************************
  integer, parameter :: mlo    = 1
  integer, parameter :: mup    = 1
- integer, parameter :: lrw    = 22 +  9*neq + neq**2          ! MF=22
+ integer, parameter :: lrw    = 22 +  9*neq + neq**2            ! MF=22
 !integer, parameter :: lrw    = 22 + 10*neq + (2*mlo + mup)*neq ! MF=25
 ! **********************************************************
  integer, parameter :: mf     = 222
@@ -124,9 +124,6 @@
 !call PopulateEnergy()
  call ComputePartitionFunctions()
 
-! TODO: also this should be a call
-! but for the moment just copy from
-! matlab implementation
  xc(1) = incon(1)
  xc(2) = incon(2)
  v_0   = incon(3)*Thousand
@@ -192,7 +189,7 @@
 
    write(*,*) "npoint #", i
 
-   options = set_opts(method_flag=22, abserr=1.0d-8, relerr=1.0d-8)
+   options = set_opts(method_flag=22, abserr=1.0d-3, relerr=1.0d-3)
    call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
 !  call get_stats(rstats,istats)
 
