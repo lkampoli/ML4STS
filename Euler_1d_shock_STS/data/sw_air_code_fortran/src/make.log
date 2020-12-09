@@ -11,8 +11,6 @@
 [1;31m Linking options [0m
 [1m [  -mkl  ] [0m
 
-[1;31m Compiling[0m[1m DR_Module_NN.f90[0m
-[1;31m Compiling[0m[1m rpart_fho.f90[0m
 [1;31m Compiling[0m[1m main.f90[0m
 
 [1;31m Assembling[0m[1m shprot[0m

@@ -116,7 +116,15 @@
 
 ! ... outputting ...
  integer :: nout !channel number
-! **********************************************************************
+
+! ****************************************
+ character(20)  :: XXX
+ character(75)  :: origin
+ character(75)  :: path
+ character(9)   :: base
+ character(20)  :: compute_XY
+ character(132) :: command_compute_XY
+! ***************************************
 
  xc(5) = Zero
  Y0_bar(l1+l2+l3+4) = Zero
@@ -176,7 +184,13 @@
  ATOLS = 1.0D-8 ! scalar
  ATOLV = 1.0D-8 ! vector
 
+ base = " python3 "
+ path = "/home/lk/Public/ML4STS/Euler_1d_shock_STS/data/sw_air_code_fortran/DT_XY/"
+
  call cpu_time(start)
+! read file is not threadsafe!
+!!$omp parallel private(i,unit)
+!!$omp do
  do i = 1, npoints-1
 
    itask  = 1 ! try to integrate to target time/space
@@ -185,32 +199,54 @@
    ! exactly the same steps of the Matlab
    ! implementation are used in order to
    ! fairly benchmark
-   Xtout = xstep(i+1)
+   xtout = xstep(i+1)
 
    write(*,*) "npoint #", i
-
-   options = set_opts(method_flag=22, abserr=1.0d-3, relerr=1.0d-3)
-   call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
-!  call get_stats(rstats,istats)
-
-60  FORMAT(/'  No. steps =',I4,'   No. f-s =',I4,        &
-            '  No. J-s =',I4,'   No. LU-s =',I4/         &
-            '  No. nonlinear iterations =',I4/           &
-            '  No. nonlinear convergence failures =',I4/ &
-            '  No. error test failures =',I4/            &
-            '  No. g-s =',I4/)
-
-90 format(///' error halt... istate =',i3)
-
+!!!
+!  options = set_opts(method_flag=22, abserr=1.0d-3, relerr=1.0d-3)
+!  call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
+!  !call get_stats(rstats,istats)
+!
+!60  FORMAT(/'  No. steps =',I4,'   No. f-s =',I4,        &
+!            '  No. J-s =',I4,'   No. LU-s =',I4/         &
+!            '  No. nonlinear iterations =',I4/           &
+!            '  No. nonlinear convergence failures =',I4/ &
+!            '  No. error test failures =',I4/            &
+!            '  No. g-s =',I4/)
+!
+!90 format(///' error halt... istate =',i3)
+!
+!70  FORMAT(//' Required RWORK size =',I8,'   IWORK size =',I4 ' No. steps =',I4,'   No. f-s =',I4,'   No. J-s =',I4, &
+!'   No. LU-s =',I4/' No. of nonzeros in J =',I5, '   No. of nonzeros in LU =',I5)
+!!!
+   !***********************************************
+   ! Fire the NN instead of calling the ODE solver
+   !***********************************************
+!!!
+   write( XXX, '(f20.10)' ) xtout
+   call getcwd(origin)
+   call chdir(path)
+   compute_XY = "run_regression_XY.py"
+   command_compute_XY = base//compute_XY//" "//XXX
+   call execute_command_line (command_compute_XY)
+   open(newunit=unit, file='result_XY.out', action='read')
+   !open(10, file='result_XY.bin', access='stream')
+   !open(10, file="result_XY.unf", form="unformatted")
+   read (unit, *) (ysol(j), j=1, size(ysol) - 1)
+   !read (10, *) ysol
+   !read (10) ysol
+   !close(10)
+   close(unit)
+   call chdir(origin)
+!!!
   xout(i)  = xtout
   y(i+1,:) = ysol
 
-70  FORMAT(//' Required RWORK size =',I8,'   IWORK size =',I4 ' No. steps =',I4,'   No. f-s =',I4,'   No. J-s =',I4, &
-'   No. LU-s =',I4/' No. of nonzeros in J =',I5, '   No. of nonzeros in LU =',I5)
-
  end do
+!!$omp end parallel
  call cpu_time(stop)
  write(*,*) "Elapsed time: ", stop-start, "seconds"
+ print '("Time = ",f6.3," seconds.")',stop-start
 
  xout = xout*Delta*100
 

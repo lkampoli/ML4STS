@@ -157,28 +157,28 @@ for iM = 1:5
     kr_no(iM,:) = kd_no(iM,:) .* Kdr_no * n0;
 end
 
-disp(temp)
-
-dataset = [temp, kd_n2(1,:), kd_n2(2,:), kd_n2(3,:), kd_n2(4,:), kd_n2(5,:)];
-save dataset_STS_kd_N2.txt dataset -ascii -append
-dataset = [temp, kr_n2(1,:), kr_n2(2,:), kr_n2(3,:), kr_n2(4,:), kr_n2(5,:)];
-save dataset_STS_kr_N2.txt dataset -ascii -append
-dataset = [temp, kd_n2(1,:), kd_n2(2,:), kd_n2(3,:), kd_n2(4,:), kd_n2(5,:), kr_n2(1,:), kr_n2(2,:), kr_n2(3,:), kr_n2(4,:), kr_n2(5,:)];
-save dataset_STS_kd_kr_N2.txt dataset -ascii -append
-
-dataset = [temp, kd_o2(1,:), kd_o2(2,:), kd_o2(3,:), kd_o2(4,:), kd_o2(5,:)];
-save dataset_STS_kd_O2.txt dataset -ascii -append
-dataset = [temp, kr_o2(1,:), kr_o2(2,:), kr_o2(3,:), kr_o2(4,:), kr_o2(5,:)];
-save dataset_STS_kr_O2.txt dataset -ascii -append
-dataset = [temp, kd_o2(1,:), kd_o2(2,:), kd_o2(3,:), kd_o2(4,:), kd_o2(5,:), kr_o2(1,:), kr_o2(2,:), kr_o2(3,:), kr_o2(4,:), kr_o2(5,:)];
-save dataset_STS_kd_kr_O2.txt dataset -ascii -append
-
-dataset = [temp, kd_no(1,:), kd_no(2,:), kd_no(3,:), kd_no(4,:), kd_no(5,:)];
-save dataset_STS_kd_NO.txt dataset -ascii -append
-dataset = [temp, kr_no(1,:), kr_no(2,:), kr_no(3,:), kr_no(4,:), kr_no(5,:)];
-save dataset_STS_kr_NO.txt dataset -ascii -append
-dataset = [temp, kd_no(1,:), kd_no(2,:), kd_no(3,:), kd_no(4,:), kd_no(5,:), kr_no(1,:), kr_no(2,:), kr_no(3,:), kr_no(4,:), kr_no(5,:)];
-save dataset_STS_kd_kr_NO.txt dataset -ascii -append
+% disp(temp)
+% 
+% dataset = [temp, kd_n2(1,:), kd_n2(2,:), kd_n2(3,:), kd_n2(4,:), kd_n2(5,:)];
+% save dataset_STS_kd_N2.txt dataset -ascii -append
+% dataset = [temp, kr_n2(1,:), kr_n2(2,:), kr_n2(3,:), kr_n2(4,:), kr_n2(5,:)];
+% save dataset_STS_kr_N2.txt dataset -ascii -append
+% dataset = [temp, kd_n2(1,:), kd_n2(2,:), kd_n2(3,:), kd_n2(4,:), kd_n2(5,:), kr_n2(1,:), kr_n2(2,:), kr_n2(3,:), kr_n2(4,:), kr_n2(5,:)];
+% save dataset_STS_kd_kr_N2.txt dataset -ascii -append
+% 
+% dataset = [temp, kd_o2(1,:), kd_o2(2,:), kd_o2(3,:), kd_o2(4,:), kd_o2(5,:)];
+% save dataset_STS_kd_O2.txt dataset -ascii -append
+% dataset = [temp, kr_o2(1,:), kr_o2(2,:), kr_o2(3,:), kr_o2(4,:), kr_o2(5,:)];
+% save dataset_STS_kr_O2.txt dataset -ascii -append
+% dataset = [temp, kd_o2(1,:), kd_o2(2,:), kd_o2(3,:), kd_o2(4,:), kd_o2(5,:), kr_o2(1,:), kr_o2(2,:), kr_o2(3,:), kr_o2(4,:), kr_o2(5,:)];
+% save dataset_STS_kd_kr_O2.txt dataset -ascii -append
+% 
+% dataset = [temp, kd_no(1,:), kd_no(2,:), kd_no(3,:), kd_no(4,:), kd_no(5,:)];
+% save dataset_STS_kd_NO.txt dataset -ascii -append
+% dataset = [temp, kr_no(1,:), kr_no(2,:), kr_no(3,:), kr_no(4,:), kr_no(5,:)];
+% save dataset_STS_kr_NO.txt dataset -ascii -append
+% dataset = [temp, kd_no(1,:), kd_no(2,:), kd_no(3,:), kd_no(4,:), kd_no(5,:), kr_no(1,:), kr_no(2,:), kr_no(3,:), kr_no(4,:), kr_no(5,:)];
+% save dataset_STS_kd_kr_NO.txt dataset -ascii -append
 
 % ������������ �������� ������� ����������
 if  strcmp(sw_z,'Savelev')

@@ -126,9 +126,9 @@
  A(lall+4,lall+4) = f_5o2*nm_b+f_3o2*na_b
 
 ! dissociation/recombination (DR) processes
-  !call compute_DR(temp)
-  call compute_DR_NN(temp)
-  write(*,*) "call compute_DR_NN(temp)"
+  call compute_DR(temp)
+  !call compute_DR_NN(temp)
+  !write(*,*) "call compute_DR_NN(temp)"
 
 ! Zeldovich exchange reactions
   call compute_EX(temp)

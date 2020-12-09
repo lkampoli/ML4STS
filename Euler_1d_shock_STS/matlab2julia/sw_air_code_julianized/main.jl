@@ -294,41 +294,41 @@ prob = ODEProblem(rpart_fho!, Y0_bar, xspan, 1.)
 # https://diffeq.sciml.ai/stable/solvers/ode_solve/#ode_solve
 #sol = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, RadauIIA(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
-#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+sol  = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, Rosenbrock23(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, TRBDF2(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
-sol = DifferentialEquations.solve(prob, ABDF2(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+#sol = DifferentialEquations.solve(prob, ABDF2(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, Rodas5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, Rodas4P(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, Rodas3(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, Kvaerno5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 #sol = DifferentialEquations.solve(prob, KenCarp4(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 
-X    = sol.t;
-x_s  = X*Delta*100;
-Temp = sol[sum(l)+4,:]*T0;
-v    = sol[sum(l)+3,:]*v0;
+#X    = sol.t;
+#x_s  = X*Delta*100;
+#Temp = sol[sum(l)+4,:]*T0;
+#v    = sol[sum(l)+3,:]*v0;
 #
-nn2_i = sol[1:l[1],:]*n0;
-no2_i = sol[l[1]+1:l[1]+l[2],:]*n0;
-nno_i = sol[l[1]+l[2]+1:sum(l),:]*n0;
+#nn2_i = sol[1:l[1],:]*n0;
+#no2_i = sol[l[1]+1:l[1]+l[2],:]*n0;
+#nno_i = sol[l[1]+l[2]+1:sum(l),:]*n0;
 #
 # [i^-3]
-nn2 = sum(nn2_i,dims=1);
-no2 = sum(no2_i,dims=1);
-nno = sum(nno_i,dims=1);
+#nn2 = sum(nn2_i,dims=1);
+#no2 = sum(no2_i,dims=1);
+#nno = sum(nno_i,dims=1);
 #
-nn = sol[sum(l)+1,:]*n0; # N
-no = sol[sum(l)+2,:]*n0; # O
+#nn = sol[sum(l)+1,:]*n0; # N
+#no = sol[sum(l)+2,:]*n0; # O
 #
-n_a = nn+no;
-n_m = nn2+no2+nno;
+#n_a = nn+no;
+#n_m = nn2+no2+nno;
 #
-time_s   = X*Delta/v0; # sec
-time_mcs = time_s*1e6; # mcsec
+#time_s   = X*Delta/v0; # sec
+#time_mcs = time_s*1e6; # mcsec
 #
-Npoint = length(X);
-Nall   = n_m+n_a;
+#Npoint = length(X);
+#Nall   = n_m+n_a;
 #nn2i_n = nn2_i./repmat(Nall,1,l(1));
 #no2i_n = no2_i./repmat(Nall,1,l(2));
 #nnoi_n = nno_i./repmat(Nall,1,l(3));

@@ -102,7 +102,7 @@ ifeq "$(COMPILER)" "gnu"
   OPT = $(OPT_GNU)
 endif
 ifeq "$(COMPILER)" "intel"
-  FC = ifort
+  FC = ifort -qopenmp
   #OPTSC = -cpp -c -module $(DMOD) -static -assume protect_parens -assume norealloc_lhs -fp-model source -xHost -fast -parallel #-qopenmp
   #OPTSC = -cpp -c -module $(DMOD) -assume protect_parens -assume norealloc_lhs -fp-model source -xHost -fast -parallel #-qopenmp
 	#OPTSC = -cpp -c -module $(DMOD) -static -assume protect_parens -assume norealloc_lhs -fp-model source
