@@ -8,6 +8,8 @@ contains
   !use mod_kinds, only: ik, rk
   !use mod_network, only: network_type
   !use mod_ensemble, only: ensemble_type
+  use, intrinsic :: ISO_C_BINDING
+  use, intrinsic :: ISO_FORTRAN_ENV
 
   implicit none
 

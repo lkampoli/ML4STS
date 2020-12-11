@@ -1,0 +1,180 @@
+{
+  "architecture": {
+    "backend": "tensorflow",
+    "class_name": "Model",
+    "config": {
+      "input_layers": [
+        [
+          "input_1",
+          0,
+          0
+        ]
+      ],
+      "layers": [
+        {
+          "class_name": "InputLayer",
+          "config": {
+            "batch_input_shape": [
+              null,
+              1
+            ],
+            "dtype": "float32",
+            "name": "input_1",
+            "sparse": false
+          },
+          "inbound_nodes": [],
+          "name": "input_1"
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "activation": "relu",
+            "activity_regularizer": null,
+            "batch_input_shape": [
+              null,
+              1
+            ],
+            "bias_constraint": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {
+                "dtype": "float32"
+              }
+            },
+            "bias_regularizer": null,
+            "dtype": "float32",
+            "kernel_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomNormal",
+              "config": {
+                "dtype": "float32",
+                "mean": 0.0,
+                "seed": null,
+                "stddev": 0.05
+              }
+            },
+            "kernel_regularizer": null,
+            "name": "dense",
+            "trainable": true,
+            "units": 10,
+            "use_bias": true
+          },
+          "inbound_nodes": [
+            [
+              [
+                "input_1",
+                0,
+                0,
+                {}
+              ]
+            ]
+          ],
+          "name": "dense"
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "activation": "linear",
+            "activity_regularizer": null,
+            "bias_constraint": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {
+                "dtype": "float32"
+              }
+            },
+            "bias_regularizer": null,
+            "dtype": "float32",
+            "kernel_constraint": null,
+            "kernel_initializer": {
+              "class_name": "GlorotUniform",
+              "config": {
+                "dtype": "float32",
+                "seed": null
+              }
+            },
+            "kernel_regularizer": null,
+            "name": "dense_1",
+            "trainable": true,
+            "units": 1,
+            "use_bias": true
+          },
+          "inbound_nodes": [
+            [
+              [
+                "dense",
+                0,
+                0,
+                {}
+              ]
+            ]
+          ],
+          "name": "dense_1"
+        }
+      ],
+      "name": "sequential",
+      "output_layers": [
+        [
+          "dense_1",
+          0,
+          0
+        ]
+      ]
+    },
+    "keras_version": "2.2.4-tf"
+  },
+  "hash": "e596b1786cf92f3d6232f44a695fa5f5a29e0776e4c6175ea3ceeb86f3d85e7a",
+  "image_data_format": "channels_last",
+  "input_shapes": [
+    [
+      1
+    ]
+  ],
+  "output_shapes": [
+    [
+      1
+    ]
+  ],
+  "tests": [
+    {
+      "inputs": [
+        {
+          "shape": [
+            1
+          ],
+          "values": [
+            "dVVlvg=="
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "shape": [
+            1
+          ],
+          "values": [
+            "idLlvg=="
+          ]
+        }
+      ]
+    }
+  ],
+  "trainable_params": {
+    "dense": {
+      "bias": [
+        "vd4Tv+Nnmb3MS5Q+Yo1ePp0per8mH4E+aMPEvUyehD7mDJ2/u99oPg=="
+      ],
+      "weights": [
+        "saktPx3pBj89TqK8SCBKvSvBPj8quTS9XCPfvGY2Gb0+6DI/a4h2vQ=="
+      ]
+    },
+    "dense_1": {
+      "bias": [
+        "Yo09Pg=="
+      ],
+      "weights": [
+        "k0+BP3uWZz9/Kwi/B/p2vifbrz8ttiO/vZv0vK2ID7+MJgdArBHfvg=="
+      ]
+    }
+  }
+}
