@@ -11,8 +11,6 @@ import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import numpy as np
-#import pandas as pd
-#import seaborn as sns
 
 import operator
 import itertools
@@ -29,6 +27,8 @@ from sklearn.tree import DecisionTreeRegressor
 
 import pickle
 from joblib import dump, load
+
+from pure_sklearn.map import convert_estimator
 
 n_jobs = -1
 trial  = 1
@@ -199,3 +199,18 @@ plt.show()
 
 # save the model to disk
 dump(gs, 'model_N2.sav')
+
+# convert to pure python estimator
+regr_pure_predict = convert_estimator(regr)
+with open("model.pkl", "wb") as f:
+    pickle.dump(regr_pure_predict, f)
+
+# load pickled model
+with open("model.pkl", "rb") as f:
+    pure_regr = pickle.load(f)
+
+# make prediction with pure-predict object
+t0 = time.time()
+y_pred = pure_regr.predict(x_test)
+regr_predict = time.time() - t0
+print("Pure Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))

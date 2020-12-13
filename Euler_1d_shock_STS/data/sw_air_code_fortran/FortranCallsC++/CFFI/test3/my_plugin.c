@@ -568,8 +568,6 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
 #define _CFFI_MODULE_NAME  "my_plugin"
 static const char _CFFI_PYTHON_STARTUP_CODE[] = {
 // # NB. this is not a string because of a size limit in MSVC
-// 'import numpy as np\n
-105,109,112,111,114,116,32,110,117,109,112,121,32,97,115,32,110,112,10,
 // 'from my_plugin import ffi\n
 102,114,111,109,32,109,121,95,112,108,117,103,105,110,32,105,109,112,111,114,
 116,32,102,102,105,10,
@@ -579,14 +577,36 @@ static const char _CFFI_PYTHON_STARTUP_CODE[] = {
 10,
 // '@ffi.def_extern()\n
 64,102,102,105,46,100,101,102,95,101,120,116,101,114,110,40,41,10,
-// 'def add_one(a_ptr):\n
-100,101,102,32,97,100,100,95,111,110,101,40,97,95,112,116,114,41,58,10,
+// 'def add_five(a_ptr):\n
+100,101,102,32,97,100,100,95,102,105,118,101,40,97,95,112,116,114,41,58,10,
 // '    a = my_module.asarray(ffi, a_ptr, shape=(10,))\n
 32,32,32,32,97,32,61,32,109,121,95,109,111,100,117,108,101,46,97,115,97,114,
 114,97,121,40,102,102,105,44,32,97,95,112,116,114,44,32,115,104,97,112,101,61,
 40,49,48,44,41,41,10,
-// '    a[:] += 1\n
-32,32,32,32,97,91,58,93,32,43,61,32,49,10,
+// '    a[:] += 5\n
+32,32,32,32,97,91,58,93,32,43,61,32,53,10,
+// '\n
+10,
+// '@ffi.def_extern()\n
+64,102,102,105,46,100,101,102,95,101,120,116,101,114,110,40,41,10,
+// 'def minus_one(a_ptr):\n
+100,101,102,32,109,105,110,117,115,95,111,110,101,40,97,95,112,116,114,41,58,
+10,
+// '    a = my_module.asarray(ffi, a_ptr, shape=(10,))\n
+32,32,32,32,97,32,61,32,109,121,95,109,111,100,117,108,101,46,97,115,97,114,
+114,97,121,40,102,102,105,44,32,97,95,112,116,114,44,32,115,104,97,112,101,61,
+40,49,48,44,41,41,10,
+// '    a[:] -= 1\n
+32,32,32,32,97,91,58,93,32,45,61,32,49,10,
+// '\n
+10,
+// '@ffi.def_extern()\n
+64,102,102,105,46,100,101,102,95,101,120,116,101,114,110,40,41,10,
+// 'def k_dr_n2(a_ptr):\n
+100,101,102,32,107,95,100,114,95,110,50,40,97,95,112,116,114,41,58,10,
+// '    a = my_module.k_dr_n2(a_ptr)\n
+32,32,32,32,97,32,61,32,109,121,95,109,111,100,117,108,101,46,107,95,100,114,
+95,110,50,40,97,95,112,116,114,41,10,
 0 };
 #ifdef PYPY_VERSION
 # define _CFFI_PYTHON_STARTUP_FUNC  _cffi_pypyinit_my_plugin
@@ -1266,8 +1286,7 @@ static int cffi_start_python(void)
 
 /************************************************************/
 
-
-    #include "plugin.h" 
+ #include "plugin.h" 
 
 /************************************************************/
 
@@ -1280,19 +1299,43 @@ static void *_cffi_types[] = {
 /*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
 };
 
-static struct _cffi_externpy_s _cffi_externpy__add_one =
-  { "my_plugin.add_one", 0, 0, 0 };
+static struct _cffi_externpy_s _cffi_externpy__add_five =
+  { "my_plugin.add_five", 0, 0, 0 };
 
-CFFI_DLLEXPORT void add_one(double * a0)
+CFFI_DLLEXPORT void add_five(double * a0)
 {
   char a[8];
   char *p = a;
   *(double * *)(p + 0) = a0;
-  _cffi_call_python(&_cffi_externpy__add_one, p);
+  _cffi_call_python(&_cffi_externpy__add_five, p);
+}
+
+static struct _cffi_externpy_s _cffi_externpy__k_dr_n2 =
+  { "my_plugin.k_dr_n2", 0, 0, 0 };
+
+CFFI_DLLEXPORT void k_dr_n2(double * a0)
+{
+  char a[8];
+  char *p = a;
+  *(double * *)(p + 0) = a0;
+  _cffi_call_python(&_cffi_externpy__k_dr_n2, p);
+}
+
+static struct _cffi_externpy_s _cffi_externpy__minus_one =
+  { "my_plugin.minus_one", 0, 0, 0 };
+
+CFFI_DLLEXPORT void minus_one(double * a0)
+{
+  char a[8];
+  char *p = a;
+  *(double * *)(p + 0) = a0;
+  _cffi_call_python(&_cffi_externpy__minus_one, p);
 }
 
 static const struct _cffi_global_s _cffi_globals[] = {
-  { "add_one", (void *)&_cffi_externpy__add_one, _CFFI_OP(_CFFI_OP_EXTERN_PYTHON, 4), (void *)add_one },
+  { "add_five", (void *)&_cffi_externpy__add_five, _CFFI_OP(_CFFI_OP_EXTERN_PYTHON, 4), (void *)add_five },
+  { "k_dr_n2", (void *)&_cffi_externpy__k_dr_n2, _CFFI_OP(_CFFI_OP_EXTERN_PYTHON, 4), (void *)k_dr_n2 },
+  { "minus_one", (void *)&_cffi_externpy__minus_one, _CFFI_OP(_CFFI_OP_EXTERN_PYTHON, 4), (void *)minus_one },
 };
 
 static const struct _cffi_type_context_s _cffi_type_context = {
@@ -1302,7 +1345,7 @@ static const struct _cffi_type_context_s _cffi_type_context = {
   NULL,  /* no struct_unions */
   NULL,  /* no enums */
   NULL,  /* no typenames */
-  1,  /* num_globals */
+  3,  /* num_globals */
   0,  /* num_struct_unions */
   0,  /* num_enums */
   0,  /* num_typenames */

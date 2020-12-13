@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 #import pandas as pd
 #import seaborn as sns
-import tensorflow as tf
+#import tensorflow as tf
 
 import sklearn
 #print(sklearn.__version__)
@@ -141,7 +141,7 @@ model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
 
 print("[INFO] training model...")
 #history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
-#history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
 
 #loss_history = np.array(history)
 #np.savetxt("loss_history.txt", loss_history, delimiter=",")
@@ -242,7 +242,7 @@ print("[INFO] training model...")
 #chart_regression(pred.flatten(), y_test)
 
 #model.save('model.sav')
-#dump(model, 'model.sav')
+dump(model, 'model.sav')
 #
 model_name_h5 = 'NN.h5'
 model_name_txt = model_name_h5.replace('h5', 'txt')

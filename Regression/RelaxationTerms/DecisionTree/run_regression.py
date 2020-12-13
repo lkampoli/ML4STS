@@ -23,7 +23,7 @@ def regressor(inp):
     y_regr = regr.predict(Xinput)
 
     # Inverse transformation
-    #Xinput      = sc_x.inverse_transform(Xinput)
+    #Xinput     = sc_x.inverse_transform(Xinput)
     y_regr_dim  = sc_y.inverse_transform(y_regr)
 
     return y_regr_dim
