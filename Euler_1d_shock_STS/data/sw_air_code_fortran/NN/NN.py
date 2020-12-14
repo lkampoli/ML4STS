@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 #import pandas as pd
 #import seaborn as sns
-#import tensorflow as tf
+import tensorflow as tf
+#from tensorflow.contrib import lite
 
 import sklearn
 #print(sklearn.__version__)
@@ -253,3 +254,11 @@ h5_to_txt(model_name_h5, model_name_txt)
 
 #new_model = tf.keras.models.load_model('model.sav')
 #new_model.summary()
+
+
+#keras_file = 'linear.h5'
+#keras.models.save_model(model, keras_file)
+#
+#converter = lite.TocoConverter.from_keras_model_file(keras_file)
+#tflite_model = converter.convert()
+#open('linear.tflite', 'wb').write(tflite_model)
