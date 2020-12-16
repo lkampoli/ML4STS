@@ -1,0 +1,2142 @@
+rm: cannot remove 'shprot.x': No such file or directory
+DR_Module_NN.f90:177:2:
+
+  177 | #ifdef FIXEDFANN
+      |  1
+Warning: Illegal preprocessor directive
+DR_Module_NN.f90:184:2:
+
+  184 | #else
+      |  1
+Warning: Illegal preprocessor directive
+DR_Module_NN.f90:191:2:
+
+  191 | #endif
+      |  1
+Warning: Illegal preprocessor directive
+DR_Module_NN.f90:178:11:
+
+  178 |     integer(FANN_TYPE), dimension(0:num_input-1) :: input
+      |           1
+Warning: C kind type parameter is for type REAL but type at (1) is INTEGER
+DR_Module_NN.f90:179:11:
+
+  179 |     integer(FANN_TYPE), dimension(0:num_output-1) :: output
+      |           1
+Warning: C kind type parameter is for type REAL but type at (1) is INTEGER
+DR_Module_NN.f90:181:44:
+
+  181 |     input(0:num_input-1) = int(inTrainData(1:num_input,num+1),FANN_TYPE)
+      |                                            1
+Error: Syntax error in argument list at (1)
+DR_Module_NN.f90:182:47:
+
+  182 |     output(0:num_output-1) = int(outTrainData(1:num_output,num+1),FANN_TYPE)
+      |                                               1
+Error: Syntax error in argument list at (1)
+DR_Module_NN.f90:185:54:
+
+  185 |     real(FANN_TYPE), dimension(0:num_input-1) :: input
+      |                                                      1
+Error: Symbol ‘input’ at (1) already has basic type of INTEGER
+DR_Module_NN.f90:186:56:
+
+  186 |     real(FANN_TYPE), dimension(0:num_output-1) :: output
+      |                                                        1
+Error: Symbol ‘output’ at (1) already has basic type of INTEGER
+DR_Module_NN.f90:188:45:
+
+  188 |     input(0:num_input-1) = real(inTrainData(1:num_input,num+1),FANN_TYPE)
+      |                                             1
+Error: Syntax error in argument list at (1)
+DR_Module_NN.f90:189:48:
+
+  189 |     output(0:num_output-1) = real(outTrainData(1:num_output,num+1),FANN_TYPE)
+      |                                                1
+Error: Syntax error in argument list at (1)
+DR_Module_NN.f90:193:3:
+
+  193 | END MODULE
+      |   1
+Error: Expecting END SUBROUTINE statement at (1)
+f951: Error: Unexpected end of file in ‘DR_Module_NN.f90’
+rpart_fho.f90:14:5:
+
+   14 |  use DR_Module_NN
+      |     1
+Fatal Error: Cannot open module file ‘dr_module_nn.mod’ for reading at (1): No such file or directory
+compilation terminated.
+odepack.f:1352:72:
+
+ 1352 |  80     RWORK(I+LSAVF-1) = RWORK(I+LWM-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack.f:1361:72:
+
+ 1361 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:1395:72:
+
+ 1395 |  115    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:1402:72:
+
+ 1402 |  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack.f:1426:72:
+
+ 1426 |  130    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack.f:1447:72:
+
+ 1447 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:1498:72:
+
+ 1498 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:1566:72:
+
+ 1566 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:1636:72:
+
+ 1636 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:3216:72:
+
+ 3216 |  72       RWORK(J) = RWORK(J+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 72 at (1)
+odepack.f:3220:72:
+
+ 3220 |  76       RWORK(I) = RWORK(I+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 76 at (1)
+odepack.f:3230:72:
+
+ 3230 |  82     RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 82 at (1)
+odepack.f:3253:72:
+
+ 3253 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:3275:72:
+
+ 3275 |  105    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 105 at (1)
+odepack.f:3284:72:
+
+ 3284 |  110    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack.f:3348:72:
+
+ 3348 |  130    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack.f:3369:72:
+
+ 3369 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:3420:72:
+
+ 3420 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:3488:72:
+
+ 3488 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:3573:72:
+
+ 3573 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:4917:72:
+
+ 4917 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:4954:72:
+
+ 4954 |  115    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:4961:72:
+
+ 4961 |  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack.f:4988:72:
+
+ 4988 |  130    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack.f:5009:72:
+
+ 5009 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:5065:72:
+
+ 5065 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:5156:72:
+
+ 5156 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:5244:72:
+
+ 5244 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:6697:72:
+
+ 6697 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:6734:72:
+
+ 6734 |  115    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:6741:72:
+
+ 6741 |  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack.f:6768:72:
+
+ 6768 |  130    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack.f:6789:72:
+
+ 6789 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:6873:72:
+
+ 6873 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:6977:72:
+
+ 6977 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:7068:72:
+
+ 7068 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:8486:72:
+
+ 8486 |  80     RWORK(I+LSAVF-1) = RWORK(I+LWM-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack.f:8494:72:
+
+ 8494 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:8537:72:
+
+ 8537 |  115    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:8544:72:
+
+ 8544 |  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack.f:8568:72:
+
+ 8568 |  130    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack.f:8589:72:
+
+ 8589 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:8684:72:
+
+ 8684 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:8752:72:
+
+ 8752 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:8835:72:
+
+ 8835 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:10358:72:
+
+10358 |  80     RWORK(I+LSAVF-1) = RWORK(I+LWM-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack.f:10366:72:
+
+10366 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:10411:72:
+
+10411 |  115    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:10418:72:
+
+10418 |  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack.f:10431:72:
+
+10431 |  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:10554:72:
+
+10554 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:10635:72:
+
+10635 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:10723:72:
+
+10723 |  590    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 590 at (1)
+odepack.f:12165:72:
+
+12165 |  80     YDOTI(I) = RWORK(I+LWM-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack.f:12174:72:
+
+12174 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:12214:72:
+
+12214 |  115        RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:12219:72:
+
+12219 |  125        RWORK(I+LYD0-1) = YDOTI(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack.f:12227:72:
+
+12227 |  135    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 135 at (1)
+odepack.f:12251:72:
+
+12251 |  140    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack.f:12272:72:
+
+12272 |  190    RWORK(I+LYD0-1) = H0*RWORK(I+LYD0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:12323:72:
+
+12323 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:12396:72:
+
+12396 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:12494:72:
+
+12494 |  585     Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 585 at (1)
+odepack.f:12506:72:
+
+12506 |  592    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 592 at (1)
+odepack.f:13964:72:
+
+13964 |  80     YDOTI(I) = RWORK(I+LWM-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack.f:13973:72:
+
+13973 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:14013:72:
+
+14013 |   115       RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack.f:14018:72:
+
+14018 |   125       RWORK(I+LYD0-1) = YDOTI(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack.f:14026:72:
+
+14026 |  135    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 135 at (1)
+odepack.f:14050:72:
+
+14050 |  140    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack.f:14071:72:
+
+14071 |  190    RWORK(I+LYD0-1) = H0*RWORK(I+LYD0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:14122:72:
+
+14122 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:14195:72:
+
+14195 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:14293:72:
+
+14293 |  585     Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 585 at (1)
+odepack.f:14305:72:
+
+14305 |  592    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 592 at (1)
+odepack.f:16009:72:
+
+16009 |  72       RWORK(J) = RWORK(J+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 72 at (1)
+odepack.f:16013:72:
+
+16013 |  76       RWORK(I) = RWORK(I+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 76 at (1)
+odepack.f:16022:72:
+
+16022 |  82     RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 82 at (1)
+odepack.f:16044:72:
+
+16044 |  92     YDOTI(I) = RWORK(I+LSAVF-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 92 at (1)
+odepack.f:16051:72:
+
+16051 |  95     RWORK(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+odepack.f:16074:72:
+
+16074 |  105    RWORK(I+LYH-1) = Y(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 105 at (1)
+odepack.f:16079:72:
+
+16079 |  106    RWORK(I+LYD0-1) = YDOTI(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 106 at (1)
+odepack.f:16085:72:
+
+16085 |  110    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack.f:16150:72:
+
+16150 |  140    TOL = MAX(TOL,RTOL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack.f:16171:72:
+
+16171 |  190    RWORK(I+LYD0-1) = H0*RWORK(I+LYD0-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 190 at (1)
+odepack.f:16222:72:
+
+16222 |  260    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack.f:16296:72:
+
+16296 |  410    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack.f:16409:72:
+
+16409 |  585     Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 585 at (1)
+odepack.f:16421:72:
+
+16421 |  592    Y(I) = RWORK(I+LYH-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 592 at (1)
+odepack_sub1.f:123:72:
+
+  123 |  110      PC(I) = PC(I-1) + FNQM1*PC(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:132:72:
+
+  132 |  120      XPIN = XPIN + TSIGN*PC(I)/(I+1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:137:72:
+
+  137 |  130      ELCO(I+1,NQ) = RQ1FAC*PC(I)/I
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack_sub1.f:160:72:
+
+  160 |  210      PC(I) = PC(I-1) + FNQ*PC(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:164:72:
+
+  164 |  220      ELCO(I,NQ) = PC(I)/PC(2)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:246:72:
+
+  246 |  10     IC = IC*JJ
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:249:72:
+
+  249 |  20     DKY(I) = C*YH(I,L)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:259:72:
+
+  259 |  30       IC = IC*JJ
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 30 at (1)
+odepack_sub1.f:262:72:
+
+  262 |  40       DKY(I) = C*YH(I,JP1) + S*DKY(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:267:72:
+
+  267 |  60     DKY(I) = R*DKY(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:369:72:
+
+  369 |  110    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:373:72:
+
+  373 |  120    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:388:72:
+
+  388 |  220      WM(I+J1) = (FTEM(I) - SAVF(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:398:72:
+
+  398 |  250    J = J + NP1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 250 at (1)
+odepack_sub1.f:407:72:
+
+  407 |  310    Y(I) = Y(I) + R*(H*SAVF(I) - YH(I,2))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 310 at (1)
+odepack_sub1.f:429:72:
+
+  429 |  410    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack_sub1.f:433:72:
+
+  433 |  420    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 420 at (1)
+odepack_sub1.f:450:72:
+
+  450 |  530      Y(I) = Y(I) + R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:461:72:
+
+  461 |  540        WM(II+I) = (FTEM(I) - SAVF(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 540 at (1)
+odepack_sub1.f:469:72:
+
+  469 |  580    II = II + MEBAND
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 580 at (1)
+odepack_sub1.f:553:72:
+
+  553 |  320    WM(I+2) = 1.0D0/DI
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 320 at (1)
+odepack_sub1.f:555:72:
+
+  555 |  340    X(I) = WM(I+2)*X(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 340 at (1)
+odepack_sub1.f:616:72:
+
+  616 |  10     RSAV(I) = RLS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:618:72:
+
+  618 |  20     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:623:72:
+
+  623 |  110     RLS(I) = RSAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:625:72:
+
+  625 |  120     ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:807:72:
+
+  807 |  125    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:828:72:
+
+  828 |  155    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:851:72:
+
+  851 |         DO 180 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 180 at (1)
+odepack_sub1.f:852:72:
+
+  852 |  180      YH(I,J) = YH(I,J)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:873:72:
+
+  873 |  210      YH1(I) = YH1(I) + YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:883:72:
+
+  883 |  230    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 230 at (1)
+odepack_sub1.f:899:72:
+
+  899 |  260    ACOR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack_sub1.f:907:72:
+
+  907 |  290    Y(I) = SAVF(I) - ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 290 at (1)
+odepack_sub1.f:911:72:
+
+  911 |  300    ACOR(I) = SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 300 at (1)
+odepack_sub1.f:919:72:
+
+  919 |  360    Y(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 360 at (1)
+odepack_sub1.f:926:72:
+
+  926 |  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 380 at (1)
+odepack_sub1.f:961:72:
+
+  961 |  440      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 440 at (1)
+odepack_sub1.f:996:72:
+
+  996 |         DO 470 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 470 at (1)
+odepack_sub1.f:997:72:
+
+  997 |  470      YH(I,J) = YH(I,J) + EL(J)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 470 at (1)
+odepack_sub1.f:1003:72:
+
+ 1003 |  490    YH(I,LMAX) = ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 490 at (1)
+odepack_sub1.f:1019:72:
+
+ 1019 |  510      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 510 at (1)
+odepack_sub1.f:1039:72:
+
+ 1039 |  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:1066:72:
+
+ 1066 |  600    YH(I,NEWQ+1) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 600 at (1)
+odepack_sub1.f:1096:72:
+
+ 1096 |  645    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 645 at (1)
+odepack_sub1.f:1100:72:
+
+ 1100 |  650    YH(I,2) = H*SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 650 at (1)
+odepack_sub1.f:1121:72:
+
+ 1121 |  710    ACOR(I) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 710 at (1)
+odepack_sub1.f:1159:72:
+
+ 1159 |  15     EWT(I) = RTOL(1)*ABS(YCUR(I)) + ATOL(1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 15 at (1)
+odepack_sub1.f:1163:72:
+
+ 1163 |  25     EWT(I) = RTOL(1)*ABS(YCUR(I)) + ATOL(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:1167:72:
+
+ 1167 |  35     EWT(I) = RTOL(I)*ABS(YCUR(I)) + ATOL(1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 35 at (1)
+odepack_sub1.f:1171:72:
+
+ 1171 |  45     EWT(I) = RTOL(I)*ABS(YCUR(I)) + ATOL(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 45 at (1)
+odepack_sub1.f:1205:72:
+
+ 1205 |  10     SUM = SUM + (V(I)*W(I))**2
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:1265:72:
+
+ 1265 |  10     RWORK(I) = RWORK(I+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:1275:72:
+
+ 1275 |  30     RWORK(I+LEWTN-1) = RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 30 at (1)
+odepack_sub1.f:1369:72:
+
+ 1369 |  25     Y(I) = YH(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:1407:72:
+
+ 1407 |  75       SAVF(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 75 at (1)
+odepack_sub1.f:1449:72:
+
+ 1449 |  145    Y(I) = YH(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 145 at (1)
+odepack_sub1.f:1479:72:
+
+ 1479 |  170    IWK(IBR+I) = I
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 170 at (1)
+odepack_sub1.f:1494:72:
+
+ 1494 |  180    WK(IBA+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:1569:72:
+
+ 1569 |  10     JDONE(J) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:1574:72:
+
+ 1574 |  20       INCL(I) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:1591:72:
+
+ 1591 |  40         INCL(I) = 1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:1649:72:
+
+ 1649 |           IF (JA(J) - II) 10, 40, 30
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub1.f:1759:72:
+
+ 1759 |  110      FTEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:1782:72:
+
+ 1782 |  210      Y(JJ) = Y(JJ) + R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:1830:72:
+
+ 1830 |  295    FTEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 295 at (1)
+odepack_sub1.f:1848:72:
+
+ 1848 |  310    Y(I) = Y(I) + R*(H*SAVF(I) - YH(I,2))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 310 at (1)
+odepack_sub1.f:1934:72:
+
+ 1934 |  320    WK(I+2) = 1.0D0/DI
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 320 at (1)
+odepack_sub1.f:1936:72:
+
+ 1936 |  340    X(I) = WK(I+2)*X(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 340 at (1)
+odepack_sub1.f:1969:72:
+
+ 1969 |  10     RSAV(I) = RLS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:1971:72:
+
+ 1971 |  15     RSAV(LENRLS+I) = RLSS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 15 at (1)
+odepack_sub1.f:1974:72:
+
+ 1974 |  20     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:1976:72:
+
+ 1976 |  25     ISAV(LENILS+I) = ILSS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:1982:72:
+
+ 1982 |  110     RLS(I) = RSAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:1984:72:
+
+ 1984 |  115     RLSS(I) = RSAV(LENRLS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack_sub1.f:1987:72:
+
+ 1987 |  120     ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:1989:72:
+
+ 1989 |  125     ILSS(I) = ISAV(LENILS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:2307:72:
+
+ 2307 |    5    last(next(k)) = k
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 5 at (1)
+odepack_sub1.f:2323:72:
+
+ 2323 |    1    head(vi) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 1 at (1)
+odepack_sub1.f:2334:72:
+
+ 2334 |           if (vj-vi) 2, 5, 4
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub1.f:2372:72:
+
+ 2372 |    7    mark(vi) = tag
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 7 at (1)
+odepack_sub1.f:2544:72:
+
+ 2544 |         if (last(vi))  1, 10, 8
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub1.f:2650:72:
+
+ 2650 |   1     q(i) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 1 at (1)
+odepack_sub1.f:2666:72:
+
+ 2666 |   2       q(k) = q(k) + 1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 2 at (1)
+odepack_sub1.f:2674:72:
+
+ 2674 |   4     q(i) = ia(i+1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:2695:72:
+
+ 2695 |   6     j = j-1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 6 at (1)
+odepack_sub1.f:2937:72:
+
+ 2937 |    4      isp(ju+j-1) = isp(jutmp+j-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:3208:72:
+
+ 3208 |    4      a(j) = ar(i)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:3289:72:
+
+ 3289 |    1    jru(k) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 1 at (1)
+odepack_sub1.f:3299:72:
+
+ 3299 |    2    ira(k) = iak
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 2 at (1)
+odepack_sub1.f:3366:72:
+
+ 3366 |           if (jl(j) - qm)  12, 13, 15
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub1.f:3385:72:
+
+ 3385 |   16        jl(j) = qm
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 16 at (1)
+odepack_sub1.f:3468:72:
+
+ 3468 |           if (ju(j) - qm)  29, 30, 32
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub1.f:3487:72:
+
+ 3487 |   33        ju(j) = qm
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 33 at (1)
+odepack_sub1.f:3611:72:
+
+ 3611 |    4      row(ju(j)) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:3633:72:
+
+ 3633 |    8        row(ju(mu+j)) = row(ju(mu+j)) + lki * u(j)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 8 at (1)
+odepack_sub1.f:3648:72:
+
+ 3648 |   11      u(j) = row(ju(mu+j)) * dk
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 11 at (1)
+odepack_sub1.f:3681:72:
+
+ 3681 |   20      sum = sum - u(j) * tmp(ju(mu+j))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:3684:72:
+
+ 3684 |   22    k = k-1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 22 at (1)
+odepack_sub1.f:3722:72:
+
+ 3722 |    1    tmp(k) = b(r(k))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 1 at (1)
+odepack_sub1.f:3732:72:
+
+ 3732 |    2      tmp(jl(ml+j)) = tmp(jl(ml+j)) + tmpk * l(j)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 2 at (1)
+odepack_sub1.f:3743:72:
+
+ 3743 |    4      sum = sum + u(j) * tmp(ju(mu+j))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:3775:72:
+
+ 3775 |    1    tmp(k) = b(c(k))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 1 at (1)
+odepack_sub1.f:3784:72:
+
+ 3784 |    2      tmp(ju(mu+j)) = tmp(ju(mu+j)) + tmpk * u(j)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 2 at (1)
+odepack_sub1.f:3795:72:
+
+ 3795 |    4      sum = sum + l(j) * tmp(jl(ml+j))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 4 at (1)
+odepack_sub1.f:3958:72:
+
+ 3958 |  10     CM2(I) = TESCO(2,I)*ELCO(I+1,I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:3961:72:
+
+ 3961 |  20     CM1(I) = TESCO(2,I)*ELCO(I+1,I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:3986:72:
+
+ 3986 |  155    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:4021:72:
+
+ 4021 |         DO 180 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 180 at (1)
+odepack_sub1.f:4022:72:
+
+ 4022 |  180      YH(I,J) = YH(I,J)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:4043:72:
+
+ 4043 |  210      YH1(I) = YH1(I) + YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:4056:72:
+
+ 4056 |  230    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 230 at (1)
+odepack_sub1.f:4072:72:
+
+ 4072 |  260    ACOR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack_sub1.f:4080:72:
+
+ 4080 |  290    Y(I) = SAVF(I) - ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 290 at (1)
+odepack_sub1.f:4084:72:
+
+ 4084 |  300    ACOR(I) = SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 300 at (1)
+odepack_sub1.f:4092:72:
+
+ 4092 |  360    Y(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 360 at (1)
+odepack_sub1.f:4099:72:
+
+ 4099 |  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 380 at (1)
+odepack_sub1.f:4153:72:
+
+ 4153 |  440      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 440 at (1)
+odepack_sub1.f:4192:72:
+
+ 4192 |         DO 460 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 460 at (1)
+odepack_sub1.f:4193:72:
+
+ 4193 |  460      YH(I,J) = YH(I,J) + EL(J)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 460 at (1)
+odepack_sub1.f:4301:72:
+
+ 4301 |  490    YH(I,LMAX) = ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 490 at (1)
+odepack_sub1.f:4317:72:
+
+ 4317 |  510      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 510 at (1)
+odepack_sub1.f:4337:72:
+
+ 4337 |  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:4371:72:
+
+ 4371 |  600    YH(I,NEWQ+1) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 600 at (1)
+odepack_sub1.f:4404:72:
+
+ 4404 |  645    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 645 at (1)
+odepack_sub1.f:4408:72:
+
+ 4408 |  650    YH(I,2) = H*SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 650 at (1)
+odepack_sub1.f:4429:72:
+
+ 4429 |  710    ACOR(I) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 710 at (1)
+odepack_sub1.f:4505:72:
+
+ 4505 |  110    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:4509:72:
+
+ 4509 |  120    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:4524:72:
+
+ 4524 |  220      WM(I+J1) = (FTEM(I) - SAVF(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:4537:72:
+
+ 4537 |  250    J = J + NP1
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 250 at (1)
+odepack_sub1.f:4552:72:
+
+ 4552 |  410    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack_sub1.f:4556:72:
+
+ 4556 |  420    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 420 at (1)
+odepack_sub1.f:4573:72:
+
+ 4573 |  530      Y(I) = Y(I) + R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:4584:72:
+
+ 4584 |  540        WM(II+I) = (FTEM(I) - SAVF(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 540 at (1)
+odepack_sub1.f:4595:72:
+
+ 4595 |  580    II = II + MEBAND
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 580 at (1)
+odepack_sub1.f:4615:72:
+
+ 4615 |  10     VM = MAX(VM,ABS(V(I))*W(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:4635:72:
+
+ 4635 |  10       SUM = SUM + ABS(A(I,J))/W(J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:4665:72:
+
+ 4665 |  10       SUM = SUM + ABS(A(I1-J,J))/W(J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:4699:72:
+
+ 4699 |  10     RSAV(I) = RLS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:4701:72:
+
+ 4701 |  15     RSAV(LENRLS+I) = RLSA(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 15 at (1)
+odepack_sub1.f:4704:72:
+
+ 4704 |  20     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:4706:72:
+
+ 4706 |  25     ISAV(LENILS+I) = ILSA(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:4712:72:
+
+ 4712 |  110     RLS(I) = RSAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:4714:72:
+
+ 4714 |  115     RLSA(I) = RSAV(LENRLS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack_sub1.f:4717:72:
+
+ 4717 |  120     ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:4719:72:
+
+ 4719 |  125     ILSA(I) = ISAV(LENILS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:4786:72:
+
+ 4786 |  10     JROOT(I) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:4798:72:
+
+ 4798 |  110    IF (ABS(G0(I)) .LE. 0.0D0) ZROOT = .TRUE.
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:4805:72:
+
+ 4805 |  120    Y(I) = Y(I) + TEMP2*YH(I,2)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:4810:72:
+
+ 4810 |  130    IF (ABS(G0(I)) .LE. 0.0D0) ZROOT = .TRUE.
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack_sub1.f:4828:72:
+
+ 4828 |  210    IF (ABS(G0(I)) .LE. 0.0D0) ZROOT = .TRUE.
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:4836:72:
+
+ 4836 |  220    Y(I) = Y(I) + TEMP2*YH(I,2)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:4864:72:
+
+ 4864 |  320    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 320 at (1)
+odepack_sub1.f:5137:72:
+
+ 5137 |  10     RSAV(I) = RLS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:5139:72:
+
+ 5139 |  15     RSAV(LENRLS+I) = RLSA(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 15 at (1)
+odepack_sub1.f:5142:72:
+
+ 5142 |  20     RSAV(IOFF+I) = RLSR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:5145:72:
+
+ 5145 |  30     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 30 at (1)
+odepack_sub1.f:5147:72:
+
+ 5147 |  35     ISAV(LENILS+I) = ILSA(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 35 at (1)
+odepack_sub1.f:5150:72:
+
+ 5150 |  40     ISAV(IOFF+I) = ILSR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:5156:72:
+
+ 5156 |  110     RLS(I) = RSAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:5158:72:
+
+ 5158 |  115     RLSA(I) = RSAV(LENRLS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 115 at (1)
+odepack_sub1.f:5161:72:
+
+ 5161 |  120     RLSR(I) = RSAV(IOFF+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:5164:72:
+
+ 5164 |  130     ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack_sub1.f:5166:72:
+
+ 5166 |  135     ILSA(I) = ISAV(LENILS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 135 at (1)
+odepack_sub1.f:5169:72:
+
+ 5169 |  140     ILSR(I) = ISAV(IOFF+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack_sub1.f:5351:72:
+
+ 5351 |  125    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:5373:72:
+
+ 5373 |  155    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:5397:72:
+
+ 5397 |         DO 180 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 180 at (1)
+odepack_sub1.f:5398:72:
+
+ 5398 |  180      YH(I,J) = YH(I,J)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:5424:72:
+
+ 5424 |  210      YH1(I) = YH1(I) + YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:5435:72:
+
+ 5435 |  230    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 230 at (1)
+odepack_sub1.f:5451:72:
+
+ 5451 |  260    ACOR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack_sub1.f:5459:72:
+
+ 5459 |  290    Y(I) = SAVF(I) - ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 290 at (1)
+odepack_sub1.f:5463:72:
+
+ 5463 |  300    ACOR(I) = SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 300 at (1)
+odepack_sub1.f:5471:72:
+
+ 5471 |  360    SAVX(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 360 at (1)
+odepack_sub1.f:5478:72:
+
+ 5478 |  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 380 at (1)
+odepack_sub1.f:5515:72:
+
+ 5515 |  440      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 440 at (1)
+odepack_sub1.f:5550:72:
+
+ 5550 |         DO 470 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 470 at (1)
+odepack_sub1.f:5551:72:
+
+ 5551 |  470      YH(I,J) = YH(I,J) + EL(J)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 470 at (1)
+odepack_sub1.f:5557:72:
+
+ 5557 |  490    YH(I,LMAX) = ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 490 at (1)
+odepack_sub1.f:5573:72:
+
+ 5573 |  510      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 510 at (1)
+odepack_sub1.f:5593:72:
+
+ 5593 |  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:5620:72:
+
+ 5620 |  600    YH(I,NEWQ+1) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 600 at (1)
+odepack_sub1.f:5650:72:
+
+ 5650 |  645    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 645 at (1)
+odepack_sub1.f:5654:72:
+
+ 5654 |  650    YH(I,2) = H*SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 650 at (1)
+odepack_sub1.f:5675:72:
+
+ 5675 |  710    ACOR(I) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 710 at (1)
+odepack_sub1.f:6001:72:
+
+ 6001 |  10     V(I,1) = B(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:6009:72:
+
+ 6009 |  25     X(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:6020:72:
+
+ 6020 |  50     V(I,1) = B(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 50 at (1)
+odepack_sub1.f:6028:72:
+
+ 6028 |  60       HES(I,J) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:6094:72:
+
+ 6094 |  210    B(K) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:6098:72:
+
+ 6098 |  220    X(K) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:6103:72:
+
+ 6103 |  240    X(I) = X(I)/WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 240 at (1)
+odepack_sub1.f:6193:72:
+
+ 6193 |  10     VTEM(I) = V(I)/WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:6200:72:
+
+ 6200 |  20     Y(I) = Z(I) + VTEM(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:6211:72:
+
+ 6211 |  40     Z(I) = VTEM(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:6217:72:
+
+ 6217 |  50     Y(I) = Z(I) + VTEM(I)*RNORM
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 50 at (1)
+odepack_sub1.f:6227:72:
+
+ 6227 |  70     Z(I) = FTEM(I) - SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 70 at (1)
+odepack_sub1.f:6229:72:
+
+ 6229 |  80     Z(I) = VTEM(I) - FAC*Z(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack_sub1.f:6238:72:
+
+ 6238 |  90     Z(I) = Z(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 90 at (1)
+odepack_sub1.f:6434:72:
+
+ 6434 |  10     V(I,1) = B(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:6442:72:
+
+ 6442 |  25     X(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:6453:72:
+
+ 6453 |  50     V(I,1) = B(I)*WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 50 at (1)
+odepack_sub1.f:6461:72:
+
+ 6461 |  60       HES(I,J) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:6500:72:
+
+ 6500 |  70             DL(K) = S*DL(K) + C*V(K,IP1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 70 at (1)
+odepack_sub1.f:6507:72:
+
+ 6507 |  80         DL(K) = S*DL(K) + C*V(K,LLP1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack_sub1.f:6539:72:
+
+ 6539 |  210    B(K) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:6543:72:
+
+ 6543 |  220    X(K) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:6548:72:
+
+ 6548 |  240    X(I) = X(I)/WGHT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 240 at (1)
+odepack_sub1.f:6646:72:
+
+ 6646 |  10     X(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:6674:72:
+
+ 6674 |  60     P(I) = Z(I) + BETA*P(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:6792:72:
+
+ 6792 |  10     X(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:6814:72:
+
+ 6814 |  45     ZTR = ZTR + Z(I)*R(I)*WGHT(I)**2
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 45 at (1)
+odepack_sub1.f:6822:72:
+
+ 6822 |  60     P(I) = Z(I) + BETA*P(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:6831:72:
+
+ 6831 |  80     PTW = PTW + P(I)*W(I)*WGHT(I)**2
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack_sub1.f:6915:72:
+
+ 6915 |  20     Y(I) = W(I) + P(I)*RPNRM
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:6921:72:
+
+ 6921 |  40     W(I) = P(I) - FAC*(WK(I) - SAVF(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:6999:72:
+
+ 6999 |  20     X(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:7045:72:
+
+ 7045 |  20     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:7047:72:
+
+ 7047 |  40     ISAV(LENILS+I) = ILSP(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:7054:72:
+
+ 7054 |  120     ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:7056:72:
+
+ 7056 |  140     ILSP(I) = ISAV(LENILS+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack_sub1.f:7626:72:
+
+ 7626 |  60     Y(I) = Y0(I) + HG*YDOT(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 60 at (1)
+odepack_sub1.f:7629:72:
+
+ 7629 |  70     TEMP(I) = (TEMP(I) - YDOT(I))/HG
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 70 at (1)
+odepack_sub1.f:7841:72:
+
+ 7841 |  125    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:7863:72:
+
+ 7863 |  155    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:7887:72:
+
+ 7887 |         DO 180 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 180 at (1)
+odepack_sub1.f:7888:72:
+
+ 7888 |  180      YH(I,J) = YH(I,J)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:7917:72:
+
+ 7917 |  210      YH1(I) = YH1(I) + YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:7934:72:
+
+ 7934 |  230    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 230 at (1)
+odepack_sub1.f:7960:72:
+
+ 7960 |  260    ACOR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack_sub1.f:7968:72:
+
+ 7968 |  290    Y(I) = SAVF(I) - ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 290 at (1)
+odepack_sub1.f:7972:72:
+
+ 7972 |  300    ACOR(I) = SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 300 at (1)
+odepack_sub1.f:7982:72:
+
+ 7982 |  360    SAVX(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 360 at (1)
+odepack_sub1.f:7991:72:
+
+ 7991 |  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 380 at (1)
+odepack_sub1.f:8050:72:
+
+ 8050 |  440      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 440 at (1)
+odepack_sub1.f:8091:72:
+
+ 8091 |         DO 470 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 470 at (1)
+odepack_sub1.f:8092:72:
+
+ 8092 |  470      YH(I,J) = YH(I,J) + EL(J)*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 470 at (1)
+odepack_sub1.f:8098:72:
+
+ 8098 |  490    YH(I,LMAX) = ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 490 at (1)
+odepack_sub1.f:8114:72:
+
+ 8114 |  510      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 510 at (1)
+odepack_sub1.f:8134:72:
+
+ 8134 |  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:8161:72:
+
+ 8161 |  600    YH(I,NEWQ+1) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 600 at (1)
+odepack_sub1.f:8191:72:
+
+ 8191 |  645    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 645 at (1)
+odepack_sub1.f:8195:72:
+
+ 8195 |  650    YH(I,2) = H*SAVF(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 650 at (1)
+odepack_sub1.f:8216:72:
+
+ 8216 |  710    ACOR(I) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 710 at (1)
+odepack_sub1.f:8321:72:
+
+ 8321 |  20     ISAV(I) = ILS(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:8328:72:
+
+ 8328 |  30     ISAV(IOFF+I) = ILSR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 30 at (1)
+odepack_sub1.f:8331:72:
+
+ 8331 |  40     ISAV(IOFF+I) = ILSP(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:8340:72:
+
+ 8340 |  120    ILS(I) = ISAV(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:8347:72:
+
+ 8347 |  130    ILSR(I) = ISAV(IOFF+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 130 at (1)
+odepack_sub1.f:8350:72:
+
+ 8350 |  140    ILSP(I) = ISAV(IOFF+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 140 at (1)
+odepack_sub1.f:8380:72:
+
+ 8380 |    10    PW(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:8400:72:
+
+ 8400 |   110    PW(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:8579:72:
+
+ 8579 |  125    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 125 at (1)
+odepack_sub1.f:8600:72:
+
+ 8600 |  155    EL(I) = ELCO(I,NQ)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:8623:72:
+
+ 8623 |         DO 180 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 180 at (1)
+odepack_sub1.f:8624:72:
+
+ 8624 |  180      YH(I,J) = YH(I,J)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 180 at (1)
+odepack_sub1.f:8645:72:
+
+ 8645 |  210      YH1(I) = YH1(I) + YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:8656:72:
+
+ 8656 |  230    Y(I) = YH(I,1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 230 at (1)
+odepack_sub1.f:8680:72:
+
+ 8680 |  260    ACOR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 260 at (1)
+odepack_sub1.f:8694:72:
+
+ 8694 |  380    Y(I) = YH(I,1) + EL1H*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 380 at (1)
+odepack_sub1.f:8732:72:
+
+ 8732 |  440      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 440 at (1)
+odepack_sub1.f:8771:72:
+
+ 8771 |         DO 470 I = 1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 470 at (1)
+odepack_sub1.f:8772:72:
+
+ 8772 |  470      YH(I,J) = YH(I,J) + ELJH*ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 470 at (1)
+odepack_sub1.f:8778:72:
+
+ 8778 |  490    YH(I,LMAX) = ACOR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 490 at (1)
+odepack_sub1.f:8794:72:
+
+ 8794 |  510      YH1(I) = YH1(I) - YH1(I+NYH)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 510 at (1)
+odepack_sub1.f:8814:72:
+
+ 8814 |  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:8841:72:
+
+ 8841 |  600    YH(I,NEWQ+1) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 600 at (1)
+odepack_sub1.f:8872:72:
+
+ 8872 |  710    ACOR(I) = ACOR(I)*R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 710 at (1)
+odepack_sub1.f:8949:72:
+
+ 8949 |  110    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:8953:72:
+
+ 8953 |  120    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:8972:72:
+
+ 8972 |  220      WM(I+J1) = (RTEM(I) - SAVR(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 220 at (1)
+odepack_sub1.f:9001:72:
+
+ 9001 |  410    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 410 at (1)
+odepack_sub1.f:9005:72:
+
+ 9005 |  420    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 420 at (1)
+odepack_sub1.f:9025:72:
+
+ 9025 |  530      Y(I) = Y(I) + R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 530 at (1)
+odepack_sub1.f:9038:72:
+
+ 9038 |  540        WM(II+I) = (RTEM(I) - SAVR(I))*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 540 at (1)
+odepack_sub1.f:9082:72:
+
+ 9082 |  10     PW(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:9170:72:
+
+ 9170 |  110    WM(I+2) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:9174:72:
+
+ 9174 |  120    WM(I+2) = WM(I+2)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:9186:72:
+
+ 9186 |  205    WM(2+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 205 at (1)
+odepack_sub1.f:9199:72:
+
+ 9199 |  215        RTEM(I) = RTEM(I) - SAVR(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 215 at (1)
+odepack_sub1.f:9210:72:
+
+ 9210 |  221          WM(IPA+J2) = RTEM(IIA+J2)*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 221 at (1)
+odepack_sub1.f:9216:72:
+
+ 9216 |  222          WM(IPB+J2) = RTEM(IIB+J2)*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 222 at (1)
+odepack_sub1.f:9223:72:
+
+ 9223 |  224          WM(IPC+J2) = RTEM(IIC+J2)*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 224 at (1)
+odepack_sub1.f:9229:72:
+
+ 9229 |  226          WM(IPC+J2) = RTEM(J2)*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 226 at (1)
+odepack_sub1.f:9236:72:
+
+ 9236 |  228          WM(IPB+J2) = RTEM(IIB+J2)*FAC
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 228 at (1)
+odepack_sub1.f:9368:72:
+
+ 9368 |  80       CALL DGESL (A(1,1,K), M, M, IP(1,K), B(1,J,K), 0)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 80 at (1)
+odepack_sub1.f:9509:72:
+
+ 9509 |  10     RWORK(I) = RWORK(I+LYHD)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:9519:72:
+
+ 9519 |  30     RWORK(I+LEWTN-1) = RWORK(I+LEWT-1)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 30 at (1)
+odepack_sub1.f:9625:72:
+
+ 9625 |  25      S(I) = YH(N+I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 25 at (1)
+odepack_sub1.f:9635:72:
+
+ 9635 |  35       IWK(LIWK+I) = 0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 35 at (1)
+odepack_sub1.f:9668:72:
+
+ 9668 |  75     WK(LENWK1+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 75 at (1)
+odepack_sub1.f:9692:72:
+
+ 9692 |  105    WK(LENWK1+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 105 at (1)
+odepack_sub1.f:9728:72:
+
+ 9728 |  155    SAVR(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 155 at (1)
+odepack_sub1.f:9793:72:
+
+ 9793 |  245    Y(I) = YH(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 245 at (1)
+odepack_sub1.f:9826:72:
+
+ 9826 |  270    IWK(IBR+I) = I
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 270 at (1)
+odepack_sub1.f:9841:72:
+
+ 9841 |  280    WK(IBA+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 280 at (1)
+odepack_sub1.f:9942:72:
+
+ 9942 |  10     WK(IBA+I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 10 at (1)
+odepack_sub1.f:9953:72:
+
+ 9953 |  15       TEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 15 at (1)
+odepack_sub1.f:9957:72:
+
+ 9957 |  20       WK(IBA+K) = TEM(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+odepack_sub1.f:9963:72:
+
+ 9963 |  40     TEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+odepack_sub1.f:10064:72:
+
+10064 |  110      RTEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+odepack_sub1.f:10067:72:
+
+10067 |  120      RTEM(I) = RTEM(I)*CON
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 120 at (1)
+odepack_sub1.f:10090:72:
+
+10090 |  210      Y(JJ) = Y(JJ) + R
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 210 at (1)
+odepack_sub1.f:10122:72:
+
+10122 |  295    RTEM(I) = 0.0D0
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 295 at (1)
+odepack_sub1.f:1255:72:
+
+ 1255 |      1   RWORK(LACOR), IA, JA, RWORK(LWM), RWORK(LWM), IPFLAG, F, JAC)
+      |                                                                        1
+Warning: Type mismatch in argument ‘iwk’ at (1); passed REAL(8) to INTEGER(4) [-Wargument-mismatch]
+odepack_sub1.f:9499:72:
+
+ 9499 |      2   RES, JAC, ADDA)
+      |                                                                        1
+Warning: Type mismatch in argument ‘iwk’ at (1); passed REAL(8) to INTEGER(4) [-Wargument-mismatch]
+odepack_sub2.f:630:72:
+
+  630 |       IF (INCX .EQ. INCY) IF (INCX-1) 5,20,60
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub2.f:719:72:
+
+  719 |       IF (INCX .EQ. INCY) IF (INCX-1) 5,20,60
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub2.f:812:72:
+
+  812 |       IF (INCX .EQ. INCY) IF (INCX-1) 5,20,60
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Arithmetic IF statement at (1)
+odepack_sub2.f:938:72:
+
+  938 |    10 ASSIGN 30 TO NEXT
+      |                                                                        1
+Warning: Deleted feature: ASSIGN statement at (1)
+odepack_sub2.f:945:19:
+
+  945 |    20    GO TO NEXT,(30, 50, 70, 110)
+      |                   1
+Warning: Deleted feature: Assigned GOTO statement at (1)
+odepack_sub2.f:947:72:
+
+  947 |       ASSIGN 50 TO NEXT
+      |                                                                        1
+Warning: Deleted feature: ASSIGN statement at (1)
+odepack_sub2.f:957:72:
+
+  957 |       ASSIGN 70 TO NEXT
+      |                                                                        1
+Warning: Deleted feature: ASSIGN statement at (1)
+odepack_sub2.f:963:72:
+
+  963 |       ASSIGN 110 TO NEXT
+      |                                                                        1
+Warning: Deleted feature: ASSIGN statement at (1)
+odepack_sub2.f:997:72:
+
+  997 |    95    SUM = SUM + DX(J)**2
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 95 at (1)
+OpenMP_dvode_f90_m.f90:15887:45:
+
+15887 | 20          LOWL(IV) = MIN(LOWL(IV),LOWL(IW))
+      |                                             1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+OpenMP_dvode_f90_m.f90:16008:28:
+
+16008 | 40        JCE = JCEP + JDISP
+      |                            1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+OpenMP_dvode_f90_m.f90:16261:23:
+
+16261 | 20        IW1(J) = IOLD
+      |                       1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+OpenMP_dvode_f90_m.f90:16457:47:
+
+16457 | 100         IW1(I,1) = IW1(I-1,1) + LENOFF(I-1)
+      |                                               1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 100 at (1)
+OpenMP_dvode_f90_m.f90:16558:36:
+
+16558 | 20        WROWL = WROWL + ABS(A(JJ))
+      |                                    1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 20 at (1)
+OpenMP_dvode_f90_m.f90:16567:37:
+
+16567 | 40        W(J) = MAX(ABS(A(JJ)),W(J))
+      |                                     1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 40 at (1)
+main.f90:8:6:
+
+    8 |   use ComputeRHS
+      |      1
+Fatal Error: Cannot open module file ‘computerhs.mod’ for reading at (1): No such file or directory
+compilation terminated.
+/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x24): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+./compile_gfortran.sh: line 26: ./shprot.x: No such file or directory
+
+real	0m0,001s
+user	0m0,001s
+sys	0m0,000s

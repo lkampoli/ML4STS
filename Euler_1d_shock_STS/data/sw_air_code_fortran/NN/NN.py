@@ -78,9 +78,11 @@ rc("text", usetex=False)
 from convert_weights import h5_to_txt
 from convert_weights import txt_to_h5
 
-dataset=np.loadtxt("../data/dataset_STS_kd_kr_N2.txt")
+#dataset=np.loadtxt("../data/dataset_STS_kd_kr_N2.txt")
+#dataset=np.loadtxt("../data/dataset_STS_kd_kr_O2.txt")
+dataset=np.loadtxt("../data/dataset_STS_kd_kr_NO.txt")
 x = dataset[:,0:1]
-y = dataset[:,1:2]
+y = dataset[:,1:]
 
 # summarize the dataset
 in_dim  = x.shape[1]

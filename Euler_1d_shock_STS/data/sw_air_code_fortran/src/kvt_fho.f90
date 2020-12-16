@@ -117,7 +117,8 @@
 
  !call zeroin:
  myfunc%i = 0
- call myfunc%find_zero(ax+0.0001_wp,bx/two+0.0002,tole,xzero,fzero,iflag)
+ !call myfunc%find_zero(ax+0.0001_wp,bx/two+0.0001,tole,xzero,fzero,iflag)
+ call myfunc%find_zero(ax+0.0001_wp,bx/two+0.1,tole,xzero,fzero,iflag)
 
  Cvt = xzero
 

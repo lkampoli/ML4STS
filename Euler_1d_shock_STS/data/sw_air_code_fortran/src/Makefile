@@ -15,7 +15,7 @@ SHELL = /bin/bash
 # User options
 COMPILER = intel
 DEBUG    = no
-F03STD   = no
+F03STD   = yes
 OPTIMIZE = no
 OPENMP   = no
 NULi     = no
@@ -88,7 +88,7 @@ STD_INT = -std03
 	  -qopt_report-phase=vec -unroll
 OPT_INT = -fast
 OMP_INT = -qopenmp
-LIB_INT = -mkl #-L/home/lk/AI/ML/FKB/build/lib/libneural.a
+LIB_INT = -mkl -lfann #-L/home/lk/AI/ML/FKB/build/lib/libneural.a
 
 # setting rules according user options
 ifeq "$(COMPILER)" "gnu"
@@ -285,10 +285,16 @@ $(DOBJ)DR_Module.o : DR_Module.f90 \
 	@echo $(COTEXT) | tee -a make.log
 	@$(FC) $(OPTSC) $< -o $@ 1>> diagnostic_messages 2>> error_messages
 
+#$(DOBJ)fann.o : fann.F03
+#	$(DOBJ)fann.o
+#	@echo $(COTEXT) | tee -a make.log
+#	@$(FC) $(OPTSC) $< -o $@ 1>> diagnostic_messages 2>> error_messages
+
 $(DOBJ)DR_Module_NN.o : DR_Module_NN.f90 \
 	$(DOBJ)constants.o
 	@echo $(COTEXT) | tee -a make.log
 	@$(FC) $(OPTSC) $< -o $@ 1>> diagnostic_messages 2>> error_messages
+	#$(DOBJ)fann.o
 
 $(DOBJ)kdis.o : kdis.f90 \
 	$(DOBJ)constants.o \
@@ -418,9 +424,6 @@ $(DOBJ)rpart_fho.o : rpart_fho.f90 \
 
 $(DOBJ)main.o : main.f90 \
 	$(DOBJ)kind_module.o \
-	$(DOBJ)mod_kinds.o \
-	$(DOBJ)mod_network.o \
-	$(DOBJ)mod_ensemble.o \
 	$(DOBJ)constants.o \
 	$(DOBJ)init_energy.o \
 	$(DOBJ)rpart_fho.o \
@@ -428,6 +431,9 @@ $(DOBJ)main.o : main.f90 \
 	$(DOBJ)odepack_sub1.o \
 	$(DOBJ)odepack_sub2.o \
 	$(DOBJ)OpenMP_dvode_f90_m.o
+	#$(DOBJ)mod_kinds.o \
+	#$(DOBJ)mod_network.o \
+	#$(DOBJ)mod_ensemble.o
 	@echo $(COTEXT) | tee -a make.log
 	@$(FC) $(OPTSC) $< -o $@ 1>> diagnostic_messages 2>> error_messages
 

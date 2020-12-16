@@ -203,8 +203,8 @@
 
    write(*,*) "npoint #", i
 !!!
-!  options = set_opts(method_flag=22, abserr=1.0d-3, relerr=1.0d-3)
-!  call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
+  options = set_opts(method_flag=22, abserr=1.0d-8, relerr=1.0d-8)
+  call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
 !  !call get_stats(rstats,istats)
 !
 !60  FORMAT(/'  No. steps =',I4,'   No. f-s =',I4,        &
@@ -223,21 +223,21 @@
    ! Fire the NN instead of calling the ODE solver
    !***********************************************
 !!!
-   write( XXX, '(f20.10)' ) xtout
-   call getcwd(origin)
-   call chdir(path)
-   compute_XY = "run_regression_XY.py"
-   command_compute_XY = base//compute_XY//" "//XXX
-   call execute_command_line (command_compute_XY)
-   open(newunit=unit, file='result_XY.out', action='read')
-   !open(10, file='result_XY.bin', access='stream')
-   !open(10, file="result_XY.unf", form="unformatted")
-   read (unit, *) (ysol(j), j=1, size(ysol) - 1)
-   !read (10, *) ysol
-   !read (10) ysol
-   !close(10)
-   close(unit)
-   call chdir(origin)
+!   write( XXX, '(f20.10)' ) xtout
+!   call getcwd(origin)
+!   call chdir(path)
+!   compute_XY = "run_regression_XY.py"
+!   command_compute_XY = base//compute_XY//" "//XXX
+!   call execute_command_line (command_compute_XY)
+!   open(newunit=unit, file='result_XY.out', action='read')
+!   !open(10, file='result_XY.bin', access='stream')
+!   !open(10, file="result_XY.unf", form="unformatted")
+!   read (unit, *) (ysol(j), j=1, size(ysol) - 1)
+!   !read (10, *) ysol
+!   !read (10) ysol
+!   !close(10)
+!   close(unit)
+!   call chdir(origin)
 !!!
   xout(i)  = xtout
   y(i+1,:) = ysol
