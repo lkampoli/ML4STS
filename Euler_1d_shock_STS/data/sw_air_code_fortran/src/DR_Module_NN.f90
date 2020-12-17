@@ -38,13 +38,14 @@ contains
   integer, parameter :: ft = FANN_TYPE
 
   integer, parameter :: num_layer = 3
-  integer, parameter :: nin = 3
-  integer, parameter :: nout= 1
+  integer, parameter :: nin = 1
+  integer, parameter :: nout= 470
   integer, dimension(num_layer) :: layers
 
-  integer, parameter :: ndata = 100
+  integer, parameter :: ndata = 2033
   real, dimension(nin,ndata) :: inTrainData
   real, dimension(nout,ndata) :: outTrainData
+  real, dimension(nout) :: results_k_dr_N2
 
   integer :: max_epochs, epochs_between_reports
   real(sp) ::  desired_error
@@ -52,50 +53,56 @@ contains
   real(ft), dimension(nin) :: x
 
   ! input
-  layers(1) = nin
+  !layers(1) = nin
   ! hidden
-  layers(2) = 10
+  !layers(2) = 10
   ! outout
-  layers(3) = nout
+  !layers(3) = nout
 
-  write(*,*) "in DR_NN ... "
+  !write(*,*) "in DR_NN ... "
 
   ! the net, with SIGMOID
-  ann = fann_create_standard_array(num_layer,layers)
-  call fann_set_activation_function_hidden(ann,enum_activation_function('FANN_SIGMOID'))
-  call fann_set_activation_function_output(ann,enum_activation_function('FANN_SIGMOID'))
-  call fann_print_connections(ann)
+  !ann = fann_create_standard_array(num_layer,layers)
+  !call fann_set_activation_function_hidden(ann,enum_activation_function('FANN_SIGMOID'))
+  !call fann_set_activation_function_output(ann,enum_activation_function('FANN_SIGMOID'))
+  !call fann_print_connections(ann)
 
   ! my training data. Let's learn make a neural net which is a random generator :)
-  call random_number(inTrainData)
-  call random_number(outTrainData)
+  !call random_number(inTrainData)
+  !call random_number(outTrainData)
   !write(*,*) inTrainData
 
-!  train = fann_create_train_from_callback(ndata,nin,nout,C_FUNLOC(mytrain_callback))
-!
-!  ! training
-!  call fann_set_training_algorithm(ann,enum_training_algorithm('FANN_TRAIN_RPROP'))
-!
-  max_epochs = 10000
-  epochs_between_reports = 1000
-  desired_error = 0.001
-!  call fann_train_on_data(ann,train,max_epochs,epochs_between_reports,desired_error)
-!  call fann_print_connections(ann)
-!
+! train = fann_create_train_from_callback(ndata,nin,nout,C_FUNLOC(mytrain_callback))
+
+  ! training
+  !call fann_set_training_algorithm(ann,enum_training_algorithm('FANN_TRAIN_RPROP'))
+
+  !max_epochs = 10000
+  !epochs_between_reports = 1000
+  !desired_error = 0.001
+! call fann_train_on_data(ann,train,max_epochs,epochs_between_reports,desired_error)
+  !call fann_train_on_file(ann, "dataN2mod.dat", max_epochs, epochs_between_reports, desired_error);
+  !call fann_print_connections(ann)
+
   ! testing
   x = T !(/0.1_ft,0.5_ft,1._ft/)
 
   ! running
-!  print *, 'ann(x)= ',f_fann_run(ann,x)
+  !print *, 'ann(x)= ',f_fann_run(ann,x)
 
   ! saving
-!  print *,'saving...', fann_save(ann,f_c_string('arg.dat'))
-!  call fann_destroy(ann)
+  !print *,'saving...', fann_save(ann,f_c_string('NN.dat'))
+  !call fann_destroy(ann)
 
   ! loading
-!  print *,'loading...'
-!  ann = fann_create_from_file(f_c_string('arg.dat'))
-!  print *, 'loaded ann(x)= ',f_fann_run(ann,x)
+  print *,'loading k_dr_N2.net ...'
+  !ann = fann_create_from_file(f_c_string('k_dr_N2.net'))
+  results_k_dr_N2 = f_fann_run(ann,x)
+  do i = 1, 5
+    kd_n2(i,:) = results_k_dr_N2((i-1)*l1+1:i*l1)
+    kr_n2(i,:) = results_k_dr_N2((5+(i-1))*l1+1:(5+i)*l1)
+  end do
+  call fann_destroy(ann)
 
 !  write( temperature, '(i5)' ) int(T)
 !
@@ -123,7 +130,7 @@ contains
 !
 !  open(newunit=u, file='result_N2.out', action='read')
 !  read (u, *) (k_dr_N2(i), i=1, size(k_dr_N2) - 1)
-!  close(u)
+!\  close(u)
 !  do i = 1, 5
 !    kd_n2(i,:) = k_dr_N2((i-1)*l1+1:i*l1)
 !    kr_n2(i,:) = k_dr_N2((5+(i-1))*l1+1:(5+i)*l1)
@@ -171,20 +178,38 @@ contains
 
   end subroutine
 
-!  subroutine mytrain_callback(num, num_input, num_output, input, output) bind(C)
+!  subroutine mytrain_callback(num, num_input, num_output, inputT, outputT) bind(C)
 !    implicit none
-!
 !    integer(C_INT), value :: num, num_input, num_output
+!    real, dimension(num,num_output+1) :: dataN2
+!    integer :: i, j
+!
+!    open (1, file = 'dataset_STS_kd_kr_N2.txt', status = 'old')
+!    do j=1,2033
+!      read(1,*) dataN2(j,:)
+!    end do
+!    close(1)
+!    !inTrainData(nin,:) = dataN2(:,1)
+!    !do i = 1,2033
+!    !  do j = 1,470
+!    !   outTrainData(j,i) = dataN2(i,j+1)
+!    !  enddo
+!    !enddo
+!
 !!#ifdef FIXEDFANN
 !!    integer(FANN_TYPE), dimension(0:num_input-1) :: input
 !!    integer(FANN_TYPE), dimension(0:num_output-1) :: output
 !!    input(0:num_input-1) = int(inTrainData(1:num_input,num+1),FANN_TYPE)
 !!    output(0:num_output-1) = int(outTrainData(1:num_output,num+1),FANN_TYPE)
 !!#else
-!    real(FANN_TYPE), dimension(0:num_input-1) :: input
-!    real(FANN_TYPE), dimension(0:num_output-1) :: output
-!    input(0:num_input-1) = real(inTrainData(1:num_input,num+1),FANN_TYPE)
-!    output(0:num_output-1) = real(outTrainData(1:num_output,num+1),FANN_TYPE)
+!    real(FANN_TYPE), dimension(0:num_input-1) :: inputT
+!    real(FANN_TYPE), dimension(0:num_output-1) :: outputT
+!    inputT(0:num_input-1) = dataN2(:,1)
+!    outputT(0:num_output-1) = dataN2(:,2)
+!    !input(0:num_input-1) = real(inTrainData(1:num_input,num+1),FANN_TYPE)
+!    !output(0:num_output-1) = real(outTrainData(1:num_output,num+1),FANN_TYPE)
 !!#endif
+!
+!  end subroutine  mytrain_callback
 
 END MODULE

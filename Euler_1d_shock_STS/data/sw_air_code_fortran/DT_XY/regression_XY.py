@@ -32,8 +32,8 @@ n_jobs = -1
 trial  = 1
 
 #dataset=np.loadtxt("../data/solution_XY_06.dat")
-dataset=np.loadtxt("../data/solution_XY_10.dat")
-#dataset=np.loadtxt("../data/solution_XY_12.dat")
+#dataset=np.loadtxt("../data/solution_XY_10.dat")
+dataset=np.loadtxt("../data/solution_XY_12.dat")
 x = dataset[:,0:1] # x
 y = dataset[:,1:]  # all the others ...
 
@@ -62,6 +62,13 @@ y_train = sc_y.transform(y_train)
 
 # transform test dataset
 y_test = sc_y.transform(y_test)
+
+#np.savetxt('xtrain.txt', x_train)
+#np.savetxt('ytrain.txt', y_train)
+#np.savetxt('xtest.txt', x_test)
+#np.savetxt('ytest.txt', y_test)
+#np.savetxt('train.txt', (x_train,y_train))
+#np.savetxt('test.txt', (x_test,y_test))
 
 dump(sc_x, open('scaler_x.pkl', 'wb'))
 dump(sc_y, open('scaler_y.pkl', 'wb'))

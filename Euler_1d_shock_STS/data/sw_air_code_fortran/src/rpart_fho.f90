@@ -19,6 +19,7 @@
  use ExchangeVV
  use VV_Module
  use omp_lib
+ !use fann
 
  implicit none
 
@@ -128,6 +129,8 @@
 ! dissociation/recombination (DR) processes
   !call compute_DR(temp)
   call compute_DR_NN(temp)
+  !ann = fann_create_from_file(f_c_string('NN.arg'))
+  !results_k_dr_N2 = f_fann_run(ann,x)
   !write(*,*) "call compute_DR_NN(temp)"
 
 ! Zeldovich exchange reactions

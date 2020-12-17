@@ -9,6 +9,7 @@
 ! use ifport
 ! use iso_fortran_env, only: stdout => output_unit, &
 !                             stderr => error_unit
+  use fann
   implicit none
 
   integer :: unit, i, j, ierror, Npoint
@@ -99,6 +100,7 @@
 !************************************************************************
 
  double precision :: Xtin, Xtout
+ !real :: xsol
  real(WP) :: ysol(neq) !,t
  double precision dy(neq)
 
@@ -125,6 +127,10 @@
  character(20)  :: compute_XY
  character(132) :: command_compute_XY
 ! ***************************************
+
+  type(C_PTR) :: ann
+  integer, parameter :: ft = FANN_TYPE
+  real(ft), dimension(1) :: xsol
 
  xc(5) = Zero
  Y0_bar(l1+l2+l3+4) = Zero
@@ -184,8 +190,15 @@
  ATOLS = 1.0D-8 ! scalar
  ATOLV = 1.0D-8 ! vector
 
- base = " python3 "
- path = "/home/lk/Public/ML4STS/Euler_1d_shock_STS/data/sw_air_code_fortran/DT_XY/"
+! base = " python3 "
+! path = "/home/lk/Public/ML4STS/Euler_1d_shock_STS/data/sw_air_code_fortran/DT_XY/"
+
+! FANN ******
+! load the NNs
+ print *,'loading...'
+ ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY.net'))
+ print *,'ann loaded!'
+! print *, 'loaded ann(x)= ',f_fann_run(ann,x)
 
  call cpu_time(start)
 ! read file is not threadsafe!
@@ -200,11 +213,12 @@
    ! implementation are used in order to
    ! fairly benchmark
    xtout = xstep(i+1)
+   xsol = xtout
 
-   write(*,*) "npoint #", i
+   write(*,*) "npoint #", i, xsol
 !!!
-  options = set_opts(method_flag=22, abserr=1.0d-8, relerr=1.0d-8)
-  call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
+!  options = set_opts(method_flag=22, abserr=1.0d-8, relerr=1.0d-8)
+!  call dvode_f90(rpart_fho, neq, ysol, xtin, xtout, itask, istate, options)
 !  !call get_stats(rstats,istats)
 !
 !60  FORMAT(/'  No. steps =',I4,'   No. f-s =',I4,        &
@@ -239,7 +253,11 @@
 !   close(unit)
 !   call chdir(origin)
 !!!
+! FANN
+  ysol = f_fann_run(ann, xsol)
+! no more FANN
   xout(i)  = xtout
+  write(*,*) xout(i), ysol(1), shape(ysol)
   y(i+1,:) = ysol
 
  end do
