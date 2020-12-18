@@ -1,4 +1,4 @@
-rm shprot.x *.o *.mod
+rm shprot.x *.o *.mod *.eps
 
 gfortran -c kind_module.f90 \
             constants.f90 \
@@ -24,3 +24,4 @@ gfortran -c kind_module.f90 \
 gfortran *.o -lopenblas -lfann -o shprot.x
 
 time ./shprot.x
+#./plot

@@ -1,0 +1,19 @@
+
+[1;31m Compiler used [0m[1m intel => /opt/intel_19.0.2/compilers_and_libraries_2019.2.187/linux/bin/intel64/ifort[0m 
+ [1;31m Source dir    [0m[1m ./src/[0m 
+ [1;31m Debug         [0m[1m no[0m 
+ [1;31m F-standard    [0m[1m yes[0m 
+ [1;31m Optimize      [0m[1m no[0m
+
+[1;31m Compiling options [0m
+[1m [-cpp -c -module ./mod/ -std03 ][0m
+
+[1;31m Linking options [0m
+[1m [ -std03  -mkl -lfann  ] [0m
+
+[1;31m Compiling[0m[1m kind_module.f90[0m
+[1;31m Compiling[0m[1m constants.f90[0m
+[1;31m Compiling[0m[1m init_energy.f90[0m
+[1;31m Compiling[0m[1m kdis.f90[0m
+[1;31m Compiling[0m[1m DR_Module.f90[0m
+[1;31m Compiling[0m[1m DR_Module_NN.f90[0m

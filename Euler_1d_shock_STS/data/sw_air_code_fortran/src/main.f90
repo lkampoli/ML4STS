@@ -100,7 +100,6 @@
 !************************************************************************
 
  double precision :: Xtin, Xtout
- !real :: xsol
  real(WP) :: ysol(neq) !,t
  double precision dy(neq)
 
@@ -129,8 +128,10 @@
 ! ***************************************
 
   type(C_PTR) :: ann
+  !type(C_PTR), dimension(126) :: calc_out
   integer, parameter :: ft = FANN_TYPE
   real(ft), dimension(1) :: xsol
+  real(ft), dimension(126) :: calc_out
 
  xc(5) = Zero
  Y0_bar(l1+l2+l3+4) = Zero
@@ -196,7 +197,19 @@
 ! FANN ******
 ! load the NNs
  print *,'loading...'
- ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_0.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_1.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_2.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_3.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_4.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_5.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_6.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_7.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_8.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_9.net'))
+ !ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_9T.net')) ! here the NN infers only one target: T
+ ann = fann_create_from_file(f_c_string('FANN/fann/examples/inference_ODE_XY_10T.net')) ! here the NN infers only one target: T
  print *,'ann loaded!'
 ! print *, 'loaded ann(x)= ',f_fann_run(ann,x)
 
@@ -255,9 +268,14 @@
 !!!
 ! FANN
   ysol = f_fann_run(ann, xsol)
+  !call fann_scale_input(ann, xsol)
+  !calc_out = f_fann_run(ann, xsol)
+  !call fann_descale_output(ann, calc_out)
+  !ysol = calc_out
 ! no more FANN
   xout(i)  = xtout
-  write(*,*) xout(i), ysol(1), shape(ysol)
+  !write(*,*) xout(i), ysol(1), ysol(2), ysol(3), ysol(4), ysol(5) !shape(ysol)
+  write(*,*) xout(i), ysol(126)
   y(i+1,:) = ysol
 
  end do
@@ -343,6 +361,7 @@
 
 ! temperature
  temp = y(:,sum(l)+4)*t0
+ write(*,*) temp
 
 ! velocity
  v = y(:,sum(l)+3)*v_0
