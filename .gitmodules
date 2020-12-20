@@ -1,0 +1,3 @@
+[submodule "ML4CFD/ML4CFD"]
+	path = ML4CFD/ML4CFD
+	url = https://github.com/PatWie/tensorflow-cmake.git
