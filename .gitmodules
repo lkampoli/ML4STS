@@ -4,3 +4,6 @@
 [submodule "ML4CFD/tensorflow-cmake"]
 	path = ML4CFD/tensorflow-cmake
 	url = https://github.com/PatWie/tensorflow-cmake.git
+[submodule "ML4CFD/tensorflow_capi_sample"]
+	path = ML4CFD/tensorflow_capi_sample
+	url = https://github.com/AmirulOm/tensorflow_capi_sample.git
