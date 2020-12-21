@@ -7,3 +7,6 @@
 [submodule "ML4CFD/tensorflow_capi_sample"]
 	path = ML4CFD/tensorflow_capi_sample
 	url = https://github.com/AmirulOm/tensorflow_capi_sample.git
+[submodule "ML4CFD/hello_tf_c_api"]
+	path = ML4CFD/hello_tf_c_api
+	url = https://github.com/Neargye/hello_tf_c_api.git

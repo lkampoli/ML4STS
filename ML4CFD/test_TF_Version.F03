@@ -1,11 +1,15 @@
 program test_TF_Version
-  use fTF
+  use ftf
   implicit none
 
   character(c_char) :: version
-  version = TF_Version()
+! version = TF_Version()
 
-!  print*, version
+  type(TF_Buffer) :: tfBuffer
+  type(TF_Graph) :: tfGraph
+
+  tfGraph = TF_NewGraph()
+
   write(*,*) "OK!"
 
 end program

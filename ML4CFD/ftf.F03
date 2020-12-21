@@ -48,7 +48,7 @@ Module ftf
                   TF_DATA_LOSS           = 15
   end enum
 
-! // TF_AttrType describes the type of the value of an attribute on an operation.
+! TF_AttrType describes the type of the value of an attribute on an operation.
   enum, bind(C)
     enumerator :: TF_ATTR_STRING      = 0, &
                   TF_ATTR_INT         = 1, &
@@ -61,11 +61,20 @@ Module ftf
                   TF_ATTR_FUNC        = 8
   end enum
 
+  type, bind(C) :: TF_Buffer
+    type(c_funptr) :: data
+    integer(c_size_t) :: length
+    type(c_funptr) :: data_deallocator
+  end type TF_Buffer
+
+  type, bind(C) :: TF_Graph
+  end type TF_Graph
+
   interface
 
 !! Return a new status object.
 !! TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
-!  function TF_NewStatus() result(tfStatus)
+!  function TF_NewStatus() bind(C) result(tfStatus)
 !    implicit none
 !    type(TF_Status), value :: tfStatus
 !  end function TF_NewStatus
@@ -79,10 +88,11 @@ Module ftf
 !
 !! Return a new graph object.
 !! TF_CAPI_EXPORT extern TF_Graph* TF_NewGraph(void);
-!  function TF_NewGraph() bind(C) result(tfNewGraph)
-!    implicit none
-!    type(TF_Graph), value :: tfNewGraph
-!  end subroutine TF_NewGraph
+  function TF_NewGraph() bind(C, name="TF_NewGraph") result(tfNewGraph)
+    import TF_Graph
+    implicit none
+    type(TF_Graph) :: tfNewGraph
+  end function TF_NewGraph
 !
 !! Return a new options object.
 !! TF_CAPI_EXPORT extern TF_SessionOptions* TF_NewSessionOptions(void);
@@ -118,18 +128,12 @@ Module ftf
 !! TF_Version returns a string describing version information of the
 !! TensorFlow library. TensorFlow using semantic versioning.
 !! TF_CAPI_EXPORT extern const char* TF_Version(void);
-  function TF_Version() bind(C) result(version)
-    import c_ptr, c_char
-    implicit none
-    character(c_char) :: version
-  end function TF_Version
-!
-!  type, bind(C) :: TF_Buffer
-!    type(c_funptr), value :: data
-!    integer(c_size_t) :: length
-!    type(c_funptr), value :: data_deallocator
-!  end type TF_Buffer
-!
+!  function TF_Version_() bind(C, name=TF_Version) result(version)
+!    import c_ptr, c_char
+!    implicit none
+!    character(c_char) :: version
+!  end function
+
 !  subroutine TF_NewBufferFromString(proto, proto_len) bind(C)
 !    import c_ptr, c_int, c_funptr
 !    implicit none
