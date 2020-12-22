@@ -61,24 +61,78 @@ Module ftf
                   TF_ATTR_FUNC        = 8
   end enum
 
+! TF_Buffer holds a pointer to a block of data and its associated length.
+! Typically, the data consists of a serialized protocol buffer, but other data
+! may also be held in a buffer.
+!
+! By default, TF_Buffer itself does not do any memory management of the
+! pointed-to block.  If need be, users of this struct should specify how to
+! deallocate the block by setting the `data_deallocator` function pointer.
   type, bind(C) :: TF_Buffer
     type(c_funptr) :: data
     integer(c_size_t) :: length
     type(c_funptr) :: data_deallocator
   end type TF_Buffer
 
+! TF_SessionOptions holds options that can be passed during session creation.
+  type, bind(C) :: TF_SessionOptions
+  end type TF_SessionOptions
+
+! Represents a computation graph. Graphs may be shared between sessions.
+! Graphs are thread-safe when used as directed below.
   type, bind(C) :: TF_Graph
   end type TF_Graph
 
+! Operation being built. The underlying graph must outlive this.
+  type, bind(C) :: TF_OperationDescription
+  end type TF_OperationDescription
+
+! Operation that has been added to the graph. Valid until the graph is
+! deleted -- in particular adding a new operation to the graph does not
+! invalidate old TF_Operation* pointers.
+  type, bind(C) :: TF_Operation
+  end type TF_Operation
+
+! Represents a specific input of an operation.
+  type, bind(C) :: TF_Input
+    type(TF_Operation) :: oper
+    integer(c_int) :: index ! The index of the input within oper.
+  end type TF_Input
+
+! Represents a specific output of an operation.
+  type, bind(C) :: TF_Output
+    type(TF_Operation) :: oper
+    integer(c_int) :: index ! The index of the output within oper.
+  end type TF_Output
+
+! TF_Function is a grouping of operations with defined inputs and outputs.
+! Once created and added to graphs, functions can be invoked by creating an
+! operation whose operation type matches the function name.
+  type, bind(C) :: TF_Function
+  end type TF_Function
+
+! Function definition options. TODO(iga): Define and implement
+  type, bind(C) :: TF_FunctionOptions
+  end type TF_FunctionOptions
+
+  type, bind(C) :: TF_Status
+  end type TF_Status
+
+! TF_ImportGraphDefOptions holds options that can be passed to
+! TF_GraphImportGraphDef.
+  type, bind(C) :: TF_ImportGraphDefOptions
+  end type TF_ImportGraphDefOptions
+
   interface
 
-!! Return a new status object.
-!! TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
-!  function TF_NewStatus() bind(C) result(tfStatus)
-!    implicit none
-!    type(TF_Status), value :: tfStatus
-!  end function TF_NewStatus
-!
+! Return a new status object.
+! TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
+  function TF_NewStatus() bind(C, name="TF_NewStatus") result(TF_Status_)
+    import TF_Status
+    implicit none
+    type(TF_Status) :: TF_Status_
+  end function TF_NewStatus
+
 !! Delete a previously created status object.
 !! TF_CAPI_EXPORT extern void TF_DeleteStatus(TF_Status*);
 !  subroutine TF_DeleteStatus(tfStatus) bind(C)
@@ -88,19 +142,127 @@ Module ftf
 !
 !! Return a new graph object.
 !! TF_CAPI_EXPORT extern TF_Graph* TF_NewGraph(void);
-  function TF_NewGraph() bind(C, name="TF_NewGraph") result(tfNewGraph)
+  function TF_NewGraph() bind(C, name="TF_NewGraph") result(TF_NewGraph_)
     import TF_Graph
     implicit none
-    type(TF_Graph) :: tfNewGraph
+    type(TF_Graph) :: TF_NewGraph_
   end function TF_NewGraph
+
+! Destroy an options object. Graph will be deleted once no more
+! TFSession's are referencing it.
+  subroutine TF_DeleteGraph(TF_Graph_) bind(C, name="TF_DeleteGraph")
+    import TF_Graph
+    implicit none
+    type(TF_Graph) :: TF_Graph_
+  end subroutine TF_DeleteGraph
+
+! Sets the shape of the Tensor referenced by `output` in `graph` to
+! the shape described by `dims` and `num_dims`.
 !
-!! Return a new options object.
-!! TF_CAPI_EXPORT extern TF_SessionOptions* TF_NewSessionOptions(void);
-!  function TF_NewSessionOptions() result(tfSessionOptions)
-!    implicit none
-!    type(TF_NewSessionOptions), value :: tfSessionOptions
-!  end function TF_NewSessionOptions
+! If the number of dimensions is unknown, `num_dims` must be set to
+! -1 and `dims` can be null. If a dimension is unknown, the
+! corresponding entry in the `dims` array must be -1.
 !
+! This does not overwrite the existing shape associated with `output`,
+! but merges the input shape with the existing shape.  For example,
+! setting a shape of [-1, 2] with an existing shape [2, -1] would set
+! a final shape of [2, 2] based on shape merging semantics.
+!
+! Returns an error into `status` if:
+!   * `output` is not in `graph`.
+!   * An invalid shape is being set (e.g., the shape being set
+!     is incompatible with the existing shape).
+  subroutine TF_GraphSetTensorShape(graph, output, dims, num_dims, status) bind(C, name="TF_GraphSetTensorShape")
+    import c_int, TF_Graph, TF_Output, TF_Status
+    implicit none
+    type(TF_Graph) :: graph
+    type(TF_Output) :: output
+    integer(c_int) :: dims
+    integer(c_int) :: num_dims
+    type(TF_Status) :: status
+  end subroutine TF_GraphSetTensorShape
+
+  function TF_NewImportGraphDefOptions() bind(C, name="TF_NewImportGraphDefOptions") result(TF_ImportGraphDefOptions_)
+    import TF_ImportGraphDefOptions
+    implicit none
+    type(TF_ImportGraphDefOptions) :: TF_ImportGraphDefOptions_
+  end function TF_NewImportGraphDefOptions
+
+  subroutine TF_DeleteImportGraphDefOptions(opts) bind(C, name="TF_DeleteImportGraphDefOptions")
+    import TF_ImportGraphDefOptions
+    implicit none
+    type(TF_ImportGraphDefOptions) :: opts
+  end subroutine
+
+! Add an output in `graph_def` to be returned via the `return_outputs` output
+! parameter of TF_GraphImportGraphDef(). If the output is remapped via an input
+! mapping, the corresponding existing tensor in `graph` will be returned.
+! `oper_name` is copied and has no lifetime requirements.
+! TF_CAPI_EXPORT extern void TF_ImportGraphDefOptionsAddReturnOutput(
+! TF_ImportGraphDefOptions* opts, const char* oper_name, int index);
+  subroutine TF_ImportGraphDefOptionsAddReturnOutput(opts, oper_name, index) bind(C, name="TF_ImportGraphDefOptionsAddReturnOutput")
+    import TF_ImportGraphDefOptions, c_char, c_int
+    implicit none
+    type(TF_ImportGraphDefOptions) :: opts
+    character(c_char) :: oper_name
+    integer(c_int) :: index
+  end subroutine TF_ImportGraphDefOptionsAddReturnOutput
+
+! Import the graph serialized in `graph_def` into `graph`.
+! Convenience function for when no results are needed.
+! TF_CAPI_EXPORT extern void TF_GraphImportGraphDef(
+!   TF_Graph* graph, const TF_Buffer* graph_def,
+!   const TF_ImportGraphDefOptions* options, TF_Status* status);
+  subroutine TF_GraphImportGraphDef(graph, graph_def, options, status) bind(C, name="TF_GraphImportGraphDef")
+    import TF_Graph, TF_Buffer, TF_ImportGraphDefOptions, TF_Status
+    implicit none
+    type(TF_Graph) :: graph
+    type(TF_Buffer) :: graph_def
+    type(TF_ImportGraphDefOptions) :: options
+    type(TF_Status) :: status
+  end subroutine TF_GraphImportGraphDef
+
+! Return a new options object.
+! TF_CAPI_EXPORT extern TF_SessionOptions* TF_NewSessionOptions(void);
+  function TF_NewSessionOptions() bind(C, name="TF_NewSessionOptions") result(TF_SessionOptions_)
+    import TF_SessionOptions
+    implicit none
+    type(TF_SessionOptions) :: TF_SessionOptions_
+  end function TF_NewSessionOptions
+
+! Set the target in TF_SessionOptions.options.
+! target can be empty, a single entry, or a comma separated list of entries.
+! Each entry is in one of the following formats :
+! "local"
+! ip:port
+! host:port
+  subroutine TF_SetTarget(options, target) bind(C, name="TF_SetTarget")
+    import c_char, TF_SessionOptions
+    implicit none
+    character(c_char) :: target
+    type(TF_SessionOptions) :: options
+  end subroutine TF_SetTarget
+
+! Set the config in TF_SessionOptions.options.
+!  config should be a serialized tensorflow.ConfigProto proto.
+!  If config was not parsed successfully as a ConfigProto, record the
+!  error information in *status.
+  subroutine TF_SetConfig(options, proto, proto_len, status) bind(C, name="TF_SetConfig")
+    import c_size_t, c_funptr, TF_SessionOptions, TF_Status
+    implicit none
+    type(TF_SessionOptions) :: options
+    type(c_funptr) :: proto
+    integer(c_size_t) :: proto_len
+    type(TF_Status) :: status
+  end subroutine TF_SetConfig
+
+! Destroy an options object.
+  subroutine TF_DeleteSessionOptions(TF_SessionOptions_) bind(C, name="TF_DeleteSessionOptions")
+    import TF_SessionOptions
+    implicit none
+    type(TF_SessionOptions) :: TF_SessionOptions_
+  end subroutine TF_DeleteSessionOptions
+
 !! Return a new execution session with the associated graph, or NULL on
 !! error. Does not take ownership of any input parameters.
 !!
@@ -128,35 +290,41 @@ Module ftf
 !! TF_Version returns a string describing version information of the
 !! TensorFlow library. TensorFlow using semantic versioning.
 !! TF_CAPI_EXPORT extern const char* TF_Version(void);
-!  function TF_Version_() bind(C, name=TF_Version) result(version)
-!    import c_ptr, c_char
-!    implicit none
-!    character(c_char) :: version
-!  end function
+  function TF_Version() bind(C, name="TF_Version") result(TF_Version_)
+    import c_ptr, c_char
+    implicit none
+    character(c_char) :: TF_Version_
+  end function
 
-!  subroutine TF_NewBufferFromString(proto, proto_len) bind(C)
-!    import c_ptr, c_int, c_funptr
-!    implicit none
-!    type(c_funptr), value :: proto
-!    integer(c_size_t), value :: proto_len
-!  end subroutine TF_NewBufferFromString
-!
-!  subroutine TF_NewBuffer()
-!    implicit none
-!
-!  end subroutine TF_NewBuffer
-!
-!  subroutine TF_DeleteBuffer()
-!    implicit none
-!
-!  end subroutine TF_NewBuffer
-!
-!  subroutine TF_GetBuffer()
-!    implicit none
-!
-!  end subroutine TF_GetBuffer
-!
-!
+! Makes a copy of the input and sets an appropriate deallocator.  Useful for
+! passing in read-only, input protobufs.
+  function TF_NewBufferFromString(proto, proto_len) bind(C, name="TF_NewBufferFromString") result(TF_Buffer_)
+    import c_ptr, c_int, , c_size_t, c_funptr, TF_Buffer
+    implicit none
+    type(c_funptr), value :: proto
+    integer(c_size_t), value :: proto_len
+    type(TF_Buffer) :: TF_Buffer_
+  end function TF_NewBufferFromString
+
+! Useful for passing *out* a protobuf.
+  function TF_NewBuffer() bind(C, name="TF_NewBuffer") result(TF_Buffer_)
+    import TF_Buffer
+    implicit none
+    type(TF_Buffer) :: TF_Buffer_
+  end function TF_NewBuffer
+
+  subroutine TF_DeleteBuffer(TF_Buffer_) bind(C, name="TF_DeleteBuffer")
+    import TF_Buffer
+    implicit none
+    type(TF_Buffer) :: TF_Buffer_
+  end subroutine
+
+  function TF_GetBuffer(buffer) bind(C, name="TF_GetBuffer") result(TF_Buffer_)
+    import TF_Buffer
+    implicit none
+    type(TF_Buffer) :: TF_Buffer_, buffer
+  end function TF_GetBuffer
+
 ! function TF_LoadSessionFromSavedModel(session_options, run_options, export_dir, tags, tags_len, graph, meta_graph_def, status)
 !   result(TF_Session)
 !   import c_char, c_int
@@ -197,7 +365,6 @@ Module ftf
 !  integer(c_int) :: ntargets
 !  type(TF_Buffer), value :: run_metadata
 !  type(TF_Status), value :: TF_Status
-!
 !
 !  function TF_GraphOperationByName(graph, oper_name) result(TF_Operation)
 !    implicit none
