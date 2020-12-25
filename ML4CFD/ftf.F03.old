@@ -27,6 +27,12 @@ Module ftf
                   TF_UINT32     = 22,&
                   TF_UINT64     = 23
   end enum
+  integer, parameter, public :: TF_DataType = kind(TF_FLOAT)
+  public :: TF_FLOAT, TF_DOUBLE, TF_INT32, TF_UINT8, TF_INT16, TF_INT8, &
+            TF_STRING, TF_COMPLEX64, TF_COMPLEX, TF_INT64, TF_BOOL, &
+            TF_QINT8, TF_QUINT8, TF_QINT32, TF_BFLOAT16, TF_QINT16, &
+            TF_QUINT16, TF_UINT16, TF_COMPLEX128, TF_HALF, TF_RESOURCE, &
+            TF_VARIANT, TF_UINT32, TF_UINT64
 
   enum, bind(C)
     enumerator :: TF_OK                  = 0, &
@@ -77,6 +83,10 @@ Module ftf
 ! TF_SessionOptions holds options that can be passed during session creation.
   type, bind(C) :: TF_SessionOptions
   end type TF_SessionOptions
+
+! API for driving Graph execution.
+  type, bind(C) :: TF_Session
+  end type TF_Session
 
 ! Represents a computation graph. Graphs may be shared between sessions.
 ! Graphs are thread-safe when used as directed below.
@@ -133,12 +143,13 @@ Module ftf
     type(TF_Status) :: TF_Status_
   end function TF_NewStatus
 
-!! Delete a previously created status object.
-!! TF_CAPI_EXPORT extern void TF_DeleteStatus(TF_Status*);
-!  subroutine TF_DeleteStatus(tfStatus) bind(C)
-!    implicit none
-!    type(TF_Status), value :: tfStatus
-!  end subroutine TF_DeleteStatus
+! Delete a previously created status object.
+! TF_CAPI_EXPORT extern void TF_DeleteStatus(TF_Status*);
+  subroutine TF_DeleteStatus(TF_Status_) bind(C, name="TF_DeleteStatus")
+    import TF_Status
+    implicit none
+    type(TF_Status), value :: TF_Status_
+  end subroutine TF_DeleteStatus
 !
 !! Return a new graph object.
 !! TF_CAPI_EXPORT extern TF_Graph* TF_NewGraph(void);
@@ -263,22 +274,38 @@ Module ftf
     type(TF_SessionOptions) :: TF_SessionOptions_
   end subroutine TF_DeleteSessionOptions
 
-!! Return a new execution session with the associated graph, or NULL on
-!! error. Does not take ownership of any input parameters.
-!!
-!! *`graph` must be a valid graph (not deleted or nullptr). `graph` will be be
-!! kept alive for the lifetime of the returned TF_Session. New nodes can still
-!! be added to `graph` after this call.
-!! TF_CAPI_EXPORT extern TF_Session* TF_NewSession(TF_Graph* graph,
-!!                                                 const TF_SessionOptions* opts,
-!!                                                 TF_Status* status);
-!  function TF_NewSession(graph, opts, tfStatus) result(tfSession)
-!    implicit none
-!    type(TF_Graph), value :: graph
-!    type(TF_SessionOptions), value :: opts
-!    type(TF_Status), value :: tfStatus
-!  end function TF_NewSession
+! Return a new execution session with the associated graph, or NULL on
+! error. Does not take ownership of any input parameters.
 !
+! *`graph` must be a valid graph (not deleted or nullptr). `graph` will be be
+! kept alive for the lifetime of the returned TF_Session. New nodes can still
+! be added to `graph` after this call.
+! TF_CAPI_EXPORT extern TF_Session* TF_NewSession(TF_Graph* graph,
+!                                                 const TF_SessionOptions* opts,
+!                                                 TF_Status* status);
+  function TF_NewSession(graph, opts, status) result(TF_Session_)
+    import TF_Graph, TF_SessionOptions, TF_Status, TF_Session
+    implicit none
+    type(TF_Graph), value :: graph
+    type(TF_SessionOptions), value :: opts
+    type(TF_Status), value :: status
+    type(TF_Session) :: TF_Session_
+  end function TF_NewSession
+
+! Destroy a session object.
+!
+! Even if error information is recorded in *status, this call discards all
+! local resources associated with the session.  The session may not be used
+! during or after this call (and the session drops its reference to the
+! corresponding graph).
+!TF_CAPI_EXPORT extern void TF_DeleteSession(TF_Session*, TF_Status* status);
+  subroutine TF_DeleteSession(TF_Session_, status)
+    import TF_Status, TF_Session
+    implicit none
+    type(TF_Status)  :: status
+    type(TF_Session) :: TF_Session_
+  end subroutine TF_DeleteSession
+
 !! Return the code record in *s.
 !! TF_CAPI_EXPORT extern TF_Code TF_GetCode(const TF_Status* s);
 !  function TF_GetCode(s) result(tfCode)
