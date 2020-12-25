@@ -425,5 +425,3 @@ Clearly, any interoperable entity must be such that equivalent declarations of i
     C Calling Sequence:
 
     simulation(alpha, &beta, &gamma, delta, &arrays);
-
-
