@@ -115,9 +115,10 @@ end type
 !TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
 interface
 function TF_NewStatus() bind(C, name="TF_NewStatus") result(TF_Status_)
-  import TF_Status
+  import TF_Status, c_ptr
   implicit none
-  type(TF_Status) :: TF_Status_
+  !type(TF_Status) :: TF_Status_
+  type(c_ptr) :: TF_Status_
 end function
 end interface
 !
@@ -176,11 +177,13 @@ end interface
 !// TF_OK.
 !TF_CAPI_EXPORT extern const char* TF_Message(const TF_Status* s);
 interface
-  function TF_Message(s) bind(C, name="TF_Message") result(TF_Message_)
-    import c_char, TF_Status
-    implicit none
-    type(TF_Status), value :: s
-    character(c_char) :: TF_Message_
+function TF_Message(s) bind(C, name="TF_Message") result(TF_Message_)
+  import c_char, c_ptr, TF_Status
+  implicit none
+  !type(TF_Status), value :: s
+  type(c_ptr), value :: s
+  !character(c_char) :: TF_Message_
+  type(c_ptr) :: TF_Message_
 end function
 end interface
 !
@@ -444,7 +447,8 @@ interface
 function TF_Version() bind(C, name="TF_Version") result(TF_Version_)
   import c_ptr, c_char
   implicit none
-  character(c_char) :: TF_Version_
+  !character(c_char) :: TF_Version_
+  type(c_ptr) :: TF_Version_
 end function
 end interface
 !// --------------------------------------------------------------------------

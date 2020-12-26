@@ -2,8 +2,8 @@ FC=gfortran
 FCFLAGS=-pg
 LFLAGS=-ltensorflow
 # -I/usr/local/include -L/usr/local/lib hello_tf.c -ltensorflow -o hello_tf
-test_TF_Version: fTF.o test_TF_Version.o
-	$(FC) $(FCFLAGS) fTF.o test_TF_Version.o -o $@ $(LFLAGS)
+test_TF_Version: fTF.o c_interface_module.o test_TF_Version.o
+	$(FC) $(FCFLAGS) fTF.o c_interface_module.o test_TF_Version.o -o $@ $(LFLAGS)
 
 %.o: %.f90
 	$(FC) $(FCFLAGS) -c $<

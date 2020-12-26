@@ -10,3 +10,6 @@
 [submodule "ML4CFD/hello_tf_c_api"]
 	path = ML4CFD/hello_tf_c_api
 	url = https://github.com/Neargye/hello_tf_c_api.git
+[submodule "ML4CFD/deepmd-kit"]
+	path = ML4CFD/deepmd-kit
+	url = https://github.com/deepmodeling/deepmd-kit.git
