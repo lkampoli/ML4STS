@@ -10,11 +10,11 @@ including neural networks (NN) will be considered. In this framework,
 the following tasks have been identified:
 
 * Kinetics
- - Regression of chemical reaction rate coefficients
- - Regression of chemical relaxation terms
+  * Regression of chemical reaction rate coefficients
+  * Regression of chemical relaxation terms
 * Transport
- - Regression of omega integrals
- - Regression of transport coefficients
+  * Regression of omega integrals
+  * Regression of transport coefficients
 * Coupling of ML and CFD
 * Solution of Euler equations with DNN
 
@@ -79,7 +79,11 @@ The `PINN_STS.py` deals with the solution of the Euler equations with STS.
 
 Here is an Overleaf page where I collect useful resources about artificial intelligence, 
 machine learning and deep learning subdivided in courses, books, papers, repositories, 
-web-pages and videos organized by topics.
+web-pages and videos organized by topics:
+
+~~~~~~~~
+https://www.overleaf.com/read/jpbphjdthxwn
+~~~~~~~~
 
 # Copyrights
 
