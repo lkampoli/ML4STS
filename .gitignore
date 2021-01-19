@@ -25,6 +25,7 @@
 *.dms
 *.zip
 *.sgy
+*.lrz
 #
 OLDREPO/*
 #
