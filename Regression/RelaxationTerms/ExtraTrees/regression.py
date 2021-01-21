@@ -35,13 +35,13 @@ from sklearn.ensemble import ExtraTreesRegressor
 from joblib import dump, load
 import pickle
 
-from hyperopt import hp, tpe, fmin, rand
-from hyperopt import STATUS_OK
-from hyperopt.pyll.stochastic import sample
-from hyperopt import Trials
-from hyperopt import pyll
+#from hyperopt import hp, tpe, fmin, rand
+#from hyperopt import STATUS_OK
+#from hyperopt.pyll.stochastic import sample
+#from hyperopt import Trials
+#from hyperopt import pyll
 
-import hpsklearn
+#import hpsklearn
 #from hpsklearn import HyperoptEstimator
 #from hpsklearn import any_preprocessing, pca, standard_scaler, min_max_scaler, normalizer
 #from hpsklearn import any_regressor, any_sparse_regressor
@@ -50,7 +50,7 @@ import hpsklearn
 #                      gradient_boosting_regression, random_forest_regression, extra_trees_regression, sgd_regression, \
 #                      xgboost_regression
 
-n_jobs = -1
+n_jobs = 4
 trial  = 1
 
 dataset=np.loadtxt("../data/solution_DR.dat")
@@ -178,6 +178,8 @@ gs.fit(x_train, y_train)
 runtime = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 
+
+
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
@@ -260,6 +262,13 @@ print('Root Mean Squared Error (RMSE):', np.sqrt(mean_squared_error(y_test, y_re
 x_test_dim = sc_x.inverse_transform(x_test)
 y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
+
+plt.scatter(y_test_dim, y_regr_dim, s=4, c='r', marker='+')
+plt.plot([y_test_dim.min(), y_test_dim.max()], [y_test_dim.min(), y_test_dim.max()], 'k--', lw=1)
+plt.xlabel('Measured')
+plt.ylabel('Predicted')
+plt.savefig('parity.eps', dpi=150, crop='true')
+plt.show()
 
 plt.scatter(x_test_dim[:,0], y_test_dim[:,0], s=2, c='k', marker='o', label='Matlab')
 plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2, c='r', marker='+', label='ExtraTrees')

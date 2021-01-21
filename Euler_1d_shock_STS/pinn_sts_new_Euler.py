@@ -15,10 +15,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 
+tf.compat.v1.disable_v2_behavior()
+
 # Tensorflow random seed for initialization
 np.random.seed(1234)
 tf.set_random_seed(1234)
 
+# TF 2
+#tf.random.set_seed(1234)
 
 # Define the Class PINN which we are going to use
 class PINN:

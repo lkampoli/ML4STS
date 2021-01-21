@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+#https://scikit-learn.org/0.18/auto_examples/plot_cv_predict.html
 import time
 import sys
 sys.path.insert(0, '../../../Utilities/')
@@ -33,7 +33,7 @@ from joblib import dump, load
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
 
-n_jobs = -1
+n_jobs = 4
 trial  = 1
 
 #dataset=np.loadtxt("../data/solution_DR.dat") # 943 x 103
@@ -131,14 +131,14 @@ from sklearn.feature_selection import mutual_info_regression
 
 # DecisionTree
 hyper_params = [{#'criterion': ('mse',),
-                 'criterion': ('mse', 'friedman_mse', 'mae'),
-                 'splitter': ('best', 'random'),
+#                 'criterion': ('mse', 'friedman_mse', 'mae'),
+#                 'splitter': ('best', 'random'),
                  #'splitter': ('best',),
                  'max_features': ('auto', 'sqrt', 'log2'),
                  #'max_features': ('auto',),
 }]
 
-est=DecisionTreeRegressor(random_state=69)
+est=DecisionTreeRegressor(random_state=57)
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
 
 t0 = time.time()
@@ -184,7 +184,8 @@ print(gs.best_params_)
 print()
 
 # Re-train with best parameters
-regr = DecisionTreeRegressor(**gs.best_params_, random_state=69)
+#regr = DecisionTreeRegressor(**gs.best_params_, random_state=69)
+regr = DecisionTreeRegressor(**gs.best_params_)
 
 t0 = time.time()
 regr.fit(x_train, y_train)
@@ -198,10 +199,12 @@ for i,v in enumerate(importance):
         print('Feature: %0d, Score: %.5f' % (i,v))
 
 # plot feature importance
-plt.title("Feature importances")
+plt.title("Feature importance")
 #features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
-#plt.bar(features, importance)
-plt.bar([x for x in range(len(importance))], importance)
+features = np.array(["n1","n2","n3","n4","n5","n6","n7","n8","n9","n10","n11","n12","n13","n14","n15","n16","n17","n18","n19","n20","n21","n22","n23","n24","n25","n26","n27","n28","n29","n30","n31","n32","n33","n34","n35","n36","n37","n38","n39","n40","n41","n42","n43","n44","n45","n46","n47","na","V","T"])
+plt.bar(features, importance)
+plt.xticks(rotation=45)
+#plt.bar([x for x in range(len(importance))], importance)
 plt.savefig("importance.pdf", dpi=150, crop='false')
 plt.show()
 plt.close()
@@ -304,6 +307,19 @@ plt.legend()
 plt.tight_layout()
 #plt.savefig("regression_DT.eps", dpi=150, crop='false')
 #plt.savefig("regression_DT.pdf", dpi=150, crop='false')
+plt.show()
+
+plt.scatter(y_test_dim, y_regr_dim, s=4, c='r', marker='+')
+#plt.scatter(y_test_dim[:,0], y_regr_dim[:,0])
+#plt.scatter(y_test_dim[:,10],y_regr_dim[:,10], s=2, c='k', marker='o')
+#plt.scatter(y_test_dim[:,20],y_regr_dim[:,20], s=2, c='k', marker='o')
+#plt.scatter(y_test_dim[:,30],y_regr_dim[:,30], s=2, c='k', marker='o')
+#plt.scatter(y_test_dim[:,40],y_regr_dim[:,40], s=2, c='k', marker='o')
+#plt.scatter(y_test_dim[:,47],y_regr_dim[:,47], s=2, c='r', marker='+')
+plt.plot([y_test_dim.min(), y_test_dim.max()], [y_test_dim.min(), y_test_dim.max()], 'k--', lw=1)
+plt.xlabel('Measured')
+plt.ylabel('Predicted')
+plt.savefig('parity.eps', dpi=150, crop='true')
 plt.show()
 
 # save the model to disk

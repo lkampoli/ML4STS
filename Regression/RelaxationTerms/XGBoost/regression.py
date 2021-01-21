@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# https://stackoverflow.com/questions/45074698/how-to-pass-elegantly-sklearns-gridseachcvs-best-parameters-to-another-model
-# https://medium.com/@alexstrebeck/training-and-testing-machine-learning-models-e1f27dc9b3cb
+# https://towardsdatascience.com/getting-started-with-xgboost-in-scikit-learn-f69f5f470a97
+# https://www.kaggle.com/stuarthallows/using-xgboost-with-scikit-learn
 
 import time
 import sys
@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from scipy.stats import uniform, randint
+
 import operator
 import itertools
 
@@ -25,17 +27,28 @@ from sklearn.metrics import *
 
 from sklearn.preprocessing import StandardScaler
 
-from sklearn.model_selection import train_test_split, GridSearchCV, KFold, cross_val_score
+from sklearn.model_selection import train_test_split, GridSearchCV, KFold, cross_val_score, RandomizedSearchCV
 
 from sklearn.inspection import permutation_importance
 
-from sklearn import ensemble
-from sklearn.ensemble import RandomForestRegressor
+from xgboost import XGBRegressor
+import xgboost as xgb
 
 from joblib import dump, load
 import pickle
 
-n_jobs = 4
+def report_best_scores(results, n_top=3):
+    for i in range(1, n_top + 1):
+        candidates = np.flatnonzero(results['rank_test_score'] == i)
+        for candidate in candidates:
+            print("Model with rank: {0}".format(i))
+            print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
+                  results['mean_test_score'][candidate],
+                  results['std_test_score'][candidate]))
+            print("Parameters: {0}".format(results['params'][candidate]))
+            print("")
+
+n_jobs = -4
 trial  = 1
 
 dataset=np.loadtxt("../data/solution_DR.dat")
@@ -75,25 +88,34 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-hyper_params = [{'n_estimators': (1, 50, 1000, 10000),
-#                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
-#                 'max_features': ('sqrt', 'log2', 'auto',),
-#                 'bootstrap': (True, False,),
-#                 'oob_score': (True, False,),
-#                 'warm_start': (True, False,),
-#                 'criterion': ('mse', 'mae',),
-#                 'max_depth': (1, 10, 100,),
-#                 'max_leaf_nodes': (2, 100,),
-#                 'min_samples_split': (2, 5, 10,),
-#                 'min_impurity_decrease': (0.1, 0.2, 0.3,),
-#                 'min_samples_leaf': (1, 10, 100,),
+hyper_params = [{'learning_rate':(0.003, 0.03, 0.3,),
+                 'colsample_bytree': (0.7, 0.3,),
+                 'gamma': (0, 0.5,),
+                 'max_depth': (2, 6,), # default 3
+                 'n_estimators': (50, 100, 150,), # default 100
+                 'subsample': (0.6, 0.4,),
 }]
 
-est=ensemble.RandomForestRegressor(random_state=69)
-gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+est = XGBRegressor(random_state=69)
+gs  = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+
+#params = {
+#    "colsample_bytree": uniform(0.7, 0.3),
+#    "gamma": uniform(0, 0.5),
+#    "learning_rate": uniform(0.03, 0.3), # default 0.1 
+#    "max_depth": randint(2, 6), # default 3
+#    "n_estimators": randint(100, 150), # default 100
+#    "subsample": uniform(0.6, 0.4)
+#}
+#
+#search = RandomizedSearchCV(est, param_distributions=params, random_state=42, n_iter=200, cv=3, verbose=1, n_jobs=1, return_train_score=True)
+
+dtrain = xgb.DMatrix(x_train, y_train)
 
 t0 = time.time()
-gs.fit(x_train, y_train)
+bst = xgb.train(hyper_params, dtrain, 10)
+#gs.fit(x_train, y_train)
+#search.fit(x_train, y_train)
 runtime = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
 
@@ -101,13 +123,13 @@ train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-train_score_r2  = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#train_score_r2  = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 
 test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+#test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 
 print()
 print("The model performance for training set")
@@ -131,29 +153,12 @@ print(gs.best_params_)
 print()
 
 # Re-train with best parameters
-regr = ensemble.RandomForestRegressor(**gs.best_params_, random_state=69)
+regr = xgb.XGBRegressor(**gs.best_params_, random_state=69)
 
 t0 = time.time()
 regr.fit(x_train, y_train)
 regr_fit = time.time() - t0
 print("Complexity and bandwidth selected and model fitted in %.6f s" % regr_fit)
-
-importance = regr.feature_importances_
-std = np.std([tree.feature_importances_ for tree in regr.estimators_], axis=0)
-indices = np.argsort(importances)[::-1]
-
-# summarize feature importance
-for i,v in enumerate(importance):
-        print('Feature: %0d, Score: %.5f' % (i,v))
-
-# plot feature importance
-plt.title("Feature importances")
-#features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
-#plt.bar(features, importance)
-plt.bar([x for x in range(len(importance))], importance)
-plt.savefig("importance.pdf", dpi=150, crop='false')
-plt.show()
-plt.close()
 
 t0 = time.time()
 y_regr = regr.predict(x_test)
@@ -198,7 +203,7 @@ y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim[:,0], y_test_dim[:,0], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2, c='r', marker='+', label='ExtraTrees')
+plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2, c='r', marker='+', label='XGBoost')
 #plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')
 plt.legend()

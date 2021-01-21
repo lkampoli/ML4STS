@@ -112,7 +112,7 @@ class PINN:
 
         # Weight factor... let's see its impact by varying it w = [0:100].
         # If is it 0, then PINN -> NN and we do not physically inform the NN.
-        w = 40
+        w = 0
 
         # Define Cost function or the Loss
         # In this case I have set the mean squared error of the ouputs to be
