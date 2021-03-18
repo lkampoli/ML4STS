@@ -1,70 +1,79 @@
-# :warning: :construction: Repository under construction
 
-# Machine Learning for State-to-State
-
-This project aims at investigating the usage of machine learning (ML)
+# Machine Learning for State-to-State (ML4STS)
+This project aims at investigating the usage of machine learning
 algorithms for the solution of high-speed (viscous and inviscid,
-reacting and non-reacting) non-equilibrium flows according to a vibrational
+reacting and non-reacting) non-equilibrium flows according to a
 state-to-state (STS) formulation. Several machine learning methods,
-including neural networks (NN) will be considered. In this framework,
+including neural networks are considered. In this framework,
 the following tasks have been identified:
 
-* Kinetics
-  * Regression of chemical reaction rate coefficients
-  * Regression of chemical relaxation terms
-* Transport
-  * Regression of omega integrals
-  * Regression of transport coefficients
-* Coupling of ML and CFD
-* Solution of Euler equations with DNN
+* Regression of transport coefficients
+* Regression of chemical reaction rates
+* Regression of chemical relaxation terms
+* Coupling of machine learning with ODE solver
+* Coupling of machine learning with PDE solver
+* Solution of Euler and Navier-Stokes equations with NN
 
 # Requisites
+Assuming an available python3 version, the following 
+packages may be required in order to run some tasks:
 
-Assuming an available python3 version, the following packages may be required
-in order to be able to run some tasks:
 * [scikit-learn 0.23](https://scikit-learn.org/stable/)
 * [keras](https://keras.io/)
 * [tensorflow 1.14.0](https://www.tensorflow.org/)
 * [pytorch](https://pytorch.org/)
-* [cffi](https://cffi.readthedocs.io/en/latest/)
 * [dask](https://dask.org/)
 * [matplotlib](https://matplotlib.org/)
 * [pandas](https://pandas.pydata.org/)
 * [scipy](https://www.scipy.org/)
 
 # Description
+Here below a brief description of the repository directories is given.
 
-Here below, a brief description of the repository directories
-and state of advancement is given.
+## Nomenclature
+In the directory tree, the following abbreviations have been used:
+
+* DT  - Decision Tree
+* SVM - Support Vector Machine
+* KR  - Kernel Ridge
+* LDA - Linear Discriminant Analysis
+* QDA - Quadratic Discriminant Analysis
+* PCA - Principal Component Analysis
+* SVD - Singular Value Decomposition
+* kNN - Nearest Neighbors
+* GP  - Gaussian Processes
+* NB  - Naive Bayes
+* RF  - Random Forest
+* ET  - Extreme Tree
+* GB  - Gradient Boosting
+* HGB - Histogram-Based Gradient Boosting
+* MLP - Multi-layer Perceptron
+* NN  - Neural Network
 
 ## Regression of transport coefficients
-
 - [x] model implementation for shear, bulk viscosity, thermal conductivity and thermal/mass diffusion
 - [x] hyperparameters tuning
-- [ ] solve the problem of big data for the mass diffusion (probably with Dask and/or cluster, colab)
-- [ ] coupling with SPARK CFD solver 
+- [ ] solve the problem of big data for the mass diffusion (probably with Dask and/or cluster)
+- [ ] coupling with Spark CFD solver
 - [ ] define optimal interface Fortran -> Python
 
-## Regression of chemical reaction rate coefficients, `k_ci`
-
+## Regression of chemical reaction rate coefficients, k_ci
 - [x] model implementation
 - [x] hyperparameters tuning
-- [x] find optimal regressor
 
-## Regression of chemical relaxation terms, `R_ci`
-
+## Regression of chemical relaxation terms, R_ci
 - [x] model implementation
 - [x] hyperparameters tuning
-- [x] find optimal regressor
 
-## Coupling of ML and CFD
-
+## Coupling of machine learning with ODE solver
 - [x] model implementation
 - [ ] find optimal coupling strategy
-- [x] coupling of SPARK and ML models implemented in Keras (with [FKB](https://github.com/scientific-computing/FKB)) for Transport (6T)
 
-## `Euler_1d_shock_STS`
+## Coupling of machine learning with PDE solver
+- [x] model implementation
+- [ ] find optimal coupling strategy
 
+## Euler_1d_shock_STS
 In this directory, I try to solve the full system of Euler equations for a one-dimensional reacting shock flow.
 The directory contains both the `.py` and `.ipynb` files, for convenience, but they are the same.
 The `PINN.py` deals with the solution of the Euler equations without STS.
@@ -72,27 +81,22 @@ The `PINN_STS.py` deals with the solution of the Euler equations with STS.
 
 - [x] model implementation
 - [ ] hyperparameters tuning
-- [x] re-write in compact form
-- [ ] bugfix
+- [ ] re-write in compact form
+- [ ] bigfix
 
 # Useful Links
+https://machinelearningmastery.com/multi-output-regression-models-with-python/
 
-Here is an Overleaf page where I collect useful resources about artificial intelligence, 
-machine learning and deep learning subdivided in courses, books, papers, repositories, 
-web-pages and videos organized by topics:
+https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
 
-~~~~~~~~
-https://www.overleaf.com/read/jpbphjdthxwn
-~~~~~~~~
+https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
 
 # Copyrights
-
 ML4STS is an open source project, it is distributed under the GPL v3.
 Anyone is interest to use, to develop or to contribute to ML4STS is
 welcome. Take a look at the contributing guidelines for starting to contribute to the project.
 
 # Bibliography
-
 [1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
 
 [2] Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Vanderplas, J. (2011). Scikit-learn: Machine learning in Python. the Journal of machine Learning research, 12, 2825-2830.
