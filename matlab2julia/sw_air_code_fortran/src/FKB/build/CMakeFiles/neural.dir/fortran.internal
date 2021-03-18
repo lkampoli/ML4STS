@@ -1,0 +1,14 @@
+# The fortran modules provided by this target.
+provides
+ mod_activation.mod
+ mod_batchnorm_layer.mod
+ mod_dense_layer.mod
+ mod_dropout_layer.mod
+ mod_ensemble.mod
+ mod_io.mod
+ mod_kinds.mod
+ mod_layer.mod
+ mod_mnist.mod
+ mod_network.mod
+ mod_parallel.mod
+ mod_random.mod
