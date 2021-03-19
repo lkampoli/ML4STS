@@ -1,0 +1,25 @@
+Training time: 4.374857 s
+Prediction time: 0.092236 s
+ 
+The model performance for training set
+--------------------------------------
+MAE is 7.368906233869426e-17
+MSE is 2.7564158572240962e-31
+EVS is 0.9996477694077788
+R2 score is 0.9996466050767611
+ 
+The model performance for testing set
+--------------------------------------
+MAE is 1.2478106416343373e-16
+MSE is 1.3359666375657221e-30
+EVS is 0.9991707050480136
+R2 score is 0.9991682264664292
+ 
+Adimensional test metrics
+--------------------------------------
+Mean Absolute Error (MAE): 0.0037139824166085534
+Mean Squared Error (MSE): 0.0007991752603805794
+Root Mean Squared Error (RMSE): 0.028269688013499182
+ 
+Best parameters set found on development set:
+{'alpha': 0.0, 'gamma': 1, 'kernel': 'rbf'}
