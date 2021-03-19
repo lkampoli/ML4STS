@@ -202,7 +202,7 @@ regr = DecisionTreeRegressor(**gs.best_params_)
 t0 = time.time()
 regr.fit(x_train, y_train)
 regr_fit = time.time() - t0
-print("Complexity and bandwidth selected and model fitted in %.6f s" % regr_fit)
+print("Training time: %.6f s" % regr_fit)
 
 importance = regr.feature_importances_
 
@@ -249,8 +249,8 @@ with open('output.log', 'w') as f:
     print(" ",                                      file=f)
     print("Adimensional test metrics",              file=f)
     print("--------------------------------------", file=f)
-    print('Mean Absolute Error (MAE):',              mean_absolute_error(y_test, y_regr),  file=f)
-    print('Mean Squared Error (MSE):',               mean_squared_error( y_test, y_regr),  file=f)
+    print('Mean Absolute Error (MAE):',      mean_absolute_error(y_test, y_regr),          file=f)
+    print('Mean Squared Error (MSE):',       mean_squared_error( y_test, y_regr),          file=f)
     print('Root Mean Squared Error (RMSE):', np.sqrt(mean_squared_error( y_test, y_regr)), file=f)
     print(" ",                                      file=f)
     print("Best parameters set found for dev set:", file=f)

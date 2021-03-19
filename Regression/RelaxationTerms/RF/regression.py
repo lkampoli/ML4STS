@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+# https://stackoverflow.com/questions/45074698/how-to-pass-elegantly-sklearns-gridseachcvs-best-parameters-to-another-model
+# https://medium.com/@alexstrebeck/training-and-testing-machine-learning-models-e1f27dc9b3cb
+
 import time
 import sys
-sys.path.insert(0, '../../../../../Utilities/')
+sys.path.insert(0, '../../../Utilities/')
 
 from plotting import newfig, savefig
 import matplotlib as mpl
@@ -26,22 +29,20 @@ from sklearn.model_selection import train_test_split, GridSearchCV, KFold, cross
 
 from sklearn.inspection import permutation_importance
 
-from sklearn import neighbors
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn import ensemble
+from sklearn.ensemble import RandomForestRegressor
 
 from joblib import dump, load
 import pickle
 
-from sklearn.multioutput import MultiOutputRegressor
+n_jobs = 2
 
-n_jobs = -1
-trial  = 1
+dataset=np.loadtxt("../data/solution_DR.dat")
 
-dataset=np.loadtxt("./solution_ODE_XY.dat")
-print(dataset.shape)
+print(dataset.shape) # 943 x 103
 
-x = dataset[:,0:1]
-y = dataset[:,1:]
+x = dataset[:,0:55]  # x_s[1], time_s[1], Temp[1], rho[1], p[1],
+y = dataset[:,55:56] # RD_mol[47], RD_at[1]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
@@ -74,48 +75,64 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# Extra Trees
-hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto',),
-                 'n_neighbors': (1, 5, 10, 20),
-                 'leaf_size': (1, 10, 50, 100,),
-                 'weights': ('uniform', 'distance',),
-                 'p': (1, 2,),}]
+hyper_params = [{'n_estimators': (1, 50, 100,),
+                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+                 'max_features': ('sqrt', 'log2', 'auto',),
+#                 'bootstrap': (True, False,),
+#                 'oob_score': (True, False,),
+#                 'warm_start': (True, False,),
+                 'criterion': ('mse', 'mae',),
+                 'max_depth': (1, 10, 100,),
+                 'max_leaf_nodes': (2, 100,),
+                 'min_samples_split': (2, 5, 10,),
+                 'min_impurity_decrease': (0.1, 0.2, 0.3,),
+                 'min_samples_leaf': (1, 10, 100,),
+#                'min_impurity_split':= (), 
+#                'ccp_alpha': (),
+#                'max_samples': (),
+                  
+}]
 
-est=neighbors.KNeighborsRegressor()
-gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+# https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+est=ensemble.RandomForestRegressor(random_state=69)
+
+# Exhaustive search over specified parameter values for the estimator
+# https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+                  refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 
 t0 = time.time()
-gs.fit(x_train, y_train)
+gs.fit(x_train, y_train.ravel())
 runtime = time.time() - t0
-print("Complexity and bandwidth selected and model fitted in %.6f s" % runtime)
+print("Training time: %.6f s" % runtime)
 
 train_score_mse = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_mae = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_evs = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-#train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+train_score_me  = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 train_score_r2  = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
 
 test_score_mse  = mean_squared_error(      sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
-#test_score_me  = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 
 print()
 print("The model performance for training set")
 print("--------------------------------------")
-print('MAE is {}'.format(train_score_mae))
-print('MSE is {}'.format(train_score_mse))
-print('EVS is {}'.format(train_score_evs))
-#print('ME is {}'.format(train_score_me))
+print('MAE is      {}'.format(train_score_mae))
+print('MSE is      {}'.format(train_score_mse))
+print('EVS is      {}'.format(train_score_evs))
+print('ME is       {}'.format(train_score_me))
 print('R2 score is {}'.format(train_score_r2))
 print()
 print("The model performance for testing set")
 print("--------------------------------------")
-print('MAE is {}'.format(test_score_mae))
-print('MSE is {}'.format(test_score_mse))
-print('EVS is {}'.format(test_score_evs))
-#print('ME is {}'.format(test_score_me))
+print('MAE is      {}'.format(test_score_mae))
+print('MSE is      {}'.format(test_score_mse))
+print('EVS is      {}'.format(test_score_evs))
+print('ME is       {}'.format(test_score_me))
 print('R2 score is {}'.format(test_score_r2))
 print()
 print("Best parameters set found on development set:")
@@ -123,12 +140,30 @@ print(gs.best_params_)
 print()
 
 # Re-train with best parameters
-regr = neighbors.KNeighborsRegressor(**gs.best_params_)
+regr = ensemble.RandomForestRegressor(**gs.best_params_, random_state=69)
 
 t0 = time.time()
-regr.fit(x_train, y_train)
+regr.fit(x_train, y_train.ravel())
 regr_fit = time.time() - t0
-print("Complexity and bandwidth selected and model fitted in %.6f s" % regr_fit)
+print("Traininig time %.6f s" % regr_fit)
+
+# Feature importance study
+importance = regr.feature_importances_
+std = np.std([tree.feature_importances_ for tree in regr.estimators_], axis=0)
+indices = np.argsort(importances)[::-1]
+
+# summarize feature importance
+for i,v in enumerate(importance):
+        print('Feature: %0d, Score: %.5f' % (i,v))
+
+# plot feature importance
+plt.title("Feature importances")
+#features = np.array(['T', 'P', '$X_{N2}$', '$X_{O2}$', '$X_{NO}$', '$X_N$', '$X_O$'])
+#plt.bar(features, importance)
+plt.bar([x for x in range(len(importance))], importance)
+plt.savefig("importance.eps", dpi=150, crop='false')
+plt.show()
+plt.close()
 
 t0 = time.time()
 y_regr = regr.predict(x_test)
@@ -144,7 +179,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(train_score_mae), file=f)
     print('MSE is {}'.format(train_score_mse), file=f)
     print('EVS is {}'.format(train_score_evs), file=f)
-    #print('ME is {}'.format(train_score_me), file=f)
+    print('ME is {}'.format(train_score_me), file=f)
     print('R2 score is {}'.format(train_score_r2), file=f)
     print(" ", file=f)
     print("The model performance for testing set", file=f)
@@ -152,7 +187,7 @@ with open('output.log', 'w') as f:
     print('MAE is {}'.format(test_score_mae), file=f)
     print('MSE is {}'.format(test_score_mse), file=f)
     print('EVS is {}'.format(test_score_evs), file=f)
-    #print('ME is {}'.format(test_score_me), file=f)
+    print('ME is {}'.format(test_score_me), file=f)
     print('R2 score is {}'.format(test_score_r2), file=f)
     print(" ", file=f)
     print("Adimensional test metrics", file=f)
@@ -173,12 +208,12 @@ y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim[:,0], y_test_dim[:,0], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2, c='r', marker='+', label='KNeighbors')
+plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2, c='r', marker='+', label='ExtraTrees')
 #plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("regression.pdf", dpi=150, crop='false')
+plt.savefig("regression.eps", dpi=150, crop='false')
 plt.show()
 plt.close()
 
