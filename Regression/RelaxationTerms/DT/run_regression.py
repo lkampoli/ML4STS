@@ -13,7 +13,7 @@ def regressor(inp):
     regr = load('model.sav')
 
     # Build array of inputs for prediction
-    Xinput = np.asarray(inp).reshape(1,-1) # if it is only 1 row
+    Xinput  = np.asarray(inp).reshape(1,-1) # if it is only 1 row
     #Xinput = np.asarray(inp).reshape(-1,1) # if it is only 1 column
 
     # Scaler input arguments
@@ -23,7 +23,7 @@ def regressor(inp):
     y_regr = regr.predict(Xinput)
 
     # Inverse transformation
-    #Xinput     = sc_x.inverse_transform(Xinput)
-    y_regr_dim  = sc_y.inverse_transform(y_regr)
+    #Xinput    = sc_x.inverse_transform(Xinput)
+    y_regr_dim = sc_y.inverse_transform(y_regr)
 
     return y_regr_dim
