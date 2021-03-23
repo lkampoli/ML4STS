@@ -16,7 +16,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../../../Utilities/')
+sys.path.insert(0, '../../../../../Utilities/')
 
 from plotting import newfig, savefig
 import matplotlib as mpl
@@ -52,8 +52,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.multioutput import RegressorChain
 
-n_jobs = -1
-trial  = 1
+n_jobs = 2
 
 # Import database
 # https://pandas.pydata.org/pandas-docs/version/0.25.1/reference/api/pandas.DataFrame.to_numpy.html#pandas.DataFrame.to_numpy
@@ -62,7 +61,7 @@ trial  = 1
 #y    = data[:,7:]
 
 # https://stackoverflow.com/questions/17151210/numpy-loadtxt-skip-first-row
-with open('../../../Data/TCs_air5.txt') as f:
+with open('../../../../Data/TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 

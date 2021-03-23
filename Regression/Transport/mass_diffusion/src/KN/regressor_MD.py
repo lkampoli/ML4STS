@@ -36,7 +36,7 @@ from sklearn.tree import DecisionTreeRegressor
 
 from sklearn.multioutput import MultiOutputRegressor
 
-n_jobs = -1
+n_jobs = 2
 trial  = 1
 
 with open('../../../../Data/TCs_air5_MD_full_SMALL_T500_P1000.txt') as f:
@@ -62,8 +62,8 @@ sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
 y_test  = sc_y.transform(y_test)
 
-dump(sc_x, open('../../scaler/scaler_x_MD.pkl', 'wb'))
-dump(sc_y, open('../../scaler/scaler_y_MD.pkl', 'wb'))
+dump(sc_x, open('scaler_x_MD.pkl', 'wb'))
+dump(sc_y, open('scaler_y_MD.pkl', 'wb'))
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:', y_train.shape)
@@ -167,8 +167,8 @@ plt.ylabel(' ')
 plt.xlabel('T [K] ')
 plt.legend()
 plt.tight_layout()
-plt.savefig("../../pdf/regression_MD.pdf", dpi=150, crop='false')
+plt.savefig("regression_MD.pdf", dpi=150, crop='false')
 plt.show()
 
 # save the model to disk
-dump(regr, '../../model/model_MD.sav')
+dump(regr, 'model_MD.sav')

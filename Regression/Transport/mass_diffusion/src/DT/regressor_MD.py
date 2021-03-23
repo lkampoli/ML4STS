@@ -73,8 +73,7 @@ from sklearn.tree import DecisionTreeRegressor
 
 from sklearn.multioutput import MultiOutputRegressor
 
-n_jobs = 1
-trial  = 1
+n_jobs = 2
 
 # The data is then split into training and test data
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
