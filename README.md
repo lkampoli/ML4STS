@@ -1,4 +1,3 @@
-
 # Machine Learning for State-to-State (ML4STS)
 This project aims at investigating the usage of machine learning
 algorithms for the solution of high-speed (viscous and inviscid,
