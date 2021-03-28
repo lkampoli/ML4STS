@@ -5,7 +5,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../../../Utilities/')
+sys.path.insert(0, '../../../../../Utilities/')
 
 from plotting import newfig, savefig
 import matplotlib as mpl
@@ -34,11 +34,10 @@ import pickle
 
 from sklearn.inspection import permutation_importance
 
-n_jobs = -1
-trial  = 1
+n_jobs = 2
 
 # Import database
-with open('../../../Data/TCs_air5.txt') as f:
+with open('../../../../Data/TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 
@@ -117,7 +116,17 @@ models.append(('B',   BaggingRegressor()))
 # evaluate each model in turn
 results = []
 names = []
-scoring = 'r2'
+#scoring='explained_variance'
+scoring='max_error'
+#scoring='neg_mean_absolute_error'
+#scoring='neg_mean_squared_error'
+#scoring='neg_root_mean_squared_error'
+#scoring='neg_mean_squared_log_error'
+#scoring='neg_median_absolute_error'
+#scoring='r2'
+#scoring='neg_mean_poisson_deviance'
+#scoring='neg_mean_gamma_deviance'
+#scoring='neg_mean_absolute_percentage_error'
 for name, model in models:
 	kfold = model_selection.KFold(n_splits=10, random_state=seed, shuffle=True)
 	cv_results = model_selection.cross_val_score(model, x_train, y_train.ravel(), cv=kfold, scoring=scoring)

@@ -32,8 +32,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from joblib import dump, load
 import pickle
 
-n_jobs = -1
-trial  = 1
+n_jobs = 2
 
 with open('../../../../Data/TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
@@ -42,7 +41,7 @@ with open('../../../../Data/TCs_air5.txt') as f:
 x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
 y = dataset[:,7:8] # shear
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
+x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.25, test_size=0.25, random_state=69)
 
 sc_x = StandardScaler()
 sc_y = StandardScaler()
@@ -81,7 +80,34 @@ hyper_params = [{'algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto',),
                  'p': (1, 2,),}]
 
 est=neighbors.KNeighborsRegressor()
-gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+
+scores = ['r2', 
+           'explained_variance', 
+           'max_error', 
+           'neg_mean_absolute_error', 
+           'neg_mean_squared_error', 
+           'neg_root_mean_squared_error',
+#          'neg_mean_squared_log_error',
+           'neg_median_absolute_error']
+#          'neg_mean_poisson_deviance',
+#          'neg_mean_gamma_deviance'
+#          'neg_mean_absolute_percentage_error']
+
+gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring=scores, refit='r2')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='explained_variance')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='max_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_absolute_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_squared_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_root_mean_squared_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_squared_log_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_median_absolute_error')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_poisson_deviance')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_gamma_deviance')
+#gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='neg_mean_absolute_percentage_error')
+
+
+print(gs)
 
 t0 = time.time()
 gs.fit(x_train, y_train.ravel())
@@ -99,6 +125,10 @@ test_score_mae  = mean_absolute_error(     sc_y.inverse_transform(y_test),  sc_y
 test_score_evs  = explained_variance_score(sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_me   = max_error(               sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
 test_score_r2   = r2_score(                sc_y.inverse_transform(y_test),  sc_y.inverse_transform(gs.predict(x_test)))
+
+print(r2_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)), multioutput='variance_weighted'))
+print(r2_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)), multioutput='uniform_average'))
+print(r2_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)), multioutput='raw_values'))
 
 print()
 print("The model performance for training set")
@@ -122,7 +152,7 @@ print(gs.best_params_)
 print()
 
 # Re-train with best parameters
-regr = ExtraTreesRegressor(**gs.best_params_)
+regr=neighbors.KNeighborsRegressor(**gs.best_params_)
 
 t0 = time.time()
 regr.fit(x_train, y_train.ravel())

@@ -15,7 +15,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn import neighbors
 from sklearn.neighbors import KNeighborsRegressor
 
-n_jobs = -1
+n_jobs = 2
 
 dataset = sys.argv[1]
 folder  = dataset[9:14]
@@ -25,7 +25,9 @@ print(dataset)
 print(folder)
 print(process)
 
-dataset_T = np.loadtxt("../data/N2-N2/rec/Temperatures.csv")
+# The temperature arrays is always the same, so I read it
+# from one generic folder TODO: more robust!
+dataset_T = np.loadtxt("../data/N2-N2/dis/Temperatures.csv")
 dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
 
 x = dataset_T.reshape(-1,1)
@@ -53,10 +55,10 @@ print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
 regr = KNeighborsRegressor(n_neighbors=3,
-                           algorithm='brute',
+                           algorithm='kd_tree',
                            leaf_size=1,
                            weights='distance',
-                           p=2)
+                           p=1)
 
 regr = MultiOutputRegressor(estimator=regr)
 

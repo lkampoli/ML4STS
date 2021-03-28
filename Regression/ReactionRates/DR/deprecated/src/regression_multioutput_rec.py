@@ -2,7 +2,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../../Utilities/')
+sys.path.insert(0, '../../../../Utilities/')
 from plotting import newfig, savefig
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn import neighbors
 from sklearn.neighbors import KNeighborsRegressor
 
-n_jobs = -1
+n_jobs = 2
 
 dataset = sys.argv[1]
 folder  = dataset[9:14]
@@ -25,9 +25,7 @@ print(dataset)
 print(folder)
 print(process)
 
-# The temperature arrays is always the same, so I read it
-# from one generic folder TODO: more robust!
-dataset_T = np.loadtxt("../data/N2-N2/dis/Temperatures.csv")
+dataset_T = np.loadtxt("../data/N2-N2/rec/Temperatures.csv")
 dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
 
 x = dataset_T.reshape(-1,1)
@@ -40,11 +38,11 @@ sc_y = StandardScaler()
 
 sc_x.fit(x_train)
 x_train = sc_x.transform(x_train)
-x_test = sc_x.transform(x_test)
+x_test  = sc_x.transform(x_test)
 
 sc_y.fit(y_train)
 y_train = sc_y.transform(y_train)
-y_test = sc_y.transform(y_test)
+y_test  = sc_y.transform(y_test)
 
 dump(sc_x, open('../scaler/scaler_x_MO_'+dataset+'.pkl', 'wb'))
 dump(sc_y, open('../scaler/scaler_y_MO_'+dataset+'.pkl', 'wb'))
@@ -55,10 +53,10 @@ print('Testing Features Shape:', x_test.shape)
 print('Testing Labels Shape:', y_test.shape)
 
 regr = KNeighborsRegressor(n_neighbors=3,
-                           algorithm='kd_tree',
+                           algorithm='brute',
                            leaf_size=1,
                            weights='distance',
-                           p=1)
+                           p=2)
 
 regr = MultiOutputRegressor(estimator=regr)
 

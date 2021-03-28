@@ -5,7 +5,7 @@ from joblib import load
 Tin = sys.argv[1]
 Lev = sys.argv[2]
 
-n_jobs = -1
+n_jobs = 2
 
 dataset   = "DR_RATES-N2-N2-rec"
 

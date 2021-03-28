@@ -2,7 +2,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../Utilities/')
+sys.path.insert(0, '../../../../Utilities/')
 from plotting import newfig, savefig
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -23,17 +23,17 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.pipeline import Pipeline
 from joblib import dump, load
 
-n_jobs = -1
+n_jobs = 2
 trial = 1
 
 #dataset_T = np.loadtxt("./data/N2-N2/dis/Temperatures.csv")
 #dataset_k = np.loadtxt("./data/N2-N2/dis/DR_RATES-N2-N2-dis.csv")
 
-dataset_T = np.loadtxt("./data/N2-N2/dis/Temperatures.csv")
-dataset_k = np.loadtxt("./data/N2-N2/dis/DR_RATES-N2-N2-rec.csv")
+dataset_T = np.loadtxt("../data/N2-N2/rec/Temperatures.csv")
+dataset_k = np.loadtxt("../data/N2-N2/rec/DR_RATES-N2-N2-rec.csv")
 
-#dataset   = "DR_RATES-N2-N2-dis"
-dataset   = "DR_RATES-N2-N2-rec"
+#dataset = "DR_RATES-N2-N2-dis"
+dataset  = "DR_RATES-N2-N2-rec"
 
 Lev = sys.argv[1]
 
@@ -43,15 +43,26 @@ y = dataset_k[:,0+int(Lev):1+int(Lev)] # k_DR
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
+# Standardization
 sc_x = StandardScaler()
 sc_y = StandardScaler()
 
+# fit scaler
 sc_x.fit(x_train)
+
+# transform training dataset
 x_train = sc_x.transform(x_train)
+
+# transform test dataset
 x_test = sc_x.transform(x_test)
 
+# fit scaler on training dataset
 sc_y.fit(y_train)
+
+# transform training dataset
 y_train = sc_y.transform(y_train)
+
+# transform test dataset
 y_test = sc_y.transform(y_test)
 
 dump(sc_x, open('scaler_x_'+dataset+'_'+Lev+'.pkl', 'wb'))

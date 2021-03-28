@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd src
-
+# Dissociation processes
 declare -a dataset_dis=("DR_RATES-N2-N2-dis"
                         "DR_RATES-N2-O2-dis"
                         "DR_RATES-N2-NO-dis"
@@ -18,6 +17,7 @@ declare -a dataset_dis=("DR_RATES-N2-N2-dis"
                         "DR_RATES-O2-O_-dis"
                        )
 
+# Recombination processes
 declare -a dataset_rec=("DR_RATES-N2-N2-rec"
                         "DR_RATES-N2-O2-rec"
                         "DR_RATES-N2-NO-rec"
@@ -34,14 +34,33 @@ declare -a dataset_rec=("DR_RATES-N2-N2-rec"
                         "DR_RATES-O2-O_-rec"
                        )
 
-for i in "${dataset_dis[@]}";
-do
-  python3 regression_multioutput_dis.py $i
-done
+# Machine learning algorithms
+declare -a algorithms=("DT" "ET" "RF" "SVM" "GB" "HGB" "KN" "KR" "MLP")
 
-for i in "${dataset_rec[@]}";
-do
-  python3 regression_multioutput_rec.py $i
-done
+# Dissociation processes
+for i in "${algorithms[@]}";
+  do
+    cd $i; echo "algorithm: " $i
+    echo $PWD
+    for j in "${dataset_dis[@]}";
+      do
+        python regression_MO.py $j
+      done
+    for j in "${dataset_rec[@]}";
+      do
+        python regression_MO.py $j
+      done
+    cd ..
+  done
 
-cd ..
+# Recombination processes
+#for i in "${algorithms[@]}";
+#  do
+#    cd $i; echo "algorithm: " $i
+#    echo $PWD
+#    for j in "${dataset_rec[@]}";
+#      do
+#        python regression_MO.py $j
+#      done
+#    cd ..
+#  done

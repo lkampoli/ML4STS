@@ -41,6 +41,8 @@ with open('../../../../Data/TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 
+print(dataset.shape)
+
 x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
 y = dataset[:,7:8] # shear
 

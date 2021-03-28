@@ -2,7 +2,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../../Utilities/')
+sys.path.insert(0, '../../../../Utilities/')
 from plotting import newfig, savefig
 import matplotlib as mpl
 import matplotlib.pyplot as plt
