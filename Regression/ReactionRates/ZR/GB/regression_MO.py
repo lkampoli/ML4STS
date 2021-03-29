@@ -35,8 +35,8 @@ import pickle
 from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
+from sklearn import ensemble
+from sklearn.ensemble import GradientBoostingRegressor
 
 n_jobs = 2
 
@@ -109,21 +109,20 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+hyper_params = [{'n_estimators': (10, 100, 1000,),
+                 'min_weight_fraction_leaf': (0.0, 0.1, 0.2, 0.3,),
+                 'max_features': ('sqrt', 'log2', 'auto',),
+                 'warm_start': (False, True),
+                 'criterion': ('friedman_mse', 'mse', 'mae',),
+                 'max_depth': (1, 10, 100, None,),
+                 'min_samples_split': (2, 5, 10,),
+                 'min_samples_leaf': (2, 5, 10,),
+                 'loss': ('ls', 'lad', 'huber', 'quantile',),
+}]
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
+est = ensemble.GradientBoostingRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 

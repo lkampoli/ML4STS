@@ -35,15 +35,13 @@ import pickle
 from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
 
 n_jobs = 2
 
 # Read database filename from command-line input argument
 dataset = sys.argv[1]
-folder  = dataset[9:14]
-process = dataset[15:18]
+folder  = dataset[3:5]
+process = dataset[5:9]
 
 print(dataset)
 print(folder)
@@ -79,8 +77,9 @@ print("Directory '%s' created" %scalers)
 print("Directory '%s' created" %figures)
 
 # Import database
-dataset_T = np.loadtxt("../data/Temperatures.csv")
-dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
+dataset_T = np.loadtxt("../data/Temperatures.csv", delimiter=",")
+#dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
+dataset_k = np.loadtxt("../data/"+folder+"/"+dataset, delimiter=",")
 
 x = dataset_T.reshape(-1,1)
 y = dataset_k[:,:]
@@ -109,21 +108,14 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+hyper_params = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
+                 'splitter': ('best', 'random'),             
+                 'max_features': ('auto', 'sqrt', 'log2'),  
+}]
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
+est = DecisionTreeRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 

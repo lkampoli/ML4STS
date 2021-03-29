@@ -35,15 +35,17 @@ import pickle
 from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
+from sklearn import svm
+from sklearn.svm import SVR
+
+from sklearn.multioutput import MultiOutputRegressor
 
 n_jobs = 2
 
 # Read database filename from command-line input argument
 dataset = sys.argv[1]
 folder  = dataset[9:14]
-process = dataset[15:18]
+process = dataset[18:22]
 
 print(dataset)
 print(folder)
@@ -109,21 +111,16 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+hyper_params = [{'kernel': ('poly', 'rbf',),
+                 'gamma': ('scale', 'auto',),
+                 'C': (1e-1, 1e0, 1e1,),
+                 'epsilon': (1e-2, 1e-1, 1e0, 1e1,),
+                 'coef0': (0.0, 0.1, 0.2,),
+}]
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
+est = svm.SVR()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 

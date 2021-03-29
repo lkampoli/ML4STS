@@ -43,7 +43,7 @@ n_jobs = 2
 # Read database filename from command-line input argument
 dataset = sys.argv[1]
 folder  = dataset[9:14]
-process = dataset[15:18]
+process = dataset[18:22]
 
 print(dataset)
 print(folder)

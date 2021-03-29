@@ -36,7 +36,9 @@ from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
+from sklearn import ensemble
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import ExtraTreesRegressor
 
 n_jobs = 2
 
@@ -109,22 +111,25 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+hyper_params = [{'n_estimators': (1, 100,),
+                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+                 'max_features': ('sqrt','log2','auto', None,),
+                 'max_samples': (1,10,100,1000,),
+                 'bootstrap': (True, False,),
+                 'oob_score': (True, False,),
+                 'warm_start': (True, False,),
+                 'criterion': ('mse', 'mae',),
+                 'max_depth': (1,10,100,None,),
+                 'max_leaf_nodes': (2, 100,),
+                 'min_samples_split': (10,),
+                 'min_samples_leaf': (1,10,100,),
+}]
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
-gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+est = ensemble.ExtraTreesRegressor()
+#regr = MultiOutputRegressor(estimator=est)
+gs  = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 
 t0 = time.time()
@@ -204,25 +209,25 @@ y_test_dim = sc_y.inverse_transform(y_test)
 y_regr_dim = sc_y.inverse_transform(y_regr)
 
 plt.scatter(x_test_dim, y_test_dim[:,5], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,5], s=2, c='purple', marker='+', label='DT, i=5')
+plt.scatter(x_test_dim, y_regr_dim[:,5], s=2, c='purple', marker='+', label='ET, i=5')
 
 plt.scatter(x_test_dim, y_test_dim[:,10], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,10], s=2, c='r', marker='+', label='DT, i=10')
+plt.scatter(x_test_dim, y_regr_dim[:,10], s=2, c='r', marker='+', label='ET, i=10')
 
 plt.scatter(x_test_dim, y_test_dim[:,15], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,15], s=2, c='c', marker='+', label='DT, i=15')
+plt.scatter(x_test_dim, y_regr_dim[:,15], s=2, c='c', marker='+', label='ET, i=15')
 
 plt.scatter(x_test_dim, y_test_dim[:,20], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,20], s=2, c='g', marker='+', label='DT, i=20')
+plt.scatter(x_test_dim, y_regr_dim[:,20], s=2, c='g', marker='+', label='ET, i=20')
 
 plt.scatter(x_test_dim, y_test_dim[:,25], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,25], s=2, c='y', marker='+', label='DT, i=25')
+plt.scatter(x_test_dim, y_regr_dim[:,25], s=2, c='y', marker='+', label='ET, i=25')
 
 plt.scatter(x_test_dim, y_test_dim[:,30], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,30], s=2, c='b', marker='+', label='DT, i=30')
+plt.scatter(x_test_dim, y_regr_dim[:,30], s=2, c='b', marker='+', label='ET, i=30')
 
 plt.scatter(x_test_dim, y_test_dim[:,35], s=2, c='k', marker='o', label='Matlab')
-plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='DT, i=35')
+plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='ET, i=35')
 
 #plt.ylabel(r'$\eta$ [Pa·s]')
 plt.xlabel('T [K] ')

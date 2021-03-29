@@ -35,8 +35,8 @@ import pickle
 from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
+from sklearn import kernel_ridge
+from sklearn.kernel_ridge import KernelRidge
 
 n_jobs = 2
 
@@ -109,21 +109,18 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+# Kernel Ridge estimator
+# https://scikit-learn.org/stable/modules/generated/sklearn.kernel_ridge.KernelRidge.html
+hyper_params = [{'kernel': ('poly', 'rbf',),
+                 'alpha': (1e-3, 1e-2, 1e-1, 0.0, 0.5, 1.,),
+#                'degree': (),
+#                'coef0': (),
+                 'gamma': (0.1, 1, 2,),}]
+
+est=kernel_ridge.KernelRidge()
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 
@@ -170,7 +167,7 @@ print(gs.best_params_)
 print()
 
 t0 = time.time()
-y_regr = gs.predict(x_test)
+y_regr = regr.predict(x_test)
 regr_predict = time.time() - t0
 print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
 

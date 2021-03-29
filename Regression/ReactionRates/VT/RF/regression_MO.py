@@ -28,6 +28,9 @@ from sklearn.preprocessing import StandardScaler
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 
+from sklearn import ensemble
+from sklearn.ensemble import RandomForestRegressor
+
 import joblib
 from joblib import dump, load
 import pickle
@@ -35,15 +38,13 @@ import pickle
 from sklearn.inspection import permutation_importance
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.multioutput import MultiOutputRegressor, RegressorChain
-from sklearn.neural_network import MLPRegressor
 
 n_jobs = 2
 
 # Read database filename from command-line input argument
 dataset = sys.argv[1]
 folder  = dataset[9:14]
-process = dataset[15:18]
+process = dataset[18:22]
 
 print(dataset)
 print(folder)
@@ -109,21 +110,29 @@ print('Training Labels Shape:',   y_train.shape)
 print('Testing Features Shape:',  x_test.shape)
 print('Testing Labels Shape:',    y_test.shape)
 
-# MultiLayerPerceptron
-hyper_params = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-#         	 'activation' : ('tanh', 'relu',),
-#         	 'solver' : ('lbfgs','adam','sgd',),
-#        	 'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-#      		 'nesterovs_momentum': (True, False,),
-#        	 'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-#        	 'warm_start': (True, False,),
-#        	 'early_stopping': (True, False,),
-#        	 'max_iter': (1000,)
-},]
+hyper_params = [{'n_estimators': (1, 50, 100,),
+                 'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
+                 'max_features': ('sqrt', 'log2', 'auto',),
+#                 'bootstrap': (True, False,),
+#                 'oob_score': (True, False,),
+#                 'warm_start': (True, False,),
+                 'criterion': ('mse', 'mae',),
+                 'max_depth': (1, 10, 100,),
+                 'max_leaf_nodes': (2, 100,),
+                 'min_samples_split': (2, 5, 10,),
+                 'min_impurity_decrease': (0.1, 0.2, 0.3,),
+                 'min_samples_leaf': (1, 10, 100,),
+#                'min_impurity_split':= (), 
+#                'ccp_alpha': (),
+#                'max_samples': (),
+
+}]
+
+# https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+est=ensemble.RandomForestRegressor(random_state=69)
 
 # Exhaustive search over specified parameter values for the estimator
 # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-est = MLPRegressor()
 gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                   refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 
