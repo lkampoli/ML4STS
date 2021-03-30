@@ -1,1 +1,1 @@
-rm -r DR_RATES-*
+rm -r DR_RATES-* figures models scalers
