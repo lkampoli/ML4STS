@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+import time
 import sys
-#sys.path.insert(0, './utils/')
-
 import argparse
 import shutil
 
@@ -16,54 +14,16 @@ from sklearn.preprocessing import StandardScaler
 
 from joblib import dump, load
 
-
-def mk_tree(filename, parent_dir, process, algorithm):
-
-        data = filename[18:36]
-        dir  = data[9:14]
-        proc = data[15:18]
-
-        print("Dataset: ", data)
-        print("Folder: ", dir)
-        print("Process: ", proc)
-        print("parent_dir: ", parent_dir)
-
-        models  = "models"
-        scalers = "scalers"
-        figures = "figures"
-
-        model  = os.path.join(parent_dir+"/"+process+"/"+algorithm, models)
-        scaler = os.path.join(parent_dir+"/"+process+"/"+algorithm, scalers)
-        figure = os.path.join(parent_dir+"/"+process+"/"+algorithm, figures)
-
-        print(model)
-        print(scaler)
-        print(figure)
-
-        shutil.rmtree(data,   ignore_errors=True)
-        shutil.rmtree(model,  ignore_errors=True)
-        shutil.rmtree(scaler, ignore_errors=True)
-        shutil.rmtree(figure, ignore_errors=True)
-
-        print("Model: ", model)
-        print("Scaler: ", scaler)
-        print("Figure: ", figure)
-
-        from pathlib import Path
-        Path(parent_dir+"/"+process+"/"+algorithm+"/"+data).mkdir(parents=True, exist_ok=True)
-
-        os.mkdir(model)
-        os.mkdir(scaler)
-        os.mkdir(figure)
-
-        print("Directory '%s' created" %models)
-        print("Directory '%s' created" %scalers)
-        print("Directory '%s' created" %figures)
-
-        return data, dir, proc
+import preprocessing
+import DT
+import fit
+import print_summary
+import predict
+import mk_plot
 
 
 def main():
+
     parser = argparse.ArgumentParser(description='reaction rates regression')
 
     parser.add_argument('-p', '--process', type=str,
@@ -85,11 +45,12 @@ def main():
     algorithm = args.algorithm.split(',')
     #print(algorithm)
 
-    if (process[0] == 'DR' and algorithm[0] == 'DT'):
-          print("Process: ", process[0], "Algorithm: ", algorithm[0])
+    if (process[0] == 'DR'):
 
-          # assign directory
-          directory = 'DR/data/processes'
+          print("Process: ", process[0])
+
+          # assign data process directory
+          directory = process[0]+'/data/processes'
   
           for filename in os.listdir(directory):
                 f = os.path.join(directory, filename)
@@ -98,45 +59,73 @@ def main():
           if os.path.isfile(f):
                 print(f)
       
-          n_jobs = 2
+    # 2 cores
+    n_jobs = 2
 
-          parent_dir = "."
-          print(parent_dir)
+    parent_dir = "."
+    print(parent_dir)
 
-          data, dir, proc = mk_tree(f, parent_dir, process[0], algorithm[0])
+    # 1) Pre-processing phase
 
-          print("Loading dataset ...")
-          dataset_T = np.loadtxt(parent_dir+"/"+process[0]+"/data/Temperatures.csv")
-          dataset_k = np.loadtxt(parent_dir+"/"+process[0]+"/data/"+dir+"/"+proc+"/"+data+".csv")
-          print("Loading dataset OK!")
+    data, dir, proc, model, scaler, figure = preprocessing.mk_tree(f, parent_dir, process[0], algorithm[0])
+
+    print("Loading dataset ...")
+    dataset_T = np.loadtxt(parent_dir+"/"+process[0]+"/data/Temperatures.csv")
+    dataset_k = np.loadtxt(parent_dir+"/"+process[0]+"/data/"+dir+"/"+proc+"/"+data+".csv")
+    print("Loading dataset OK!")
     
-          x = dataset_T.reshape(-1,1)
-          y = dataset_k[:,:]
+    x = dataset_T.reshape(-1,1)
+    y = dataset_k[:,:]
    
-          print(dataset_T.shape)
-          print(dataset_k.shape)
+    print(dataset_T.shape)
+    print(dataset_k.shape)
 
-          x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
+    # 3) train/test split dataset
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
-          sc_x = StandardScaler()
-          sc_y = StandardScaler()
-          
-          sc_x.fit(x_train)
-          x_train = sc_x.transform(x_train)
-          x_test  = sc_x.transform(x_test)
-          
-          sc_y.fit(y_train)
-          y_train = sc_y.transform(y_train)
-          y_test  = sc_y.transform(y_test) 
+    # 4) compute and save scaler
+    sc_x = StandardScaler()
+    sc_y = StandardScaler()
+    
+    sc_x.fit(x_train)
+    x_train = sc_x.transform(x_train)
+    x_test  = sc_x.transform(x_test)
+    
+    sc_y.fit(y_train)
+    y_train = sc_y.transform(y_train)
+    y_test  = sc_y.transform(y_test) 
 
-          print('Training Features Shape:', x_train.shape)
-          print('Training Labels Shape:',   y_train.shape)
-          print('Testing Features Shape:',  x_test.shape)
-          print('Testing Labels Shape:',    y_test.shape)
+    print('Training Features Shape:', x_train.shape)
+    print('Training Labels Shape:',   y_train.shape)
+    print('Testing Features Shape:',  x_test.shape)
+    print('Testing Labels Shape:',    y_test.shape)
 
-          dump(sc_x, open(scaler+"/scaler_x_MO_"+data+'.pkl', 'wb'))
-          dump(sc_y, open(scaler+"/scaler_y_MO_"+data+'.pkl', 'wb'))
+    dump(sc_x, open(scaler+"/scaler_x_MO_"+data+'.pkl', 'wb'))
+    dump(sc_y, open(scaler+"/scaler_y_MO_"+data+'.pkl', 'wb'))
 
-          
+    if (algorithm[0] == 'DT'):
+     
+        est, hyper_params = DT.est_DT()
+   
+        # Exhaustive search over specified parameter values for the estimator
+        # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+        gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+                          refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
+    
+        fit.fit(x_train,y_train,gs)
+        
+        y_regr = predict.predict(x_test, gs)
+        
+        print_summary.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs)
+
+        x_test_dim = sc_x.inverse_transform(x_test)
+        y_test_dim = sc_y.inverse_transform(y_test)
+        y_regr_dim = sc_y.inverse_transform(y_regr)          
+
+        mk_plot.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)
+
+        # save the model to disk
+        dump(gs, model+"/model_MO_"+data+'.sav')
+
 if __name__ == "__main__":
     main()
