@@ -1,7 +1,7 @@
 #
 *.pdf
 *.json
-*.csv
+#*.csv
 *.txt
 *.eps
 *.sav

@@ -191,12 +191,13 @@ RD_at = -2*sum(RD_mol,2);
 % Here you can save the variables you want to create the dataset
 % which after you will use for the regression ...
 % ... for example:
-dataset = [x_s, n_i, n_a, rho, v, p, E, RD_mol, RD_at];
+%dataset = [x_s, n_i, n_a, rho, v, p, E, RD_mol, RD_at];
 % This is the filename which you should use in the regression.py
 % when you load the dataset:
 % dataset=np.loadtxt("../data/your_dataset_filename.dat")
-save your_dataset_filename.dat dataset -ascii -append
+%save your_dataset_filename.dat dataset -ascii -append
 
+save database Temp x_s n_i n_a rho v p E RD_mol RD_at
 toc
 
 end
