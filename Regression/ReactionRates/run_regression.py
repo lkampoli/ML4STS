@@ -9,6 +9,7 @@ import shutil
 import glob
 
 import numpy as np
+import pandas as pd
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
@@ -47,46 +48,32 @@ def main():
 
     args = parser.parse_args()
 
-    process = args.process.split(',')
+    process   = args.process.split(',')
+    directory = process[0]+'/data/processes'
+    path      = directory+"/*.csv"
+    print("Process: ", colored(process[0], 'green'))
 
     algorithm = args.algorithm.split(',')
+    print("Algorithm: ", colored(algorithm[0],'blue'))
 
-#   if (process[0] == 'DR'): 
+    parent_dir = "."
+    print("PWD: ", colored(parent_dir,'yellow'))
 
-    print("Process: ", process[0])
-    directory = process[0]+'/data/processes'
+    n_jobs = 2
 
-#       for filename in os.listdir(directory):
-#           f = os.path.join(directory, filename)
-#   
-#           if os.path.isfile(f):
-#                print(f)
-
-    path = directory+"/*.csv"
     for f in glob.glob(path):
         #print("{bcolors.OKGREEN}f{bcolors.ENDC}")
         print(colored(f, 'red'))
-
-        # 2 cores
-        n_jobs = 2
-
-        parent_dir = "."
-        print(parent_dir)
+#FIXME: pd skip the first line 
+        dataset_k = pd.read_csv(f, delimiter=",").to_numpy()
+        dataset_T = pd.read_csv(parent_dir+"/"+process[0]+"/data/Temperatures.csv").to_numpy()
+        
+        x = dataset_T.reshape(-1,1)
+        y = dataset_k
 
         print("### Phase 1: PRE_PROCESSING ###")
         ########################################
         data, dir, proc, model, scaler, figure = utils.mk_tree(f, parent_dir, process[0], algorithm[0])
-
-        print("Loading dataset ...")
-        dataset_T = np.loadtxt(parent_dir+"/"+process[0]+"/data/Temperatures.csv")
-        dataset_k = np.loadtxt(parent_dir+"/"+process[0]+"/data/"+dir+"/"+proc+"/"+data+".csv")
-        print("Loading dataset OK!")
-        
-        x = dataset_T.reshape(-1,1)
-        y = dataset_k[:,:]
-    
-        print(dataset_T.shape)
-        print(dataset_k.shape)
 
         # 3) train/test split dataset
         x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
@@ -163,6 +150,7 @@ def main():
 
         # save the model to disk
         dump(gs, model+"/model_MO_"+data+'.sav')
+
 
 if __name__ == "__main__":
     main()

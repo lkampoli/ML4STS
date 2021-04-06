@@ -13,22 +13,43 @@ import matplotlib.pyplot as plt
 
 def mk_tree(filename, parent_dir, process, algorithm):
     
-    if (process == "DR"):    
-        data = filename[18:36]
-        dir  = data[9:14]  
-        proc = data[15:18] # dis, rec
-    elif (process == "VT"):    
-        data = filename[18:35]
-        dir  = data[9:14]  # N2-N2
-        proc = data[15:17] # down, up
-    elif (process == "VV"):#TODO
-        data = filename[18:35]
-        dir  = data[9:14]  # N2-N2
-        proc = data[15:17] # down, up
-    elif (process == "VV2"):#TODO
-        data = filename[18:35]
-        dir  = data[9:14]  # N2-N2
-        proc = data[15:17] # down, up
+#    if (process == "DR"):    
+#        data = filename[18:36]
+#        dir  = data[9:14]  
+#        proc = data[15:18] # dis, rec
+#    elif (process == "VT"):    
+#        data = filename[18:35]
+#        dir  = data[9:14]  # N2-N2
+#        proc = data[15:17] # down, up
+#    elif (process == "VV"):#TODO
+#        data = filename[18:35]
+#        dir  = data[9:14]  # N2-N2
+#        proc = data[15:17] # down, up
+#    elif (process == "VV2"):#TODO
+#        data = filename[18:35]
+#        dir  = data[9:14]  # N2-N2
+#        proc = data[15:17] # down, up
+#    elif (process == "ZR"):#TODO
+#        data = filename[18:35]
+#        dir  = data[9:14]  # N2-N2
+#        proc = data[15:17] # down, up
+#    else:
+#        print("Process not accounted for ... !")
+
+    proc = "_" 
+    dir  = "_" 
+    proc = "_" 
+
+    #import numpy as np
+    #dataset_k = np.loadtxt(parent_dir+"/"+process[0]+filename)
+    #print(dataset_k)
+
+    # Get the filename only from the initial file path.
+    data = os.path.basename(filename)
+    data = os.path.splitext(data)[0]
+    # Use splitext() to get filename and extension separately.
+    #(file, ext) = os.path.splitext(filename)
+    #file_name = Path(file_path).stem
 
     print("Dataset: ", data)
     print("Folder: ", dir)
@@ -128,7 +149,7 @@ def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs):
    print(gs.best_params_)
    print()
    
-   with open(data+'/output.log', 'w') as f:
+   with open(data+"/../"+'output.log', 'w') as f:
        #print("Training time: %.6f s"   % runtime,      file=f)
        #print("Prediction time: %.6f s" % regr_predict, file=f)
        print(" ",                                      file=f)
