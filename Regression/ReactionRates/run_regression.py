@@ -136,7 +136,13 @@ def main():
         gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                           refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
         
-        utils.fit(x_train,y_train,gs)
+        utils.fit(x_train, y_train, gs)
+
+        results = pd.DataFrame(gs.cv_results_)
+        # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html
+        #compression_opts = dict(method='zip', archive_name='GridSearchCV_results.csv')
+        #results.to_csv('GridSearchCV_results.zip', index=False, compression=compression_opts)
+        results.to_csv(model+"/../"+"GridSearchCV_results.csv", index=False, sep='\t', encoding='utf-8')
         
         y_regr = utils.predict(x_test, gs)
         
