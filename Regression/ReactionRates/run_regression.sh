@@ -6,12 +6,10 @@ declare -a process=("DR" "VT" "VV" "VV2" "ZR")
 # List of algorithms
 declare -a algorithm=("DT" "ET" "RF" "SVM" "GB" "HGB" "KN" "KR" "MLP")
 
-for i in "${process[@]}";
+for p in "${process[@]}";
   do
-    #echo "process: " $i
-    for j in "${algorithm[@]}";
+    for a in "${algorithm[@]}";
       do
-        #echo "algorithm: " $j
-        python run_regression.py -p $i -a $j
+        python run_regression.py -p $p -a $a
       done
   done

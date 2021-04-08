@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 from sklearn.tree import DecisionTreeRegressor
 
@@ -45,6 +44,7 @@ from sklearn.svm import SVR
 #from keras import regularizers
 
 
+# https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor
 def est_DT():
     hp = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
            'splitter': ('best', 'random'),             
