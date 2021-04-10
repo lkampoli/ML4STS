@@ -49,9 +49,13 @@ from sklearn.utils.fixes import loguniform
 # criterion='mse', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, 
 # max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, ccp_alpha=0.0
 def est_DT():
-    hp = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
-           'splitter': ('best', 'random'),             
-           'max_features': ('auto', 'sqrt', 'log2'),  
+    #hp = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
+    #       'splitter': ('best', 'random'),             
+    #       'max_features': ('auto', 'sqrt', 'log2'),  
+    #}]
+    hp = [{'criterion': ('mse',), 
+           'splitter': ('best',),             
+           'max_features': ('auto',),  
     }]
     est = DecisionTreeRegressor()
     return est, hp
