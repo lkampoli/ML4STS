@@ -226,8 +226,8 @@ disp(['energy = ',num2str(d3)]);
  end
 
  RD_mol = RDm+RDa;
- RVT = RVTm+RVTa;
- RD_at = -2*sum(RD_mol,2);
+ RVT    = RVTm+RVTa;
+ RD_at  = -2*sum(RD_mol,2);
 
  dataset = [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n, RD_mol, RD_at];
  save solution_bi_mix_sts_x_s_time_s_Temp_rho_p_v_E_ni_n_na_n_RD_mol_RD_at.dat dataset -ascii
@@ -241,6 +241,21 @@ disp(['energy = ',num2str(d3)]);
  save solution_bi_mix_sts_x_s_time_s_Temp_rho_p_v_E_ni_n_na_n_RVV.dat          dataset -ascii
  movefile solution_bi_mix_sts_x_s_time_s_Temp_rho_p_v_E_ni_n_na_n_RVV.dat ..
 
+ dataset = [x_s, time_s, Temp, rho, p, v, E, ni_n, na_n, RDm, RDa, RVTm, RVTa, RVV];
+ save solution_bi_mix_sts_x_s_time_s_Temp_rho_p_v_E_ni_n_na_n_ALL.dat          dataset -ascii
+ movefile solution_bi_mix_sts_x_s_time_s_Temp_rho_p_v_E_ni_n_na_n_ALL.dat ..
+%%
+ save RDm.dat  RDm  -ascii
+ save RDa.dat  RDa  -ascii
+ save RVTm.dat RVTm -ascii
+ save RVTa.dat RVTa -ascii
+ save RVV.dat  RVV  -ascii
+ 
+ save x_s.dat  x_s  -ascii
+ save time_s.dat  time_s  -ascii
+ save Temp.dat  Temp  -ascii 
+ 
+%%
 %dataset = [x_s, Temp, v, n_i, n_a, RD_mol, RD_at];
 %dataset = [x_s, Temp, v, ni_n, na_n, RD_mol, RD_at];
 %save sol_ML.dat dataset -ascii

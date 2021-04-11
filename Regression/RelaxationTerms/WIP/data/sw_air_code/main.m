@@ -339,78 +339,82 @@ if (d1>tol)||(d2>tol)||(d3>tol)
     disp('Big error!');
     return;
 end
- 
- RDn2  = zeros(Npoint,l1); RDo2  = zeros(Npoint,l2); RDno  = zeros(Npoint,l3);
- RZn2  = zeros(Npoint,l1); RZo2  = zeros(Npoint,l2); RZno  = zeros(Npoint,l3);
- RVTn2 = zeros(Npoint,l1); RVTo2 = zeros(Npoint,l2); RVTno = zeros(Npoint,l3);
- RVVn2 = zeros(Npoint,l1); RVVo2 = zeros(Npoint,l2); RVVno = zeros(Npoint,l3);
 
- for i = 1:Npoint
-     input = Y(i,:)';
-     [RDn2_, RDo2_, RDno_, RZn2_, RZo2_, RZno_, RVTn2_, RVTo2_, RVTno_, RVVn2_, RVVo2_, RVVno_] = rpart_post(input); % m^-3*s^-1
+%%
+l1 = l(1); l2 = l(2); l3 = l(3);
 
-     RDn2(i,:)  = RDn2_;
-     RDo2(i,:)  = RDo2_;
-     RDno(i,:)  = RDno_;
-                 
-     RZn2(i,:)  = RZn2_;
-     RZo2(i,:)  = RZo2_;
-     RZno(i,:)  = RZno_;
-                 
-     RVTn2(i,:) = RVTn2_;
-     RVTo2(i,:) = RVTo2_;
-     RVTno(i,:) = RVTno_;
-                 
-     RVVn2(i,:) = RVVn2_;
-     RVVo2(i,:) = RVVo2_;
-     RVVno(i,:) = RVVno_;
+RDn2  = zeros(Npoint,l1); RDo2  = zeros(Npoint,l2); RDno  = zeros(Npoint,l3);
+RZn2  = zeros(Npoint,l1); RZo2  = zeros(Npoint,l2); RZno  = zeros(Npoint,l3);
+RVTn2 = zeros(Npoint,l1); RVTo2 = zeros(Npoint,l2); RVTno = zeros(Npoint,l3);
+RVVn2 = zeros(Npoint,l1); RVVo2 = zeros(Npoint,l2); RVVno = zeros(Npoint,l3);
 
+for i = 1:Npoint
+    disp(i);
+    input = Y(i,:)';
+    
+    [RDn2_, RDo2_, RDno_, RZn2_, RZo2_, RZno_, RVTn2_, RVTo2_, RVTno_, RVVn2_, RVVo2_, RVVno_] = rpart_fho_post(input); % m^-3*s^-1
+    
+    RDn2(i,:)  = RDn2_;
+    RDo2(i,:)  = RDo2_;
+    RDno(i,:)  = RDno_;
+                
+    RZn2(i,:)  = RZn2_;
+    RZo2(i,:)  = RZo2_;
+    RZno(i,:)  = RZno_;
+                
+    RVTn2(i,:) = RVTn2_;
+    RVTo2(i,:) = RVTo2_;
+    RVTno(i,:) = RVTno_;
+                
+    RVVn2(i,:) = RVVn2_;
+    RVVo2(i,:) = RVVo2_;
+    RVVno(i,:) = RVVno_;
  end
 
 % DR
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2_n, no2_n, nno_n, nn_n, no_n, RDn2, RDo2, RDno]; % inlcude only chemical species
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RDn2_RDo2_RDno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RDn2_RDo2_RDno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2_n, no2_n, nno_n, nn_n, no_n, RDn2, RDo2, RDno]; % inlcude only chemical species
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RDn2_RDo2_RDno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RDn2_RDo2_RDno.dat ..
 
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RDn2, RDo2, RDno]; % include all pseudo-levels
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RDn2_RDo2_RDno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RDn2_RDo2_RDno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RDn2, RDo2, RDno]; % include all pseudo-levels
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RDn2_RDo2_RDno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RDn2_RDo2_RDno.dat ..
 
 % RZ
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2_n, no2_n, nno_n, nn_n, no_n, RZn2, RZo2, RZno]; % inlcude only chemical species
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RZn2_RZo2_RZno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RZn2_RZo2_RZno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2_n, no2_n, nno_n, nn_n, no_n, RZn2, RZo2, RZno]; % inlcude only chemical species
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RZn2_RZo2_RZno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RZn2_RZo2_RZno.dat ..
 
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RZn2, RZo2, RZno]; % include all pseudo-levels
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RZn2_RZo2_RZno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RZn2_RZo2_RZno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RZn2, RZo2, RZno]; % include all pseudo-levels
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RZn2_RZo2_RZno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RZn2_RZo2_RZno.dat ..
 
 % VT
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2_n, no2_n, nno_n, nn_n, no_n, RVTn2, RVTo2, RVTno]; % inlcude only chemical speciesa
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2_n, no2_n, nno_n, nn_n, no_n, RVTn2, RVTo2, RVTno]; % inlcude only chemical speciesa
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat ..
 
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RVTn2, RVTo2, RVTno]; % include all pseudo-levels
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RVTn2, RVTo2, RVTno]; % include all pseudo-levels
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVTn2_RVTo2_RVTno.dat ..
 
 % VV
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2_n, no2_n, nno_n, nn_n, no_n, RVVn2, RVVo2, RVVno]; % inlcude only chemical speciesa
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2_n, no2_n, nno_n, nn_n, no_n, RVVn2, RVVo2, RVVno]; % inlcude only chemical speciesa
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat ..
 
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RVVn2, RVVo2, RVVno]; % include all pseudo-levels
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RVVn2, RVVo2, RVVno]; % include all pseudo-levels
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_RVVn2_RVVo2_RVVno.dat ..
 
 % all
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2_n, no2_n, nno_n, nn_n, no_n, RDn2, RDo2, RDno, RZn2, RZo2, RZno, RVTn2, RVTo2, RVTno, RVVn2, RVVo2, RVVno]; 
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_ALL.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2_n_no2_n_nno_n_nn_n_no_n_ALL.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2_n, no2_n, nno_n, nn_n, no_n, RDn2, RDo2, RDno, RZn2, RZo2, RZno, RVTn2, RVTo2, RVTno, RVVn2, RVVo2, RVVno]; 
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_ALL.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2_n_no2_n_nno_n_nn_n_no_n_ALL.dat ..
 
- dataset = [x_s, time_s, Temp, rho, p, v, E, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RDn2, RDo2, RDno, RZn2, RZo2, RZno, RVTn2, RVTo2, RVTno, RVVn2, RVVo2, RVVno];
- save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_ALL.dat dataset -ascii
- movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_E_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_ALL.dat ..
+ dataset = [x_s, time_s, Temp, rho, p, v, H, nn2i_n, no2i_n, nnoi_n, nn_n, no_n, RDn2, RDo2, RDno, RZn2, RZo2, RZno, RVTn2, RVTo2, RVTno, RVVn2, RVVo2, RVVno];
+ save solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_ALL.dat dataset -ascii
+ movefile solution_sw_air_code_x_s_time_s_Temp_rho_p_v_H_nn2i_n_no2i_n_nnoi_n_nn_n_no_n_ALL.dat ..
 
 beep
 msgbox('Woah! Finally done!','Success');
