@@ -10,9 +10,11 @@ import glob
 
 import numpy as np
 import pandas as pd
+import matplotlib.pylab as plt
 
-from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import precision_score, recall_score, make_scorer
 
 from joblib import dump, load
 
@@ -131,11 +133,22 @@ def main():
         else:
             print("Algorithm not implemented ...")
     
+
         # Exhaustive search over specified parameter values for the estimator
         # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
         gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                           refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
-        
+    
+
+        # Randomized search on hyper parameters
+        # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV
+        # class sklearn.model_selection.RandomizedSearchCV(estimator, param_distributions, *, n_iter=10, scoring=None, n_jobs=None, refit=True, 
+        #                                                  cv=None, verbose=0, pre_dispatch='2*n_jobs', random_state=None, error_score=nan, 
+        #                                                  return_train_score=False)
+        #gs = RandomizedSearchCV(est, cv=10, n_iter=10, param_distributions=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+        #                        refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
+
+
         utils.fit(x_train, y_train, gs)
 
         results = pd.DataFrame(gs.cv_results_)
@@ -143,7 +156,25 @@ def main():
         #compression_opts = dict(method='zip', archive_name='GridSearchCV_results.csv')
         #results.to_csv('GridSearchCV_results.zip', index=False, compression=compression_opts)
         results.to_csv(model+"/../"+"GridSearchCV_results.csv", index=False, sep='\t', encoding='utf-8')
-        
+     
+        #plt.figure(figsize=(12, 4))
+        #for score in ['mean_test_recall', 'mean_test_precision', 'mean_test_min_both']:
+        #    plt.plot([_[1] for _ in results['param_class_weight']], results[score], label=score)
+        #plt.legend();
+
+        #plt.figure(figsize=(12, 4))
+        #for score in ['mean_train_recall', 'mean_train_precision', 'mean_test_min_both']:
+        #    plt.scatter(x=[_[1] for _ in results['param_class_weight']], y=results[score.replace('test', 'train')], label=score)
+        #plt.legend();
+
+        # summarize results
+        print("Best: %f using %s" % (gs.best_score_, gs.best_params_))
+        means  = gs.cv_results_['mean_test_score']
+        stds   = gs.cv_results_['std_test_score']
+        params = gs.cv_results_['params']
+        for mean, stdev, param in zip(means, stds, params):
+            print("%f (%f) with: %r" % (mean, stdev, param))
+
         y_regr = utils.predict(x_test, gs)
         
         utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs)
