@@ -65,7 +65,7 @@ def est_ET():
     hp = [{'n_estimators': (1, 100,),
            'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
            'max_features': ('sqrt','log2','auto', None,),
-           'max_samples': loguniform(1, 1000),
+           'max_samples': (1,10, 100, 1000,), #loguniform(1, 1000),
            'bootstrap': (True, False,),
            'oob_score': (True, False,),
            'warm_start': (True, False,),
@@ -73,7 +73,7 @@ def est_ET():
            'max_depth': (1,10,100,None,),
            'max_leaf_nodes': (2, 100,),
            'min_samples_split': (10,),
-           'min_samples_leaf': loguniform(1, 100),
+           'min_samples_leaf': (1,10,100,) #loguniform(1, 100),
     }]
     est = ensemble.ExtraTreesRegressor()
     #regr = MultiOutputRegressor(estimator=est)

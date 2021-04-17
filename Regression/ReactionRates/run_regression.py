@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#from daal4py.sklearn import patch_sklearn
+#patch_sklearn()
+
 import os
 import time
 import sys
@@ -15,6 +18,10 @@ import matplotlib.pylab as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import precision_score, recall_score, make_scorer
+from sklearn.pipeline import Pipeline
+
+from ray.tune.sklearn import TuneGridSearchCV
+from ray.tune.schedulers import MedianStoppingRule
 
 from joblib import dump, load
 
@@ -61,12 +68,11 @@ def main():
     parent_dir = "."
     print("PWD: ", colored(parent_dir,'yellow'))
 
-    n_jobs = 2
+    n_jobs = 4
 
     for f in glob.glob(path):
         #print("{bcolors.OKGREEN}f{bcolors.ENDC}")
         print(colored(f, 'red'))
-#FIXME: pd skip the first line 
         dataset_k = pd.read_csv(f, delimiter=",").to_numpy()
         dataset_T = pd.read_csv(parent_dir+"/"+process[0]+"/data/Temperatures.csv").to_numpy()
         
@@ -75,7 +81,7 @@ def main():
 
         print("### Phase 1: PRE_PROCESSING ###")
         ########################################
-        data, dir, proc, model, scaler, figure = utils.mk_tree(f, parent_dir, process[0], algorithm[0])
+        data, dir, proc, model, scaler, figure, outfile = utils.mk_tree(f, parent_dir, process[0], algorithm[0])
 
         # 3) train/test split dataset
         x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
@@ -133,10 +139,22 @@ def main():
         else:
             print("Algorithm not implemented ...")
     
+        # https://github.com/ray-project/tune-sklearn
+        # https://docs.ray.io/en/latest/tune/api_docs/sklearn.html#tune-sklearn-docs
+        # class ray.tune.sklearn.TuneGridSearchCV(estimator, param_grid, early_stopping=None, scoring=None, 
+        # n_jobs=None, cv=5, refit=True, verbose=0, error_score='raise', return_train_score=False, 
+        # local_dir='~/ray_results', max_iters=1, use_gpu=False, loggers=None, pipeline_auto_early_stop=True, 
+        # stopper=None, time_budget_s=None, sk_n_jobs=None)
+        #scheduler = MedianStoppingRule(grace_period=10.0)
+        #gs = TuneGridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+        #                  refit=True, error_score=np.nan, return_train_score=True)
+        #tune_search = TuneSearchCV(clf, parameter_grid, search_optimization="hyperopt", n_trials=3, early_stopping=scheduler, max_iters=10)
+        #tune_search.fit(x_train, y_train)
+
 
         # Exhaustive search over specified parameter values for the estimator
         # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-        gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+        gs = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                           refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
     
 
@@ -148,8 +166,8 @@ def main():
         #gs = RandomizedSearchCV(est, cv=10, n_iter=10, param_distributions=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
         #                        refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
 
-
-        utils.fit(x_train, y_train, gs)
+        # Training
+        utils.fit(x_train, y_train, gs, outfile)
 
         results = pd.DataFrame(gs.cv_results_)
         # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html
@@ -175,14 +193,18 @@ def main():
         for mean, stdev, param in zip(means, stds, params):
             print("%f (%f) with: %r" % (mean, stdev, param))
 
-        y_regr = utils.predict(x_test, gs)
+        # Perform prediction
+        y_regr = utils.predict(x_test, gs, outfile)
         
-        utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs)
+        # Compute the scores
+        utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs, outfile)
 
+        # Transform back
         x_test_dim = sc_x.inverse_transform(x_test)
         y_test_dim = sc_y.inverse_transform(y_test)
         y_regr_dim = sc_y.inverse_transform(y_regr)          
 
+        # Make figures
         utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)
 
         # save the model to disk

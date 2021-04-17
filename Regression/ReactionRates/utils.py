@@ -38,7 +38,6 @@ def mk_tree(filename, parent_dir, process, algorithm):
 
     proc = "_" 
     dir  = "_" 
-    proc = "_" 
 
     #import numpy as np
     #dataset_k = np.loadtxt(parent_dir+"/"+process[0]+filename)
@@ -51,65 +50,73 @@ def mk_tree(filename, parent_dir, process, algorithm):
     #(file, ext) = os.path.splitext(filename)
     #file_name = Path(file_path).stem
 
-    print("Dataset: ", data)
-    print("Folder: ", dir)
-    print("Process: ", proc)
+    print("Dataset: ",    data      )
+    print("Folder: ",     dir       )
+    print("Process: ",    proc      )
     print("parent_dir: ", parent_dir)
 
-    models  = "models"
-    scalers = "scalers"
-    figures = "figures"
+    models   = "models"
+    scalers  = "scalers"
+    figures  = "figures"
+    outfiles = "outfiles"
 
-    model  = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, models)
-    scaler = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, scalers)
-    figure = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, figures)
+    model   = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, models  )
+    scaler  = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, scalers )
+    figure  = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, figures )
+    outfile = os.path.join(parent_dir+"/"+process+"/"+algorithm+"/"+data, outfiles)
 
-    print(model)
-    print(scaler)
-    print(figure)
+    print(model  )
+    print(scaler )
+    print(figure )
+    print(outfile)
 
-    shutil.rmtree(data,   ignore_errors=True)
-    shutil.rmtree(model,  ignore_errors=True)
-    shutil.rmtree(scaler, ignore_errors=True)
-    shutil.rmtree(figure, ignore_errors=True)
+    shutil.rmtree(data,    ignore_errors=True)
+    shutil.rmtree(model,   ignore_errors=True)
+    shutil.rmtree(scaler,  ignore_errors=True)
+    shutil.rmtree(figure,  ignore_errors=True)
+    shutil.rmtree(outfile, ignore_errors=True)
 
-    print("Model: ", model)
-    print("Scaler: ", scaler)
-    print("Figure: ", figure)
+    print("Model: ",   model  )
+    print("Scaler: ",  scaler )
+    print("Figure: ",  figure )
+    print("Outfile: ", outfile)
 
     Path(parent_dir+"/"+process+"/"+algorithm+"/"+data).mkdir(parents=True, exist_ok=True)
 
     os.mkdir(model)
     os.mkdir(scaler)
     os.mkdir(figure)
+    os.mkdir(outfile)
 
-    print("Directory '%s' created" %models)
-    print("Directory '%s' created" %scalers)
-    print("Directory '%s' created" %figures)
+    print("Directory '%s' created" %models  )
+    print("Directory '%s' created" %scalers )
+    print("Directory '%s' created" %figures )
+    print("Directory '%s' created" %outfiles)
 
-    return data, dir, proc, model, scaler, figure
+    return data, dir, proc, model, scaler, figure, outfile
 
 
-def fit(x,y,gs):
+def fit(x, y, gs, outfile):
    t0 = time.time()
    gs.fit(x, y)
    runtime = time.time() - t0
    print("Training time: %.6f s" % runtime)
-
+   with open(outfile+'/train_time.log', 'w') as f:
+       print("Training time: %.6f s" % runtime, file=f)
    return gs
 
 
-def predict(x_test, gs):
-
+def predict(x_test, gs, outfile):
    t0 = time.time()
    y_regr = gs.predict(x_test)
    regr_predict = time.time() - t0
    print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
-
+   with open(outfile+'/test_time.log', 'w') as f:
+       print("Prediction time: %.6f s" % regr_predict, file=f)
    return y_regr
 
 
-def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs):
+def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs, outfile):
 
    train_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
    train_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
@@ -124,7 +131,6 @@ def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs):
    #test_score_me   = max_error(               sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
    #test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
    test_score_r2    = r2_score(                sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   
    
    print()
    print("The model performance for training set")
@@ -149,9 +155,8 @@ def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs):
    print(gs.best_params_)
    print()
    
-   with open(data+"/../"+'output.log', 'w') as f:
-       #print("Training time: %.6f s"   % runtime,      file=f)
-       #print("Prediction time: %.6f s" % regr_predict, file=f)
+   #with open(data+"/../"+'output.log', 'w') as f:
+   with open(outfile+'/output.log', 'w') as f:
        print(" ",                                      file=f)
        print("The model performance for training set", file=f)
        print("--------------------------------------", file=f)

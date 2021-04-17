@@ -1,0 +1,17 @@
+ 
+The model performance for training set
+--------------------------------------
+MAE is      0.0
+MSE is      0.0
+EVS is      1.0
+R2 score is 1.0
+ 
+The model performance for testing set
+--------------------------------------
+MAE is      7.938311267881882e-47
+MSE is      4.523270353040627e-91
+EVS is      0.9962283382660719
+R2 score is 0.99618945995105
+ 
+Best parameters found for dev set:
+{'criterion': 'mse', 'max_features': 'auto', 'splitter': 'best'}
