@@ -27,6 +27,7 @@
 *.zip
 *.sgy
 *.lrz
+*.log
 #
 OLDREPO/*
 #

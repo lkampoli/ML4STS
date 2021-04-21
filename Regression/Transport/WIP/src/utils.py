@@ -132,14 +132,14 @@ def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs):
        print(gs.best_params_,                          file=f)
 
 
-def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
+def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, proc, algo):
    
-    plt.scatter(x_test_dim[:,0], y_test_dim[:], s=5,   c='k', marker='o', label='KAPPA')
-    plt.scatter(x_test_dim[:,0], y_regr_dim[:], s=2.5, c='r', marker='o', label='DecisionTree')
+    plt.scatter(x_test_dim[:,0], y_test_dim[:,0], s=5,   c='k', marker='o', label='KAPPA')
+    plt.scatter(x_test_dim[:,0], y_regr_dim[:,0], s=2.5, c='r', marker='o', label=algo)
     plt.ylabel(r'$\eta$ [Pa·s]')
     plt.xlabel('T [K] ')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(figure+"/regression_"+data+'.eps')
+    plt.savefig(figure+"/regression_"+proc+'.eps')
     #plt.show()
     plt.close()

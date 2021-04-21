@@ -23,16 +23,25 @@ import utils
 
 from termcolor import colored
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
+    HEADER    = '\033[95m'
+    OKBLUE    = '\033[94m'
+    OKCYAN    = '\033[96m'
+    OKGREEN   = '\033[92m'
+    WARNING   = '\033[93m'
+    FAIL      = '\033[91m'
+    ENDC      = '\033[0m'
+    BOLD      = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def main():
 
@@ -48,6 +57,13 @@ def main():
                         default='DT',
                         help='transport algorithm')
 
+    parser.add_argument('-l', '--load_model', type=str2bool,
+                        nargs='?',
+                        choices=[False, True],
+                        default=False,
+                        const=True,
+                        help='Load saved model')
+
     args = parser.parse_args()
 
     process   = args.process.split(',')
@@ -55,6 +71,9 @@ def main():
 
     algorithm = args.algorithm.split(',')
     print("Algorithm: ", colored(algorithm[0],'blue'))
+
+    load_model = args.load_model
+    print("Load: ", colored(load_model,'magenta'))
 
     src_dir = "."
     print("SRC: ", colored(src_dir,'yellow'))
@@ -84,8 +103,11 @@ def main():
         x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
         y = dataset[:,10:] # thermal diffusion, D_Ti
     elif (process[0] == "mass_diffusion"):
-        x = dataset[:,0:7] # T, P, x_N2, x_O2, x_NO, x_N, x_O
-        y = dataset[:,:]   # mass diffusion TODO
+        with open('../data/TCs_air5_MD.txt') as f:
+            lines = (line for line in f if not line.startswith('#'))
+            dataset = np.loadtxt(lines, skiprows=0)
+        x = dataset[:,0:125] # T, P, x_ci_N2[48], x_ci_O2[36], x_ci_NO[38], x_c_N[1], x_c_O[1]
+        y = dataset[:,126:]   # mass diffusion
 
     print(x.shape)
     print(y.shape)
@@ -159,7 +181,7 @@ def main():
     # 2.1) search for best hyper-parameters combination
     # Exhaustive search over specified parameter values for the estimator
     # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-    gs = GridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
+    gs = GridSearchCV(est, cv=3, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                       refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
     
     # Randomized search on hyper parameters
@@ -203,7 +225,7 @@ def main():
     y_regr_dim = sc_y.inverse_transform(y_regr)          
 
     # 3.3) make plots
-    utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, process[0])
+    utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, process[0], algorithm[0])
 
     # 3.4) save model to disk
     dump(gs, model+"/model_"+process[0]+".sav")

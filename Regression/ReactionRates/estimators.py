@@ -25,29 +25,25 @@ from sklearn.svm import SVR
 
 from sklearn.utils.fixes import loguniform
 
-#import tensorflow as tf
-#from tensorflow.python.keras.models import Sequential
-#from tensorflow.python.keras.layers import Dense, Dropout
-#from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor
-#from tensorflow import keras
-#from tensorflow.keras import layers
-#from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
+import tensorflow as tf
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense, Dropout
+from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
+
+from keras.utils.vis_utils import plot_model
+from keras.models import load_model, model_from_json
+from keras_sequential_ascii import keras2ascii
+from keras.optimizers import SGD, Adam, RMSprop, Adagrad
+from keras import regularizers
 
 #from IPython.display import clear_output
 #from livelossplot import PlotLossesKeras
-#from keras.callbacks import TensorBoard
-#from keras.utils.vis_utils import plot_model
-#from keras.models import load_model
 #from ann_visualizer.visualize import ann_viz;
-#from keras.models import model_from_json
-#from keras_sequential_ascii import keras2ascii
-#from keras.optimizers import SGD, Adam, RMSprop, Adagrad
-#from keras import regularizers
-
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor
-# criterion='mse', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, 
-# max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, ccp_alpha=0.0
 def est_DT():
     hp = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
            'splitter': ('best', 'random'),             
@@ -58,9 +54,6 @@ def est_DT():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesRegressor.html?highlight=extra%20tree#sklearn.ensemble.ExtraTreesRegressor
-# n_estimators=100, criterion='mse', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features='auto',
-# max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=False, oob_score=False, n_jobs=None, random_state=None, 
-# verbose=0, warm_start=False, ccp_alpha=0.0, max_samples=None
 def est_ET():
     hp = [{'n_estimators': (1, 100,),
            'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
@@ -81,10 +74,6 @@ def est_ET():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html?highlight=gradientboostingregressor#sklearn.ensemble.GradientBoostingRegressor
-# loss='ls', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, 
-# min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_decrease=0.0, min_impurity_split=None, init=None, random_state=None, 
-# max_features=None, alpha=0.9, verbose=0, max_leaf_nodes=None, warm_start=False, validation_fraction=0.1, n_iter_no_change=None, 
-# tol=0.0001, ccp_alpha=0.0
 def est_GB():
     hp = [{'n_estimators': (10, 100, 1000,),
            'min_weight_fraction_leaf': (0.0, 0.1, 0.2, 0.3,),
@@ -101,9 +90,6 @@ def est_GB():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#sklearn.ensemble.HistGradientBoostingRegressor
-# loss='least_squares', learning_rate=0.1, max_iter=100, max_leaf_nodes=31, max_depth=None, min_samples_leaf=20, l2_regularization=0.0, 
-# max_bins=255, categorical_features=None, monotonic_cst=None, warm_start=False, early_stopping='auto', scoring='loss', 
-# validation_fraction=0.1, n_iter_no_change=10, tol=1e-07, verbose=0, random_state=None
 def est_HGB(est):
     hp = [{'warm_start': (False, True),
            'max_depth': (1, 10, 100, None,),
@@ -116,7 +102,6 @@ def est_HGB(est):
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html#sklearn.neighbors.KNeighborsRegressor
-# n_neighbors=5, weights='uniform', algorithm='auto', leaf_size=30, p=2, metric='minkowski', metric_params=None, n_jobs=None
 def est_KN():
     hp = [{'algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto',),
            'n_neighbors': (1, 5, 10, 20),
@@ -131,7 +116,6 @@ def est_KN():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.kernel_ridge.KernelRidge.html#sklearn.kernel_ridge.KernelRidge
-# alpha=1, *, kernel='linear', gamma=None, degree=3, coef0=1, kernel_params=None
 def est_KR():
     hp = [{'kernel': ('poly', 'rbf',),
            'alpha': (1e-3, 1e-2, 1e-1, 0.0, 0.5, 1.,),
@@ -144,37 +128,29 @@ def est_KR():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html?highlight=mlp#sklearn.neural_network.MLPRegressor
-# hidden_layer_sizes=100, activation='relu', solver='adam', alpha=0.0001, batch_size='auto', learning_rate='constant', 
-# learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=None, tol=0.0001, verbose=False, 
-# warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, 
-# beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10, max_fun=15000
 def est_MLP(est):
     hp = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
-                    'activation' : ('tanh', 'relu',),
-                    'solver' : ('lbfgs','adam','sgd',), 
-                    'learning_rate' : ('constant', 'invscaling', 'adaptive',),
-                    'nesterovs_momentum': (True, False,),
-                    'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
-                    'warm_start': (True, False,),
-                    'early_stopping': (True, False,),
-                    'max_iter': (1000,)
+           'activation' : ('tanh', 'relu',),
+           'solver' : ('lbfgs','adam','sgd',), 
+           'learning_rate' : ('constant', 'invscaling', 'adaptive',),
+           'nesterovs_momentum': (True, False,),
+           'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
+           'warm_start': (True, False,),
+           'early_stopping': (True, False,),
+           'max_iter': (1000,)
     }]
     est = MLPRegressor()
     return est, hp
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
-# n_estimators=100, criterion='mse', max_depth=None, min_samples_split=2, min_samples_leaf=1, 
-# min_weight_fraction_leaf=0.0, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, 
-# min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=None, random_state=None, 
-# verbose=0, warm_start=False, ccp_alpha=0.0, max_samples=None
 def est_RF():
     hp = [{'n_estimators': (1, 50, 100,),
            'min_weight_fraction_leaf': (0.0, 0.25, 0.5,),
            'max_features': ('sqrt', 'log2', 'auto',),
-#          'bootstrap': (True, False,),
-#          'oob_score': (True, False,),
-#          'warm_start': (True, False,),
+           'bootstrap': (True, False,),
+           'oob_score': (True, False,),
+           'warm_start': (True, False,),
            'criterion': ('mse', 'mae',),
            'max_depth': (1, 10, 100,),
            'max_leaf_nodes': (2, 100,),
@@ -190,7 +166,6 @@ def est_RF():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html#sklearn.svm.SVR
-# kernel='rbf', degree=3, gamma='scale', coef0=0.0, tol=0.001, C=1.0, epsilon=0.1, shrinking=True, cache_size=200, verbose=False, max_iter=-1
 def est_SVM():
     """ """
     hp = [{'kernel': ('poly', 'rbf',),
@@ -201,3 +176,26 @@ def est_SVM():
     }]
     est = svm.SVR()
     return est, hp
+
+def est_NN():
+    model = Sequential()
+    model.add(Dense(126, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
+    #model.add(layers.Dropout(0.5))
+    #model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
+    #model.add(Dense(126, activation='linear'))
+    # https://www.datatechnotes.com/2019/12/multi-output-regression-example-with.html
+    model.add(Dense(out_dim, activation='linear'))
+
+    #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
+    opt = keras.optimizers.Adam(learning_rate=0.01)
+
+    model.summary()
+
+    model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
+
+    print("[INFO] training model...")
+    #history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
+    history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
+
+    
+keras2ascii(model)
