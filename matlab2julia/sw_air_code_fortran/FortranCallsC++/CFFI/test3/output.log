@@ -1,9 +1,0 @@
-generating ./my_plugin.c
-(already up-to-date)
-the current directory is '/home/lk/Public/ML4STS/Euler_1d_shock_STS/data/sw_air_code_fortran/FortranCallsC++/CFFI/test3'
-running build_ext
-building 'my_plugin' extension
-x86_64-linux-gnu-gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -g -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -I/usr/include/python3.7m -c my_plugin.c -o ./my_plugin.o
-x86_64-linux-gnu-gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro -g -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 ./my_plugin.o -lpython3.7m -o ./libplugin.so
-   5486.00000000000     
-   5486.00000000000     
