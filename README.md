@@ -8,7 +8,7 @@ Machine Learning for State-to-State
 [![stars](https://img.shields.io/github/stars/lkampoli/ML4STS?color=yellow&style=plastic)](https://github.com/lkampoli/ML4STS/stargazers)
 [![forks](https://img.shields.io/github/forks/lkampoli/ML4STS?style=plastic)](https://github.com/lkampoli/ML4STS/network/members)
 [![watchers](https://img.shields.io/github/watchers/lkampoli/ML4STS?color=green&style=plastic)](https://github.com/lkampoli/ML4STS/watchers)
-[![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)]()
+[![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)](https://github.com/lkampoli/ML4STS/blob/master/LICENSE)
 [![activity](https://img.shields.io/github/commit-activity/m/lkampoli/ML4STS?color=red&style=plastic)](https://github.com/lkampoli/ML4STS/graphs/commit-activity)
 [![size](https://img.shields.io/github/languages/code-size/lkampoli/ML4STS?color=violet&style=plastic)]()
 [![lines](https://img.shields.io/tokei/lines/github/lkampoli/ML4STS?color=pink&style=plastic)]()
