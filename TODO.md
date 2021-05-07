@@ -1,19 +1,14 @@
-# KAPPA task list
+# ML4STS task list
 
 ## Docs
-- [  ] Improve/translate documentation 
+- [ ] Improve documentation 
 
 ## Implementation
-- [  ] Complete/check implementation of 1T
-- [  ] Complete/check implementation of MT
-- [  ] Check implementation of STS non-binary mass diffusion
-- [  ] Add models for CO2
-- [  ] Add interface to Tensorflow
-- [  ] Add Fortran wrapper
+- [ ] Switch to unified regression templates
+- [ ] Verified datasets
+- [ ] Implement RNN, LSTM, GAN
+- [ ] Matlab2Python conversion
+- [ ] Complete Matlab2Julia conversion
 
-## Testing
-- [  ] Write unit tests
-
-## Other OS
-- [  ] Add Windows/MacOS interface
-- [  ] Add graphical interface
+## CI/CD
+- [ ] fix workflow

@@ -8,7 +8,7 @@ Machine Learning for State-to-State
 [![stars](https://img.shields.io/github/stars/lkampoli/ML4STS?color=yellow&style=plastic)](https://github.com/lkampoli/ML4STS/stargazers)
 [![forks](https://img.shields.io/github/forks/lkampoli/ML4STS?style=plastic)](https://github.com/lkampoli/ML4STS/network/members)
 [![watchers](https://img.shields.io/github/watchers/lkampoli/ML4STS?color=green&style=plastic)](https://github.com/lkampoli/ML4STS/watchers)
-[![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)](https://www.gnu.org/licenses/lgpl-3.0)
+[![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)]
 [![activity](https://img.shields.io/github/commit-activity/m/lkampoli/ML4STS?color=red&style=plastic)](https://github.com/lkampoli/ML4STS/graphs/commit-activity)
 [![size](https://img.shields.io/github/languages/code-size/lkampoli/ML4STS?color=violet&style=plastic)]()
 [![lines](https://img.shields.io/tokei/lines/github/lkampoli/ML4STS?color=pink&style=plastic)]()
@@ -26,6 +26,8 @@ the following tasks have been identified:
 - [x] Coupling of machine learning with ODE solver
 - [x] Coupling of machine learning with PDE solver
 - [x] Solution of Euler and Navier-Stokes equations with NN
+- [x] Matlab to Julia conversion for ODE problems
+- [ ] Matlab to Python conversion for ODE problems
 - [ ] RNN/LSTM for ODE integration
 - [ ] CNN for solution inference
 - [ ] GAN for data generation and super-resolution
@@ -121,6 +123,7 @@ If you use ML4STS in your scientific publications, we would appreciate citations
  journal={arXiv preprint arXiv:2104.01042},
  year={2021}
 }
+```
 
 ## Bibliography
 [1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
