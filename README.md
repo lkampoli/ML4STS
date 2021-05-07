@@ -1,4 +1,26 @@
-# Machine Learning for State-to-State (ML4STS)
+
+Machine Learning for State-to-State (ML4STS)
+============================================
+
+| **CI**        |               | 
+| ------------- |:-------------:| 
+| **Docs**      | binder        | 
+| ------------- |:-------------:| 
+| **Community** | stars forks watchers | 
+| ------------- |:-------------:| 
+| **Code**      | size lines    | 
+| ------------- |:-------------:| 
+| **License**   | license       | 
+
+[![binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lkampoli/ML4STS/HEAD)
+[![stars](https://img.shields.io/github/stars/lkampoli/ML4STS?color=yellow&style=plastic)](https://github.com/lkampoli/ML4STS/stargazers)
+[![forks](https://img.shields.io/github/forks/lkampoli/ML4STS?style=plastic)](https://github.com/lkampoli/ML4STS/network/members)
+[![watchers](https://img.shields.io/github/watchers/lkampoli/ML4STS?color=green&style=plastic)](https://github.com/lkampoli/ML4STS/watchers)
+[![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)](https://www.gnu.org/licenses/lgpl-3.0)
+[![activity](https://img.shields.io/github/commit-activity/m/lkampoli/ML4STS?             color=red&style=plastic)](https://github.com/lkampoli/ML4STS/graphs/commit-activity)
+[![size](https://img.shields.io/github/languages/code-size/lkampoli/ML4STS?color=violet&style=plastic)]()
+[![lines](https://img.shields.io/tokei/lines/github/lkampoli/ML4STS?color=pink&style=plastic)]()
+
 This project aims at investigating the usage of machine learning
 algorithms for the solution of high-speed (viscous and inviscid,
 reacting and non-reacting) non-equilibrium flows according to a
@@ -6,14 +28,17 @@ state-to-state (STS) formulation. Several machine learning methods,
 including neural networks are considered. In this framework,
 the following tasks have been identified:
 
-* Regression of transport coefficients
-* Regression of chemical reaction rates
-* Regression of chemical relaxation terms
-* Coupling of machine learning with ODE solver
-* Coupling of machine learning with PDE solver
-* Solution of Euler and Navier-Stokes equations with NN
+- [x] Regression of transport coefficients
+- [x] Regression of chemical reaction rates
+- [x] Regression of chemical relaxation terms
+- [x] Coupling of machine learning with ODE solver
+- [x] Coupling of machine learning with PDE solver
+- [x] Solution of Euler and Navier-Stokes equations with NN
+- [ ] RNN/LSTM for ODE integration
+- [ ] CNN for solution inference
+- [ ] GAN for data generation and super-resolution
 
-# Requisites
+## Requisites
 Assuming an available python3 version, the following 
 packages may be required in order to run some tasks:
 
@@ -26,7 +51,7 @@ packages may be required in order to run some tasks:
 * [pandas](https://pandas.pydata.org/)
 * [scipy](https://www.scipy.org/)
 
-# Description
+## Description
 Here below a brief description of the repository directories is given.
 
 ## Nomenclature
@@ -83,19 +108,32 @@ The `PINN_STS.py` deals with the solution of the Euler equations with STS.
 - [ ] re-write in compact form
 - [ ] bigfix
 
-# Useful Links
-https://machinelearningmastery.com/multi-output-regression-models-with-python/
+<!-- ## Useful Links
+     https://machinelearningmastery.com/multi-output-regression-models-with-python/
+     https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
+     https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms -->
 
-https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/
+## Copyrights
+ML4STS is an open source project, it is distributed under the
+[LGPL v3](https://www.gnu.org/licenses/lgpl-3.0.en.html). Anyone interested in
+using, developing or contributing to ML4STS is welcome. Take a look at the
+[contributing guidelines](CONTRIBUTING.md) to start to contribute to the project.
 
-https://scikit-learn.org/stable/modules/multiclass.html#multiclass-and-multilabel-algorithms
+## Citing ML4STS
+If you use ML4STS in your scientific publications, we would appreciate citations to the following paper:
 
-# Copyrights
-ML4STS is an open source project, it is distributed under the GPL v3.
-Anyone is interest to use, to develop or to contribute to ML4STS is
-welcome. Take a look at the contributing guidelines for starting to contribute to the project.
+* Campoli, L., Kustova, E., & Maltseva, P. (2021). [Assessment of machine learning methods for state-to-state approaches.](https://arxiv.org/pdf/2104.01042.pdf) arXiv preprint arXiv:2104.01042.
 
-# Bibliography
+**Bibtex**
+```bibtex
+@article{campoli2021assessment,
+ title={Assessment of machine learning methods for state-to-state approaches},
+ author={Campoli, Lorenzo and Kustova, Elena and Maltseva, Polina},
+ journal={arXiv preprint arXiv:2104.01042},
+ year={2021}
+}
+
+## Bibliography
 [1] Nagnibeda, E., & Kustova, E. (2009). Non-equilibrium reacting gas flows: kinetic theory of transport and relaxation processes. Springer Science & Business Media.
 
 [2] Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Vanderplas, J. (2011). Scikit-learn: Machine learning in Python. the Journal of machine Learning research, 12, 2825-2830.

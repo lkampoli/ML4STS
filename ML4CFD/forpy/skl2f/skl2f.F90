@@ -1,7 +1,8 @@
+!#define errcheck if(ierror/=0) then;call err_print;stop;endif 
 program skl2f
   use forpy_mod
-!  use iso_fortran_env
-!  use iso_c_binding
+  use iso_fortran_env
+  use iso_c_binding
   implicit none
 
   integer                       :: ierror, args_len, int_value
@@ -9,14 +10,12 @@ program skl2f
   type(tuple)                   :: args
   type(list)                    :: my_list, paths
   type(dict)                    :: my_dict, kwargs
-  type(ndarray)                 :: my_nd_arr, py_input, py_output
+  type(ndarray)                 :: my_nd_arr, py_input, py_output, nd_temperature
   type(object)                  :: model, retval, item
   type(module_py)               :: skl, mymodule
 ! real(kind=real32)             :: temperature, float_value
   real                          :: temperature, float_value
   character(len=:), allocatable :: str_value, return_string
-
-  !arr(1) = 42
 
   ierror = forpy_initialize()
 
@@ -25,39 +24,41 @@ program skl2f
     stop
   endif
  
-  !ierror = list_create(my_list)
-  !ierror = ndarray_create(my_nd_arr, arr)
- 
   ! Instead of setting the environment variable PYTHONPATH,
   ! we can add the current directory "." to sys.path
   ierror = get_sys_path(paths)
-!  if (ierror == 0) then
+  if (ierror == 0) then
     ierror = paths%append(".")
-!    call paths%destroy
-!  endif
+    call paths%destroy
+  endif
   
-!  if (ierror /= 0) then
-!    write(*,*) "Error setting PYTHONPATH. Cannot test...", ierror
-!    call err_print
-!    STOP
-!  endif
-
-  !ierror = import_py(skl_mod, "skl")
-  !if (ierror /= 0) then
-  !  write(*,*) "Could not import test module 'test_ndarray'. Cannot test..."
-  !  STOP
-  !endif
+  if (ierror /= 0) then
+    write(*,*) "Error setting PYTHONPATH. Cannot test...", ierror
+    call err_print
+    STOP
+  endif
 
   ierror = import_py(skl, "skl")
+  if (ierror /= 0) then
+    write(*,*) "Could not import test module 'test_ndarray'. Cannot test..."
+    STOP
+  endif
 
   temperature = 1500.
+
+  ! Convert without copying fortran real
+  ! into python numpy array
+  ierror = ndarray_create_nocopy(nd_temperature, temperature)
+! ierror = ndarray_create(nd_temperature, temperature)
+! errcheck
 
   ierror = tuple_create(args, 4)
   ierror = args%setitem(0, 'model.sav')
   ierror = args%setitem(1, 'scalex.pkl')
   ierror = args%setitem(2, 'scaley.pkl')
 ! ierror = args%setitem(3, temperature)
-  ierror = args%setitem(3, 1500.)
+  ierror = args%setitem(3, nd_temperature)
+! ierror = args%setitem(3, 1500.)
 
   ierror = args%len(args_len)
   write(*,*) args_len
@@ -85,7 +86,6 @@ program skl2f
   ierror = dict_create(kwargs)
   ierror = kwargs%setitem("greeting", "hi")
 
-  !ierror = call_py(retval, skl_mod, "run_regression", args)
   ierror = call_py(retval, skl, "print_args", args, kwargs)
   ierror = call_py(retval, skl, "run_regression", args)
 
@@ -96,6 +96,7 @@ program skl2f
 
   !ierror = my_nd_arr%get_data(arr)
 
+  !ierror = list_create(my_list)
   !ierror = my_list%append(19)
   !ierror = my_list%append("Hello world!")
   !ierror = my_list%append(3.14d0)
