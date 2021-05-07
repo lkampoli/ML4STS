@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.experimental import enable_hist_gradient_boosting 
+from sklearn.experimental import enable_hist_gradient_boosting
 from sklearn.ensemble import HistGradientBoostingRegressor
 
 from sklearn.multioutput import MultiOutputRegressor, RegressorChain
@@ -45,9 +45,9 @@ from keras import regularizers
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor
 def est_DT():
-    hp = [{'criterion': ('mse', 'friedman_mse', 'mae'), 
-           'splitter': ('best', 'random'),             
-           'max_features': ('auto', 'sqrt', 'log2'),  
+    hp = [{'criterion': ('mse', 'friedman_mse', 'mae'),
+           'splitter': ('best', 'random'),
+           'max_features': ('auto', 'sqrt', 'log2'),
     }]
     est = DecisionTreeRegressor()
     return est, hp
@@ -107,8 +107,8 @@ def est_KN():
            'n_neighbors': (1, 5, 10, 20),
            'leaf_size': (1, 10, 50, 100,),
            'weights': ('uniform', 'distance',),
-#          'metric': ('minkowski', ),  
-#          'metric_params': (), 
+#          'metric': ('minkowski', ),
+#          'metric_params': (),
            'p': (1, 2,),
     }]
     est = neighbors.KNeighborsRegressor()
@@ -131,7 +131,7 @@ def est_KR():
 def est_MLP(est):
     hp = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
            'activation' : ('tanh', 'relu',),
-           'solver' : ('lbfgs','adam','sgd',), 
+           'solver' : ('lbfgs','adam','sgd',),
            'learning_rate' : ('constant', 'invscaling', 'adaptive',),
            'nesterovs_momentum': (True, False,),
            'alpha': (0.00001, 0.0001, 0.001, 0.01, 0.1, 0.0,),
@@ -157,7 +157,7 @@ def est_RF():
            'min_samples_split': (2, 5, 10,),
            'min_impurity_decrease': (0.1, 0.2, 0.3,),
            'min_samples_leaf': (1, 10, 100,),
-#          'min_impurity_split':= (), 
+#          'min_impurity_split':= (),
 #          'ccp_alpha': (),
 #          'max_samples': (),
     }]
@@ -177,25 +177,24 @@ def est_SVM():
     est = svm.SVR()
     return est, hp
 
-def est_NN():
-    model = Sequential()
-    model.add(Dense(126, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
-    #model.add(layers.Dropout(0.5))
-    #model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
-    #model.add(Dense(126, activation='linear'))
-    # https://www.datatechnotes.com/2019/12/multi-output-regression-example-with.html
-    model.add(Dense(out_dim, activation='linear'))
-
-    #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
-    opt = keras.optimizers.Adam(learning_rate=0.01)
-
-    model.summary()
-
-    model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
-
-    print("[INFO] training model...")
-    #history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
-    history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
-
-    
-keras2ascii(model)
+#def est_NN():
+#    model = Sequential()
+#    model.add(Dense(126, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
+#    #model.add(layers.Dropout(0.5))
+#    #model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
+#    #model.add(Dense(126, activation='linear'))
+#    # https://www.datatechnotes.com/2019/12/multi-output-regression-example-with.html
+#    model.add(Dense(out_dim, activation='linear'))
+#
+#    #opt = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.01)
+#    opt = keras.optimizers.Adam(learning_rate=0.01)
+#
+#    model.summary()
+#
+#    model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
+#
+#    print("[INFO] training model...")
+#    #history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
+#    history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test))
+#
+#keras2ascii(model)
