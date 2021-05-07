@@ -1,0 +1,16 @@
+# requirements.in
+scikit-learn
+numpy
+matplotlib
+scipy
+pandas
+ray[tune]
+tabulate
+termcolor
+tensorflow
+keras
+keras_sequential_ascii
+sphinx_rtd_theme
+sphinxcontrib-spelling
+sphinxcontrib-restbuilder
+sphinx_tabs

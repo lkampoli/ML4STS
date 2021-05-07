@@ -1,0 +1,8 @@
+dependencies:
+  - scikit-learn
+  - matplotlib
+  - numpy
+  - pip
+  - pandas
+  - scipy
+  - joblib
