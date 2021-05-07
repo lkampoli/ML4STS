@@ -1,23 +1,15 @@
 
-Machine Learning for State-to-State (ML4STS)
-============================================
+Welcome to ML4STS!
+==================
 
-| **CI**        |               | 
-| ------------- |:-------------:| 
-| **Docs**      | binder        | 
-| ------------- |:-------------:| 
-| **Community** | stars forks watchers | 
-| ------------- |:-------------:| 
-| **Code**      | size lines    | 
-| ------------- |:-------------:| 
-| **License**   | license       | 
+Machine Learning for State-to-State
 
 [![binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lkampoli/ML4STS/HEAD)
 [![stars](https://img.shields.io/github/stars/lkampoli/ML4STS?color=yellow&style=plastic)](https://github.com/lkampoli/ML4STS/stargazers)
 [![forks](https://img.shields.io/github/forks/lkampoli/ML4STS?style=plastic)](https://github.com/lkampoli/ML4STS/network/members)
 [![watchers](https://img.shields.io/github/watchers/lkampoli/ML4STS?color=green&style=plastic)](https://github.com/lkampoli/ML4STS/watchers)
 [![license](https://img.shields.io/github/license/lkampoli/ML4STS?color=orange&style=plastic)](https://www.gnu.org/licenses/lgpl-3.0)
-[![activity](https://img.shields.io/github/commit-activity/m/lkampoli/ML4STS?             color=red&style=plastic)](https://github.com/lkampoli/ML4STS/graphs/commit-activity)
+[![activity](https://img.shields.io/github/commit-activity/m/lkampoli/ML4STS?color=red&style=plastic)](https://github.com/lkampoli/ML4STS/graphs/commit-activity)
 [![size](https://img.shields.io/github/languages/code-size/lkampoli/ML4STS?color=violet&style=plastic)]()
 [![lines](https://img.shields.io/tokei/lines/github/lkampoli/ML4STS?color=pink&style=plastic)]()
 
@@ -50,9 +42,6 @@ packages may be required in order to run some tasks:
 * [matplotlib](https://matplotlib.org/)
 * [pandas](https://pandas.pydata.org/)
 * [scipy](https://www.scipy.org/)
-
-## Description
-Here below a brief description of the repository directories is given.
 
 ## Nomenclature
 In the directory tree, the following abbreviations have been used:
