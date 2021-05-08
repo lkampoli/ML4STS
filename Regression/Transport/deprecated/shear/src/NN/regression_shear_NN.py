@@ -40,19 +40,19 @@ os.getcwd()
 import csv
 import time
 
-from IPython.display import clear_output
-from livelossplot import PlotLossesKeras
+#from IPython.display import clear_output
+#from livelossplot import PlotLossesKeras
 
 from keras.callbacks import TensorBoard
 
 from keras.utils.vis_utils import plot_model
 from keras.models import load_model
 
-from ann_visualizer.visualize import ann_viz;
-from keras.models import model_from_json
+#from ann_visualizer.visualize import ann_viz;
+#from keras.models import model_from_json
 
 from keras_sequential_ascii import keras2ascii
-from livelossplot import PlotLossesKeras
+#from livelossplot import PlotLossesKeras
 
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits import mplot3d
@@ -61,14 +61,14 @@ from keras.optimizers import SGD, Adam, RMSprop, Adagrad
 import pickle
 
 import sys
-sys.path.insert(0, '../../../../../Utilities/')
+sys.path.insert(0, './')
 
 from plotting import newfig, savefig
 
 from matplotlib import rc
 rc("text", usetex=False)
 
-with open('../../../../Data/TCs_air5.txt') as f:
+with open('./TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 
@@ -131,7 +131,7 @@ model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
 
 print("[INFO] training model...")
 #history = model.fit(x_train, y_train, epochs=100, batch_size=15, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
-history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, epochs=10, batch_size=64, verbose=2, validation_data=(x_test, y_test))
 
 #loss_history = np.array(history)
 #np.savetxt("loss_history.txt", loss_history, delimiter=",")
@@ -223,3 +223,5 @@ def chart_regression(pred, y, sort=True):
 
 # Plot the chart
 chart_regression(pred.flatten(), y_test)
+
+model.save('shear_keras_model.h5', include_optimizer=False)

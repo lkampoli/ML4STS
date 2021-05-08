@@ -75,7 +75,7 @@ def main():
         print(colored(f, 'red'))
         dataset_k = pd.read_csv(f, delimiter=",").to_numpy()
         dataset_T = pd.read_csv(parent_dir+"/"+process[0]+"/data/Temperatures.csv").to_numpy()
-        
+
         x = dataset_T.reshape(-1,1)
         y = dataset_k
 
@@ -89,14 +89,14 @@ def main():
         # 4) compute and save scaler
         sc_x = StandardScaler()
         sc_y = StandardScaler()
-        
+
         sc_x.fit(x_train)
         x_train = sc_x.transform(x_train)
         x_test  = sc_x.transform(x_test)
-        
+
         sc_y.fit(y_train)
         y_train = sc_y.transform(y_train)
-        y_test  = sc_y.transform(y_test) 
+        y_test  = sc_y.transform(y_test)
 
         print('Training Features Shape:', x_train.shape)
         print('Training Labels Shape:',   y_train.shape)
@@ -138,12 +138,12 @@ def main():
 
         else:
             print("Algorithm not implemented ...")
-    
+
         # https://github.com/ray-project/tune-sklearn
         # https://docs.ray.io/en/latest/tune/api_docs/sklearn.html#tune-sklearn-docs
-        # class ray.tune.sklearn.TuneGridSearchCV(estimator, param_grid, early_stopping=None, scoring=None, 
-        # n_jobs=None, cv=5, refit=True, verbose=0, error_score='raise', return_train_score=False, 
-        # local_dir='~/ray_results', max_iters=1, use_gpu=False, loggers=None, pipeline_auto_early_stop=True, 
+        # class ray.tune.sklearn.TuneGridSearchCV(estimator, param_grid, early_stopping=None, scoring=None,
+        # n_jobs=None, cv=5, refit=True, verbose=0, error_score='raise', return_train_score=False,
+        # local_dir='~/ray_results', max_iters=1, use_gpu=False, loggers=None, pipeline_auto_early_stop=True,
         # stopper=None, time_budget_s=None, sk_n_jobs=None)
         #scheduler = MedianStoppingRule(grace_period=10.0)
         #gs = TuneGridSearchCV(est, cv=10, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
@@ -156,12 +156,12 @@ def main():
         # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
         gs = GridSearchCV(est, cv=5, param_grid=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
                           refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
-    
+
 
         # Randomized search on hyper parameters
         # https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV
-        # class sklearn.model_selection.RandomizedSearchCV(estimator, param_distributions, *, n_iter=10, scoring=None, n_jobs=None, refit=True, 
-        #                                                  cv=None, verbose=0, pre_dispatch='2*n_jobs', random_state=None, error_score=nan, 
+        # class sklearn.model_selection.RandomizedSearchCV(estimator, param_distributions, *, n_iter=10, scoring=None, n_jobs=None, refit=True,
+        #                                                  cv=None, verbose=0, pre_dispatch='2*n_jobs', random_state=None, error_score=nan,
         #                                                  return_train_score=False)
         #gs = RandomizedSearchCV(est, cv=10, n_iter=10, param_distributions=hyper_params, verbose=2, n_jobs=n_jobs, scoring='r2',
         #                        refit=True, pre_dispatch='n_jobs', error_score=np.nan, return_train_score=True)
@@ -174,7 +174,7 @@ def main():
         #compression_opts = dict(method='zip', archive_name='GridSearchCV_results.csv')
         #results.to_csv('GridSearchCV_results.zip', index=False, compression=compression_opts)
         results.to_csv(model+"/../"+"GridSearchCV_results.csv", index=False, sep='\t', encoding='utf-8')
-     
+
         #plt.figure(figsize=(12, 4))
         #for score in ['mean_test_recall', 'mean_test_precision', 'mean_test_min_both']:
         #    plt.plot([_[1] for _ in results['param_class_weight']], results[score], label=score)
@@ -195,14 +195,14 @@ def main():
 
         # Perform prediction
         y_regr = utils.predict(x_test, gs, outfile)
-        
+
         # Compute the scores
         utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs, outfile)
 
         # Transform back
         x_test_dim = sc_x.inverse_transform(x_test)
         y_test_dim = sc_y.inverse_transform(y_test)
-        y_regr_dim = sc_y.inverse_transform(y_regr)          
+        y_regr_dim = sc_y.inverse_transform(y_regr)
 
         # Make figures
         utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)

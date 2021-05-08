@@ -5,12 +5,12 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='transport coefficients regression')
- 
+
     parser.add_argument('-p', '--property', type=str,
-                        choices=['shear', 'bulk', 'conductivity', 'thermo_diffusion', 'mass_diffusion'], 
+                        choices=['shear', 'bulk', 'conductivity', 'thermo_diffusion', 'mass_diffusion'],
                         default='shear,bulk,conductivity,thermo_diffusion,mass_diffusion',
                         help='Comma-separated names of properties whose regression is performed')
-    
+
     parser.add_argument('-a', '--algorithm', type=str,
                         choices=['DT', 'RF', 'ET', 'GP', 'kNN', 'SVM', 'KR', 'GB', 'HGB'],
                         default='DT',
@@ -26,11 +26,10 @@ def main():
     print(algorithm)
 
     if algorithm == 'DT':
-         from shear.src.DT.regressor import a 
+         from shear.src.DT.regressor import a
          print('calling ...')
 #    	 a()
 
-    
 
 if __name__ == "__main__":
     main()

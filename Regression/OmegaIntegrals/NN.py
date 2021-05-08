@@ -42,18 +42,18 @@ os.getcwd()
 
 import csv
 
-from IPython.display import clear_output
-from livelossplot import PlotLossesKeras
-from keras.callbacks import TensorBoard
+#from IPython.display import clear_output
+#from livelossplot import PlotLossesKeras
+#from keras.callbacks import TensorBoard
 
 from keras.utils.vis_utils import plot_model
 from keras.models import load_model
 
-from ann_visualizer.visualize import ann_viz;
-from keras.models import model_from_json
+#from ann_visualizer.visualize import ann_viz;
+#from keras.models import model_from_json
 
 from keras_sequential_ascii import keras2ascii
-from livelossplot import PlotLossesKeras
+#from livelossplot import PlotLossesKeras
 
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits import mplot3d

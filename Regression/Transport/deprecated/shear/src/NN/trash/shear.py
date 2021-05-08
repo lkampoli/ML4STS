@@ -18,7 +18,7 @@
 
 import time
 import sys
-sys.path.insert(0, '../../../../../Utilities/')
+sys.path.insert(0, './')
 
 
 from plotting import newfig, savefig
@@ -101,7 +101,7 @@ trial  = 1
 #x    = data[:,0:7]
 #y    = data[:,7:8]
 
-with open('../../../../Data/TCs_air5.txt') as f:
+with open('./TCs_air5.txt') as f:
     lines = (line for line in f if not line.startswith('#'))
     dataset = np.loadtxt(lines, skiprows=1)
 
