@@ -59,7 +59,8 @@ const N_a   = 6.0221e23;  #AvogadroConstant
 const R     = 8.3145;     #MolarGasConstant
 const h_bar = h/(2*pi);   #PlanckConstantOver2pi
 
-# To read a single variable from a MAT file (compressed files are detected and handled automatically):
+# To read a single variable from a MAT file 
+# (compressed files are detected and handled automatically)
 file  = matopen("data_species.mat")
 const OMEGA = read(file, "OMEGA"); # Ω
 const BE    = read(file, "BE")   ; # Bₑ
@@ -68,7 +69,7 @@ const CArr  = read(file, "CArr") ;
 const NArr  = read(file, "NArr") ;
 const QN    = read(file, "QN")   ;
 const MU    = read(file, "MU")   ; # μ
-const R0    = read(file, "R0")   ;
+const R0    = read(file, "R0")   ; # 
 const EM    = read(file, "EM")   ;
 const RE    = read(file, "RE")   ;
 close(file)
@@ -160,12 +161,16 @@ include("rpart.jl")
 # https://diffeq.sciml.ai/v1.10/basics/common_solver_opts.html
 # https://discourse.julialang.org/t/handling-instability-when-solving-ode-problems/9019/5
 # https://discourse.julialang.org/t/differentialequations-what-goes-wrong/30960
+
 prob = ODEProblem(rpart!, Y0_bar, xspan, 1.)
+
+display(@benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true))
+
+sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
+
 #sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
 #sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
-display(@benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true))
-sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
-#sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta; println("xspan = ", xspan, "\n", size(xspan), "\n")
+#sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta;
 #sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
 
 println("sol: ", size(sol), "\n")
@@ -181,11 +186,11 @@ time_s  = X*Delta/v0;                                           println("time_s 
 Npoint  = length(X);                                            println("Npoint = ", Npoint, "\n")
 Nall    = sum(n_i,dims=1);                                      println("Nall = ", Nall, "\n", size(Nall), "\n")
 Nall    = Nall[1,:]+n_a;                                        println("Nall = ", Nall, "\n", size(Nall), "\n")
-#ni_n   = n_i ./ repeat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
+ni_n    = n_i ./ repeat(Nall,1,l);                              println("ni_n = ", ni_n, "\n")
 #nm_n   = sum(ni_n,dims=2);                                     println("nm_n = ", nm_n, "\n")
 na_n    = n_a ./ Nall;                                          println("na_n = ", na_n, "\n")
 #rho    = m[1]*n_m + m[2]*n_a;                                  println("rho = ", rho, "\n")
-#p      = Nall .* k .* Temp;                                       println("p = ", p, "\n")
+#p      = Nall .* k .* Temp;                                    println("p = ", p, "\n")
 #e_v    = repeat(e_i+e_0,Npoint,1) .* n_i;
 #e_v    = repeat(e_i+e_0,1,Npoint) .* n_i;
 #e_v    = sum(e_v,dims=2);                                      println("eᵥ = ", e_v, "\n")
@@ -230,11 +235,10 @@ savefig("V.pdf")
 #savefig("n_a.pdf")
 
 # Load Matlab solution
-file  = matopen("solution.mat")
-const X_    = read(file, "X");
-const x_s_  = read(file, "x_s");
-const Temp_ = read(file, "Temp");
-
+#file  = matopen("solution.mat")
+#const X_    = read(file, "X");
+#const x_s_  = read(file, "x_s");
+#const Temp_ = read(file, "Temp");
 
 #include("rpart_post.jl")
 #RDm  = zeros(Npoint,l);

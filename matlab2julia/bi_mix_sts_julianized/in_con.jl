@@ -1,8 +1,8 @@
 function in_con()
 
-n = Sym("n")
-v = Sym("v")
-t = Sym("t")
+n = SymPy.Sym("n")
+v = SymPy.Sym("v")
+t = SymPy.Sym("t")
 n, v, t = symbols("n, v, t", real=true)
 
 xm = xc[1]
