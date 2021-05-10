@@ -99,6 +99,10 @@ The `PINN_STS.py` deals with the solution of the Euler equations with STS.
 - [ ] re-write in compact form
 - [ ] bigfix
 
+## ML4CFD
+In this directory several experiments of coupling between 
+machine learning and CFD codes or libraries are investigated.
+
 <!-- ## Useful Links
      https://machinelearningmastery.com/multi-output-regression-models-with-python/
      https://machinelearningmastery.com/deep-learning-models-for-multi-output-regression/

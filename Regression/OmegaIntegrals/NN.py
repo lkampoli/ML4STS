@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -24,8 +26,10 @@ from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.preprocessing import PowerTransformer
 
+#from tensorflow.keras.layers import Activation, Dropout, Dense, Conv2D, Flatten, Dropout, MaxPooling2D, BatchNormalization
+
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Dropout
+from tensorflow.python.keras.layers import Dense, Dropout, BatchNormalization
 from tensorflow.python.keras import initializers
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor
 from sklearn import metrics
@@ -60,6 +64,8 @@ from mpl_toolkits import mplot3d
 
 from keras.optimizers import SGD, Adam, RMSprop, Adagrad
 from keras import regularizers
+#from keras.layers.normalization import BatchNormalization
+#from keras.layers import BatchNormalization
 
 import pickle
 from joblib import dump, load
@@ -84,20 +90,20 @@ print("IN:", in_dim, "OUT:", out_dim)
 print("[INFO] Split data ...")
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
-print("[INFO] StandardScaling data ...")
-sc_x = StandardScaler()
-sc_y = StandardScaler()
+#print("[INFO] StandardScaling data ...")
+#sc_x = StandardScaler()
+#sc_y = StandardScaler()
 
-sc_x.fit(x_train)
-x_train = sc_x.transform(x_train)
-x_test  = sc_x.transform(x_test)
+#sc_x.fit(x_train)
+#x_train = sc_x.transform(x_train)
+#x_test  = sc_x.transform(x_test)
 
-sc_y.fit(y_train)
-y_train = sc_y.transform(y_train)
-y_test  = sc_y.transform(y_test)
+#sc_y.fit(y_train)
+#y_train = sc_y.transform(y_train)
+#y_test  = sc_y.transform(y_test)
 
-dump(sc_x, open('scaler_x.pkl', 'wb'))
-dump(sc_y, open('scaler_y.pkl', 'wb'))
+#dump(sc_x, open('scaler_x.pkl', 'wb'))
+#dump(sc_y, open('scaler_y.pkl', 'wb'))
 
 print('Training Features Shape:', x_train.shape)
 print('Training Labels Shape:'  , y_train.shape)
@@ -112,6 +118,8 @@ model = Sequential()
 #initializer = tf.keras.initializers.GlorotUniform()
 #model.add(Dense(100, input_dim=in_dim, kernel_initializer='glorot_uniform', activation='relu'))
 model.add(Dense(100, input_dim=in_dim, kernel_initializer='normal', activation='relu'))
+model.add(BatchNormalization())
+#model.add(BatchNormalization(input_shape=in_dim))
 #model.add(layers.Dropout(0.5))
 #model.add(Dense(60, kernel_initializer='normal', activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.001, l2=0.001)))
 #model.add(Dense(10, activation='linear'))
@@ -132,6 +140,9 @@ model.summary()
 
 keras2ascii(model)
 
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
 # mse:  loss = square(y_true - y_pred)
 # mae:  loss = abs(y_true - y_pred)
 # mape: loss = 100 * abs(y_true - y_pred) / y_true
@@ -142,7 +153,7 @@ model.compile(loss='mse', metrics=['mse', 'mae', 'mape', 'msle'], optimizer=opt)
 
 print("[INFO] training model...")
 #history = model.fit(x_train, y_train, epochs=100, batch_size=64, verbose=2, validation_data=(x_test, y_test), callbacks=[PlotLossesKeras()])
-history = model.fit(x_train, y_train, epochs=500, batch_size=32, verbose=2, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=2, validation_data=(x_test, y_test), callbacks=[tensorboard_callback])
 
 #loss_history = np.array(history)
 #np.savetxt("loss_history.txt", loss_history, delimiter=",")
