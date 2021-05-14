@@ -15,13 +15,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pylab as plt
 
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import precision_score, recall_score, make_scorer
 from sklearn.pipeline import Pipeline
 
-from ray.tune.sklearn import TuneGridSearchCV
-from ray.tune.schedulers import MedianStoppingRule
+#from ray.tune.sklearn import TuneGridSearchCV
+#from ray.tune.schedulers import MedianStoppingRule
 
 from joblib import dump, load
 
@@ -68,7 +68,7 @@ def main():
     parent_dir = "."
     print("PWD: ", colored(parent_dir,'yellow'))
 
-    n_jobs = 4
+    n_jobs = 2
 
     for f in glob.glob(path):
         #print("{bcolors.OKGREEN}f{bcolors.ENDC}")
@@ -81,30 +81,61 @@ def main():
 
         print("### Phase 1: PRE_PROCESSING ###")
         ########################################
+        '''
+        https://stackoverflow.com/questions/50565937/how-to-normalize-the-train-and-test-data-using-minmaxscaler-sklearn
+        https://towardsdatascience.com/6-amateur-mistakes-ive-made-working-with-train-test-splits-916fabb421bb
+        https://www.analyticsvidhya.com/blog/2020/04/feature-scaling-machine-learning-normalization-standardization/
+        https://towardsdatascience.com/scale-standardize-or-normalize-with-scikit-learn-6ccc7d176a02
+
+        You should fit the MinMaxScaler using the training data and
+        then apply the scaler on the testing data before the prediction.
+
+        In summary:
+
+        Step 1: fit the scaler on the TRAINING data
+        Step 2: use the scaler to transform the TRAINING data
+        Step 3: use the transformed training data to fit the predictive model
+        Step 4: use the scaler to transform the TEST data
+        Step 5: predict using the trained model (step 3) and the transformed TEST data (step 4).
+
+        data = datasets.load_iris()
+        X    = data.data
+        y    = data.target
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+        scaler = MinMaxScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+
+        model = SVC()
+        model.fit(X_train_scaled, y_train)
+
+        X_test_scaled = scaler.transform(X_test)
+        y_pred = model.predict(X_test_scaled)
+
+        '''
         data, dir, proc, model, scaler, figure, outfile = utils.mk_tree(f, parent_dir, process[0], algorithm[0])
 
         # 3) train/test split dataset
         x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
-        # 4) compute and save scaler
-        sc_x = StandardScaler()
-        sc_y = StandardScaler()
-
-        sc_x.fit(x_train)
-        x_train = sc_x.transform(x_train)
-        x_test  = sc_x.transform(x_test)
-
-        sc_y.fit(y_train)
-        y_train = sc_y.transform(y_train)
-        y_test  = sc_y.transform(y_test)
+        # 4) Define scalers
+        # These 2 values can be modified to investigate the effect of different scalers
+        ###############################################################################
+        input_scaler  = None #MinMaxScaler(feature_range=(-1,1))
+        output_scaler = None #StandardScaler()
+        ###############################################################################
+        # 5) Scale None and/or inputs and/or outputs
+        x_train, x_test, y_train, y_test = utils.scale_dataset(x_train, x_test, y_train, y_test, input_scaler, output_scaler)
 
         print('Training Features Shape:', x_train.shape)
         print('Training Labels Shape:',   y_train.shape)
         print('Testing Features Shape:',  x_test.shape)
         print('Testing Labels Shape:',    y_test.shape)
 
-        dump(sc_x, open(scaler+"/scaler_x_MO_"+data+'.pkl', 'wb'))
-        dump(sc_y, open(scaler+"/scaler_y_MO_"+data+'.pkl', 'wb'))
+        # 6) Save scalers (they may be useful)
+        dump(input_scaler,  open(scaler+"/scaler_x_MO_"+data+'.pkl', 'wb'))
+        dump(output_scaler, open(scaler+"/scaler_y_MO_"+data+'.pkl', 'wb'))
 
         if (algorithm[0] == 'DT'):
             est, hyper_params = estimators.est_DT()
@@ -197,19 +228,27 @@ def main():
         y_regr = utils.predict(x_test, gs, outfile)
 
         # Compute the scores
-        utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs, outfile)
+        utils.scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, model, gs, outfile)
+        #utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs, outfile)
+        #utils.scores(sclr, x_train, y_train, x_test, y_test, model, gs, outfile)
 
         # Transform back
-        x_test_dim = sc_x.inverse_transform(x_test)
-        y_test_dim = sc_y.inverse_transform(y_test)
-        y_regr_dim = sc_y.inverse_transform(y_regr)
+        x_train, x_test, y_train, y_test, y_regr = utils.scale_back_dataset(x_train, x_test, y_train, y_test, y_regr, input_scaler, output_scaler)
+        #x_test_dim = sc_x.inverse_transform(x_test)
+        #y_test_dim = sc_y.inverse_transform(y_test)
+        #y_regr_dim = sc_y.inverse_transform(y_regr)
+        #x_test_dim = sclr.inverse_transform(x_test)
+        #x_test_dim = x_test
+        #y_test_dim = y_test
+        #y_regr_dim = y_regr
 
         # Make figures
-        utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)
+        #utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)
+        utils.draw_plot(x_test, y_test, y_regr, figure, data)
 
         # save the model to disk
         dump(gs, model+"/model_MO_"+data+'.sav')
 
-
+########################## さよなら!
 if __name__ == "__main__":
     main()

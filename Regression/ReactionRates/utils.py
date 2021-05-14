@@ -12,12 +12,12 @@ import matplotlib.pyplot as plt
 
 
 def mk_tree(filename, parent_dir, process, algorithm):
-    
-#    if (process == "DR"):    
+
+#    if (process == "DR"):
 #        data = filename[18:36]
-#        dir  = data[9:14]  
+#        dir  = data[9:14]
 #        proc = data[15:18] # dis, rec
-#    elif (process == "VT"):    
+#    elif (process == "VT"):
 #        data = filename[18:35]
 #        dir  = data[9:14]  # N2-N2
 #        proc = data[15:17] # down, up
@@ -36,8 +36,8 @@ def mk_tree(filename, parent_dir, process, algorithm):
 #    else:
 #        print("Process not accounted for ... !")
 
-    proc = "_" 
-    dir  = "_" 
+    proc = "_"
+    dir  = "_"
 
     #import numpy as np
     #dataset_k = np.loadtxt(parent_dir+"/"+process[0]+filename)
@@ -116,72 +116,120 @@ def predict(x_test, gs, outfile):
    return y_regr
 
 
-def scores(sc_x, sc_y, x_train, y_train, x_test, y_test, data, gs, outfile):
+def scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, data, gs, outfile):
 
-   train_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   train_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   train_score_evs   = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   #train_score_me   = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   #train_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   train_score_r2    = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
-   
-   test_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   test_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   test_score_evs   = explained_variance_score(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   #test_score_me   = max_error(               sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   #test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   test_score_r2    = r2_score(                sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
-   
-   print()
-   print("The model performance for training set")
-   print("--------------------------------------")
-   print('MAE is      {}'.format(train_score_mae ))
-   print('MSE is      {}'.format(train_score_mse ))
-   print('EVS is      {}'.format(train_score_evs ))
-   #print('ME is      {}'.format(train_score_me  ))
-   #print('MSLE is    {}'.format(train_score_msle))
-   print('R2 score is {}'.format(train_score_r2  ))
-   print()
-   print("The model performance for testing set" )
-   print("--------------------------------------")
-   print('MAE is      {}'.format(test_score_mae ))
-   print('MSE is      {}'.format(test_score_mse ))
-   print('EVS is      {}'.format(test_score_evs ))
-   #print('ME is      {}'.format(test_score_me  ))
-   #print('MSLE is    {}'.format(test_score_msle))
-   print('R2 score is {}'.format(test_score_r2  ))
-   print()
-   print("Best parameters found for dev set:")
-   print(gs.best_params_)
-   print()
-   
-   #with open(data+"/../"+'output.log', 'w') as f:
-   with open(outfile+'/output.log', 'w') as f:
-       print(" ",                                      file=f)
-       print("The model performance for training set", file=f)
-       print("--------------------------------------", file=f)
-       print('MAE is      {}'.format(train_score_mae), file=f)
-       print('MSE is      {}'.format(train_score_mse), file=f)
-       print('EVS is      {}'.format(train_score_evs), file=f)
-       #print('ME is      {}'.format(train_score_me),  file=f)
-       #print('MSLE is    {}'.format(train_score_msle),file=f)
-       print('R2 score is {}'.format(train_score_r2),  file=f)
-       print(" ",                                      file=f)
-       print("The model performance for testing set",  file=f)
-       print("--------------------------------------", file=f)
-       print('MAE is      {}'.format(test_score_mae),  file=f)
-       print('MSE is      {}'.format(test_score_mse),  file=f)
-       print('EVS is      {}'.format(test_score_evs),  file=f)
-       #print('ME is      {}'.format(test_score_me),   file=f)
-       #print('MSLE is    {}'.format(test_score_msle), file=f)
-       print('R2 score is {}'.format(test_score_r2),   file=f)
-       print(" ",                                      file=f)
-       print("Best parameters found for dev set:",     file=f)
-       print(gs.best_params_,                          file=f)
+    if input_scaler is not None and output_scaler is not None:
+
+        train_score_mse   = mean_squared_error(      output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+        train_score_mae   = mean_absolute_error(     output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+        train_score_evs   = explained_variance_score(output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+        #train_score_me   = max_error(               output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+        #train_score_msle = mean_squared_log_error(  output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+        train_score_r2    = r2_score(                output_scaler.inverse_transform(y_train), input_scaler.inverse_transform(gs.predict(x_train)))
+
+        test_score_mse   = mean_squared_error(      output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+        test_score_mae   = mean_absolute_error(     output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+        test_score_evs   = explained_variance_score(output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+        #test_score_me   = max_error(               output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+        #test_score_msle = mean_squared_log_error(  output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+        test_score_r2    = r2_score(                output_scaler.inverse_transform(y_test), input_scaler.inverse_transform(gs.predict(x_test)))
+
+    if input_scaler is None and output_scaler is None:
+
+        train_score_mse   = mean_squared_error(      y_train, gs.predict(x_train))
+        train_score_mae   = mean_absolute_error(     y_train, gs.predict(x_train))
+        train_score_evs   = explained_variance_score(y_train, gs.predict(x_train))
+        #train_score_me   = max_error(               y_train, gs.predict(x_train))
+        #train_score_msle = mean_squared_log_error(  y_train, gs.predict(x_train))
+        train_score_r2    = r2_score(                y_train, gs.predict(x_train))
+
+        test_score_mse   = mean_squared_error(      y_test, gs.predict(x_test))
+        test_score_mae   = mean_absolute_error(     y_test, gs.predict(x_test))
+        test_score_evs   = explained_variance_score(y_test, gs.predict(x_test))
+        #test_score_me   = max_error(               y_test, gs.predict(x_test))
+        #test_score_msle = mean_squared_log_error(  y_test, gs.predict(x_test))
+        test_score_r2    = r2_score(                y_test, gs.predict(x_test))
+
+# BUG: the scaler of x_train, x_test should be sc_x (input) and NOT sc_y (output)!
+#      That's probably why we get error metrics almost perfect :\
+#   train_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#   train_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#   train_score_evs   = explained_variance_score(sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#   #train_score_me   = max_error(               sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#   #train_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#   train_score_r2    = r2_score(                sc_y.inverse_transform(y_train), sc_y.inverse_transform(gs.predict(x_train)))
+#
+#   test_score_mse   = mean_squared_error(      sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+#   test_score_mae   = mean_absolute_error(     sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+#   test_score_evs   = explained_variance_score(sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+#   #test_score_me   = max_error(               sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+#   #test_score_msle = mean_squared_log_error(  sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+#   test_score_r2    = r2_score(                sc_y.inverse_transform(y_test), sc_y.inverse_transform(gs.predict(x_test)))
+
+#   train_score_mse   = mean_squared_error(      y_train, sclr.inverse_transform(gs.predict(x_train)))
+#   train_score_mae   = mean_absolute_error(     y_train, sclr.inverse_transform(gs.predict(x_train)))
+#   train_score_evs   = explained_variance_score(y_train, sclr.inverse_transform(gs.predict(x_train)))
+#   #train_score_me   = max_error(               y_train, sclr.inverse_transform(gs.predict(x_train)))
+#   #train_score_msle = mean_squared_log_error(  y_train, sclr.inverse_transform(gs.predict(x_train)))
+#   train_score_r2    = r2_score(                y_train, sclr.inverse_transform(gs.predict(x_train)))
+#
+#   test_score_mse   = mean_squared_error(      y_test, sclr.inverse_transform(gs.predict(x_test)))
+#   test_score_mae   = mean_absolute_error(     y_test, sclr.inverse_transform(gs.predict(x_test)))
+#   test_score_evs   = explained_variance_score(y_test, sclr.inverse_transform(gs.predict(x_test)))
+#   #test_score_me   = max_error(               y_test, sclr.inverse_transform(gs.predict(x_test)))
+#   #test_score_msle = mean_squared_log_error(  y_test, sclr.inverse_transform(gs.predict(x_test)))
+#   test_score_r2    = r2_score(                y_test, sclr.inverse_transform(gs.predict(x_test)))
+
+    print()
+    print("The model performance for training set")
+    print("--------------------------------------")
+    print('MAE is      {}'.format(train_score_mae ))
+    print('MSE is      {}'.format(train_score_mse ))
+    print('EVS is      {}'.format(train_score_evs ))
+    #print('ME is      {}'.format(train_score_me  ))
+    #print('MSLE is    {}'.format(train_score_msle))
+    print('R2 score is {}'.format(train_score_r2  ))
+    print()
+    print("The model performance for testing set" )
+    print("--------------------------------------")
+    print('MAE is      {}'.format(test_score_mae ))
+    print('MSE is      {}'.format(test_score_mse ))
+    print('EVS is      {}'.format(test_score_evs ))
+    #print('ME is      {}'.format(test_score_me  ))
+    #print('MSLE is    {}'.format(test_score_msle))
+    print('R2 score is {}'.format(test_score_r2  ))
+    print()
+    print("Best parameters found for dev set:")
+    print(gs.best_params_)
+    print()
+
+    #with open(data+"/../"+'output.log', 'w') as f:
+    with open(outfile+'/output.log', 'w') as f:
+        print(" ",                                      file=f)
+        print("The model performance for training set", file=f)
+        print("--------------------------------------", file=f)
+        print('MAE is      {}'.format(train_score_mae), file=f)
+        print('MSE is      {}'.format(train_score_mse), file=f)
+        print('EVS is      {}'.format(train_score_evs), file=f)
+        #print('ME is      {}'.format(train_score_me),  file=f)
+        #print('MSLE is    {}'.format(train_score_msle),file=f)
+        print('R2 score is {}'.format(train_score_r2),  file=f)
+        print(" ",                                      file=f)
+        print("The model performance for testing set",  file=f)
+        print("--------------------------------------", file=f)
+        print('MAE is      {}'.format(test_score_mae),  file=f)
+        print('MSE is      {}'.format(test_score_mse),  file=f)
+        print('EVS is      {}'.format(test_score_evs),  file=f)
+        #print('ME is      {}'.format(test_score_me),   file=f)
+        #print('MSLE is    {}'.format(test_score_msle), file=f)
+        print('R2 score is {}'.format(test_score_r2),   file=f)
+        print(" ",                                      file=f)
+        print("Best parameters found for dev set:",     file=f)
+        print(gs.best_params_,                          file=f)
 
 
 def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
-   
+
    plt.scatter(x_test_dim, y_test_dim[:,5], s=2, c='k', marker='o', label='Matlab')
    plt.scatter(x_test_dim, y_regr_dim[:,5], s=2, c='purple', marker='+', label='DT, i=5')
 
@@ -200,8 +248,8 @@ def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
    plt.scatter(x_test_dim, y_test_dim[:,30], s=2, c='k', marker='o', label='Matlab')
    plt.scatter(x_test_dim, y_regr_dim[:,30], s=2, c='b', marker='+', label='DT, i=30')
 
-   plt.scatter(x_test_dim, y_test_dim[:,35], s=2, c='k', marker='o', label='Matlab')
-   plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='DT, i=35')
+   #plt.scatter(x_test_dim, y_test_dim[:,35], s=2, c='k', marker='o', label='Matlab')
+   #plt.scatter(x_test_dim, y_regr_dim[:,35], s=2, c='m', marker='+', label='DT, i=35')
 
    #plt.ylabel(r'$\eta$ [Pa·s]')
    plt.xlabel('T [K] ')
@@ -210,3 +258,72 @@ def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
    plt.savefig(figure+"/regression_MO_"+data+'.pdf')
    #plt.show()
    plt.close()
+
+# prepare dataset with input and output scalers, can be none
+def scale_dataset(x_train, x_test, y_train, y_test, input_scaler, output_scaler):
+
+    # scale inputs
+    if input_scaler is not None:
+
+        # fit scaler
+        input_scaler.fit(x_train)
+
+        # transform training dataset
+        x_train = input_scaler.transform(x_train)
+
+        # transform test dataset
+        x_test = input_scaler.transform(x_test)
+
+    if output_scaler is not None:
+
+        # reshape 1d arrays to 2d arrays
+	#y_train = y_train.reshape(len(y_train), 1)
+	#y_test  = y_test.reshape(len(y_train), 1)
+
+        # fit scaler on training dataset
+        output_scaler.fit(y_train)
+
+        # transform training dataset
+        y_train = output_scaler.transform(y_train)
+
+        # transform test dataset
+        y_test = output_scaler.transform(y_test)
+
+    return x_train, x_test, y_train, y_test
+
+# inverse transform dataset with input and output scalers, can be none
+def scale_back_dataset(x_train, x_test, y_train, y_test, y_regr, input_scaler, output_scaler):
+
+    # scale inputs
+    if input_scaler is not None:
+        # fit scaler
+	# input_scaler.fit(x_train)
+
+	# inverse transform training dataset
+	# x_train = input_scaler.transform(x_train)
+
+	# inverse transform test dataset
+        x_test = input_scaler.inverse_transform(x_test)
+
+    if output_scaler is not None:
+
+        # reshape 1d arrays to 2d arrays
+	# y_train = y_train.reshape(len(y_train), 1)
+	# y_test  = y_test.reshape(len(y_train), 1)
+
+	# fit scaler on training dataset
+	# output_scaler.fit(y_train)
+
+	# inverse transform training dataset
+	# y_train = output_scaler.transform(y_train)
+
+	# inverse transform test dataset
+        y_test = output_scaler.inverse_transform(y_test)
+
+        # inverse transform regression values
+        y_regr = output_scaler.inverse_transform(y_regr)
+
+    if output_scaler is None:
+        y_regr = y_regr
+
+    return x_train, x_test, y_train, y_test, y_regr
