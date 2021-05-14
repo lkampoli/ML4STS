@@ -101,8 +101,14 @@ def fit(x, y, gs, outfile):
    gs.fit(x, y)
    runtime = time.time() - t0
    print("Training time: %.6f s" % runtime)
+
    with open(outfile+'/train_time.log', 'w') as f:
        print("Training time: %.6f s" % runtime, file=f)
+
+   # Write file with training times in append mode
+   with open(outfile+"/../../train_times.txt", "a") as train_times_file:
+       print(runtime, file=train_times_file)
+
    return gs
 
 
@@ -111,8 +117,14 @@ def predict(x_test, gs, outfile):
    y_regr = gs.predict(x_test)
    regr_predict = time.time() - t0
    print("Prediction for %d inputs in %.6f s" % (x_test.shape[0], regr_predict))
+
    with open(outfile+'/test_time.log', 'w') as f:
        print("Prediction time: %.6f s" % regr_predict, file=f)
+
+   # Write file with prediction times in append mode
+   with open(outfile+"/../../test_times.txt", "a") as test_times_file:
+       print(regr_predict, file=test_times_file)
+
    return y_regr
 
 
@@ -203,7 +215,6 @@ def scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, data, 
     print(gs.best_params_)
     print()
 
-    #with open(data+"/../"+'output.log', 'w') as f:
     with open(outfile+'/output.log', 'w') as f:
         print(" ",                                      file=f)
         print("The model performance for training set", file=f)
@@ -227,7 +238,15 @@ def scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, data, 
         print("Best parameters found for dev set:",     file=f)
         print(gs.best_params_,                          file=f)
 
+    # Write file with train error metrics in append mode
+    with open(outfile+"/../../train_error_metrics.txt", "a") as train_err_file:
+        print(train_score_mae, train_score_mse, train_score_evs, train_score_r2, file=train_err_file)
 
+    # Write file with test error metrics in append mode
+    with open(outfile+"/../../test_error_metrics.txt", "a") as test_err_file:
+        print(test_score_mae, test_score_mse, test_score_evs, test_score_r2, file=test_err_file)
+
+# TODO: make it more general and robust to different max vibr. level
 def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
 
    plt.scatter(x_test_dim, y_test_dim[:,5], s=2, c='k', marker='o', label='Matlab')
@@ -259,6 +278,8 @@ def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
    #plt.show()
    plt.close()
 
+
+# https://machinelearningmastery.com/prepare-data-machine-learning-python-scikit-learn/
 # prepare dataset with input and output scalers, can be none
 def scale_dataset(x_train, x_test, y_train, y_test, input_scaler, output_scaler):
 
@@ -290,6 +311,7 @@ def scale_dataset(x_train, x_test, y_train, y_test, input_scaler, output_scaler)
         y_test = output_scaler.transform(y_test)
 
     return x_train, x_test, y_train, y_test
+
 
 # inverse transform dataset with input and output scalers, can be none
 def scale_back_dataset(x_train, x_test, y_train, y_test, y_regr, input_scaler, output_scaler):

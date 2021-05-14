@@ -116,16 +116,16 @@ def main():
         '''
         data, dir, proc, model, scaler, figure, outfile = utils.mk_tree(f, parent_dir, process[0], algorithm[0])
 
-        # 3) train/test split dataset
+        # Train/test split dataset
         x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, test_size=0.25, random_state=69)
 
-        # 4) Define scalers
-        # These 2 values can be modified to investigate the effect of different scalers
-        ###############################################################################
+        # Define scalers: they can be modified to investigate the effect of scalers
+        ##############################################################################
         input_scaler  = None #MinMaxScaler(feature_range=(-1,1))
         output_scaler = None #StandardScaler()
-        ###############################################################################
-        # 5) Scale None and/or inputs and/or outputs
+        ##############################################################################
+
+        # Scale None and/or inputs and/or outputs
         x_train, x_test, y_train, y_test = utils.scale_dataset(x_train, x_test, y_train, y_test, input_scaler, output_scaler)
 
         print('Training Features Shape:', x_train.shape)
@@ -133,7 +133,7 @@ def main():
         print('Testing Features Shape:',  x_test.shape)
         print('Testing Labels Shape:',    y_test.shape)
 
-        # 6) Save scalers (they may be useful)
+        # Save scalers (they may be useful)
         dump(input_scaler,  open(scaler+"/scaler_x_MO_"+data+'.pkl', 'wb'))
         dump(output_scaler, open(scaler+"/scaler_y_MO_"+data+'.pkl', 'wb'))
 
@@ -229,21 +229,11 @@ def main():
 
         # Compute the scores
         utils.scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, model, gs, outfile)
-        #utils.scores(sc_x, sc_y, x_train, y_train, x_test, y_test, model, gs, outfile)
-        #utils.scores(sclr, x_train, y_train, x_test, y_test, model, gs, outfile)
 
         # Transform back
         x_train, x_test, y_train, y_test, y_regr = utils.scale_back_dataset(x_train, x_test, y_train, y_test, y_regr, input_scaler, output_scaler)
-        #x_test_dim = sc_x.inverse_transform(x_test)
-        #y_test_dim = sc_y.inverse_transform(y_test)
-        #y_regr_dim = sc_y.inverse_transform(y_regr)
-        #x_test_dim = sclr.inverse_transform(x_test)
-        #x_test_dim = x_test
-        #y_test_dim = y_test
-        #y_regr_dim = y_regr
 
         # Make figures
-        #utils.draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data)
         utils.draw_plot(x_test, y_test, y_regr, figure, data)
 
         # save the model to disk
