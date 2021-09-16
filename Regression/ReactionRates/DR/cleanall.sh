@@ -4,8 +4,8 @@ do
    echo $dir
    cd $dir
    ./clean.sh
+   rm *.txt
    pwd
    cd ..
    pwd
 done
-

@@ -99,6 +99,7 @@ def mk_tree(filename, parent_dir, process, algorithm):
 def fit(x, y, gs, outfile):
    t0 = time.time()
    gs.fit(x, y)
+   #gs.fit(x, y.ravel())
    runtime = time.time() - t0
    print("Training time: %.6f s" % runtime)
 
@@ -249,7 +250,7 @@ def scores(input_scaler, output_scaler, x_train, y_train, x_test, y_test, data, 
 # TODO: make it more general and robust to different max vibr. level
 def draw_plot(x_test_dim, y_test_dim, y_regr_dim, figure, data):
 
-   plt.scatter(x_test_dim, y_test_dim[:,5], s=2, c='k', marker='o', label='Matlab')
+   plt.scatter(x_test_dim, y_test_dim[:,5], s=2, c='k',      marker='o', label='Matlab')
    plt.scatter(x_test_dim, y_regr_dim[:,5], s=2, c='purple', marker='+', label='DT, i=5')
 
    plt.scatter(x_test_dim, y_test_dim[:,10], s=2, c='k', marker='o', label='Matlab')

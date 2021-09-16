@@ -128,7 +128,7 @@ def est_KR():
 
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html?highlight=mlp#sklearn.neural_network.MLPRegressor
-def est_MLP(est):
+def est_MLP():
     hp = [{'hidden_layer_sizes': (10, 50, 100, 150, 200,),
            'activation' : ('tanh', 'relu',),
            'solver' : ('lbfgs','adam','sgd',),
