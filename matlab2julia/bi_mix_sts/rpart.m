@@ -123,7 +123,9 @@ for i1 = 1:l
     end
 end
 
-B(1:l) = RD; %+ RVT + RVV;
+B(1:l) = RD + RVT + RVV;
 B(l+1) = - 2*sum(RD);
 
 dy = AA^(-1)*B;
+
+%disp(dy)

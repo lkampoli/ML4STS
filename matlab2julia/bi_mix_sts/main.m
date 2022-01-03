@@ -47,20 +47,21 @@ em = [EM(sw_sp,1); sqrt(EM(sw_sp,1)*EM(sw_sp,2)*...
 re = RE(sw_sp);
 
 p0 = 0.8*133.322; % Pa
-%p0 = 0.8*300.; % Pa
+for p = 0.8*133.322:0.8*133.322:0.8*133.322
+%for p = [100, 1000, 20000, 40000, 60000, 80000, 100000]
+    p0 = p
 
 for T = 300:100:300
+%for T = [100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000] %100:100:1000
 
-    T0 = T;
-    %T0 = 300;
-    %T0 = 500;
+    T0 = T
     Tv0 = T0;
 
-%    for M = 13:0.1:14
+    %for M = 10:1:15
+    for M = 13.4:13.4:13.4 
 
-        %M0 = M
-        M0 = 13.4;
-        %M0 = 15.;
+        M0 = M
+        %M0 = 13.4;
 
         % Let's assume constant p0
         n0 = p0/(k*T0);
@@ -100,6 +101,7 @@ for T = 300:100:300
         Delta = 1/(sqrt(2)*n0*sigma0);
         xspan = [0, x_w]./Delta;
 
+        
         options = odeset('RelTol', 1e-8, 'AbsTol', 1e-8, 'Stats','off');
         [X,Y] = ode15s(@rpart, xspan, Y0_bar, options);
        
@@ -185,8 +187,12 @@ for i = 1:Npoint
 end
 
 RD_mol = RDm+RDa;
-RVT = RVTm+RVTa;
-RD_at = -2*sum(RD_mol,2);
+RVT    = RVTm+RVTa;
+RD_at  = -2*sum(RD_mol,2);
+
+rhs = zeros(Npoint,l+3);
+rhs(:,1:l) = RD_mol + RVT + RVV;
+rhs(:,l+1) = RD_at;
 
 % Here you can save the variables you want to create the dataset
 % which after you will use for the regression ...
@@ -197,7 +203,18 @@ RD_at = -2*sum(RD_mol,2);
 % dataset=np.loadtxt("../data/your_dataset_filename.dat")
 %save your_dataset_filename.dat dataset -ascii -append
 
-save database Temp x_s n_i n_a rho v p E RD_mol RD_at
-toc
+% .mat file
+%save database Temp x_s n_i n_a rho v p E RD_mol RD_at
+%save database x_s time_s Temp ni_n na_n rho v p RDm RDa RVTm RVTa RVV 
 
+% .dat file
+%dataset = [x_s, time_s, Temp, ni_n, na_n, rho, v, p, RDm, RDa, RVTm, RVTa, RVV];
+%dataset = [X, Y, rhs];
+dataset = [x_s, time_s, ni_n, na_n, v, Temp, rhs];
+save dataset_N2N_rhs.dat dataset -ascii -append
+%save dataset_N2N_XYrhs_BIG.dat dataset -ascii -append
+%save dataset_N2N_BIG.dat dataset -ascii -append
+
+    end
+end
 end
