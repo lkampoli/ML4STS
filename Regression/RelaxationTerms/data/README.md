@@ -13,7 +13,7 @@ where:
 * E: energy [J]
 * ni_n: molar fractions for each vibrational level (number densities over total number density)
 * na_n: molar fractions for atom species (number density over total number density)
-* RD_mol: dissociatio/recombination source term for each vibrational species [..]
-* RD_at: dissociatio/recombination source term for atomic species [..]
+* RD_mol: dissociation/recombination source term for each vibrational species [..]
+* RD_at: dissociation/recombination source term for atomic species [..]
 *
 which are saved in the file solution_DR.dat, considering only the dissociation/recombination processes.
