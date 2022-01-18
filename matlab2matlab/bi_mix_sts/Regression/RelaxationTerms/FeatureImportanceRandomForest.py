@@ -1,3 +1,5 @@
+# https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html?highlight=permutation%20accuracy%20importance
+
 import time
 import sys
 sys.path.insert(0, './')
@@ -88,6 +90,8 @@ print("y=",y_train.shape)
 #print('Testing Features Shape:', x_test.shape)
 #print('Testing Labels Shape:', y_test.shape)
 
+# Feature importance based on mean decrease in impurity
+# -----------------------------------------------------
 feature_names = [f"feature {i}" for i in range(x.shape[1])]
 print(feature_names)
 #est = ensemble.RandomForestRegressor(random_state=69, verbose=2)

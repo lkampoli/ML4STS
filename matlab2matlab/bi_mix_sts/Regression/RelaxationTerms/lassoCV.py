@@ -52,7 +52,7 @@ plt.title("Feature importances via coefficients")
 plt.show()
 print(importance)
 
-threshold = np.sort(importance)[-3] + .01
+threshold = np.sort(importance)[-10] + .01
 
 tic = time()
 sfm = SelectFromModel(estimator=lasso, threshold=threshold).fit(X, y.ravel())

@@ -3,6 +3,7 @@
 # https://scikit-learn.org/stable/auto_examples/feature_selection/plot_rfe_with_cross_validation.html#sphx-glr-auto-examples-feature-selection-plot-rfe-with-cross-validation-py
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2, f_classif, mutual_info_classif # classification
@@ -24,6 +25,37 @@ y = data[:,56:57]  # rhs[0:50]
 print(data.shape)
 print("x=",X.shape)
 print("y=",y.shape)
+
+#x_train, x_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25, random_state=69)
+#
+sc_x = StandardScaler()
+#sc_y = StandardScaler()
+#X = sc_x.fit_transform(X)
+#
+## fit scaler
+#sc_x.fit(x_train)
+#
+## transform training dataset
+#x_train = sc_x.transform(x_train)
+#
+## transform test dataset
+#x_test = sc_x.transform(x_test)
+#
+## fit scaler on training dataset
+#sc_y.fit(y_train)
+#
+## transform training dataset
+#y_train = sc_y.transform(y_train)
+#
+## transform test dataset
+#y_test = sc_y.transform(y_test)
+
+variances = pd.Series(X.var(axis=0))
+fig, ax = plt.subplots(figsize=(7,6))
+variances.sort_values().plot(kind='barh', ax=ax)
+ax.vlines(0.1, ymin=-1, ymax=25, colors='red')
+ax.set_title('Variances of dummy features');
+plt.show()
 
 # Create the RFE object and rank each pixel
 svc = SVR(kernel="linear", C=1)

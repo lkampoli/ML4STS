@@ -7,7 +7,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import chi2, f_classif, mutual_info_classif # classification
+#from sklearn.feature_selection import chi2, f_classif, mutual_info_classif # classification
 from sklearn.feature_selection import f_regression, mutual_info_regression # regression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
