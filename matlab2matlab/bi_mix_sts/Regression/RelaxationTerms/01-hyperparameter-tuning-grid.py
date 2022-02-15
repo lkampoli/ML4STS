@@ -96,8 +96,11 @@ def main():
     test = HyperparameterTuningGrid(RANDOM_SEED)
 
     print("Default Regressor Hyperparameter values:")
+    start = time.time()
     print(test.regressor.get_params())
+    end = time.time()
     print("score with default values = ", test.getDefaultScore())
+    print("Time Elapsed = ", end - start)
 
     print()
     start = time.time()

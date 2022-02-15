@@ -39,6 +39,39 @@ LinearAlgebra.BLAS.set_num_threads(1)
 
 using Flux, DiffEqFlux, Zygote
 
+using DiffEqFlux, OrdinaryDiffEq, Flux, Plots
+using DifferentialEquations
+using DiffEqSensitivity
+using Zygote
+using ForwardDiff
+using LinearAlgebra
+using Random
+using Statistics
+using LatinHypercubeSampling
+using ProgressBars, Printf
+using Flux.Optimise: update!
+using Flux.Losses: mae
+using BSON: @save, @load
+
+################################################
+is_restart = false;
+n_epoch = 1000000;
+n_plot = 50;
+
+opt = ADAMW(0.005, (0.9, 0.999), 1.f-6);
+datasize = 40;
+batchsize = 32;
+n_exp_train = 20;
+n_exp_val = 5;
+n_exp = n_exp_train + n_exp_val;
+noise = 1.f-4;
+ns = 3;
+nr = 6;
+
+grad_max = 10 ^ (1);
+maxiters = 10000;
+################################################
+
 # Switch for mixture species: 1 - N2/N; 2 - O2/O
 const sw_sp = 1
 
@@ -123,7 +156,7 @@ T1 = NN[3]; println("T1 = ", T1, "\n")
 
 const Zvibr_0 = sum(exp.(-e_i./Tv0./k)); println("Zvibr_0 = ", Zvibr_0, "\n")
 
-Y0_bar      = zeros(l+3)
+Y0_bar      = zeros(Float64, (l+3))
 Y0_bar[1:l] = xc[1]*n1/Zvibr_0*exp.(-e_i./Tv0./k)
 Y0_bar[l+1] = xc[2]*n1
 Y0_bar[l+2] = v1
@@ -131,7 +164,7 @@ Y0_bar[l+3] = T1
 println("Y0_bar = ", Y0_bar, "\n", size(Y0_bar), "\n", typeof(Y0_bar), "\n")
 
 const Delta = 1/(sqrt(2)*n0*sigma0); println("Delta = ", Delta, "\n")
-xspan       = [0, x_w]./Delta;       println("xspan = ", xspan, "\n", size(xspan), "\n")
+xspan       = Float64[0, x_w]./Delta; println("xspan = ", xspan, "\n", size(xspan), "\n")
 
 #A  = Matrix{Float64}(undef, l+3, l+3)
 #AA = Matrix{Float64}(undef, l+3, l+3)
@@ -168,10 +201,10 @@ display(@benchmark DifferentialEquations.solve(prob, radau(), reltol=1e-8, absto
 
 sol  = DifferentialEquations.solve(prob, radau(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=true)
 
-#sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
-#sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
-#sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta;
-#sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
+# sol = DifferentialEquations.solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8, save_everystep=true, progress=false)
+# sol = DifferentialEquations.solve(prob, CVODE_BDF(linear_solver=:GMRES), reltol=1e-8, abstol=1e-8, save_everystep=false, progress=true)
+# sol = DifferentialEquations.solve(prob, alg_hints=[:stiff], reltol=1e-4, abstol=1e-4, save_everystep=false, progress=tx_w) / Delta;
+# sol = DifferentialEquations.solve(prob, BS3(), reltol=1e-4, abstol=1e-4, save_everystep=false, progress=true)
 
 println("sol: ", size(sol), "\n")
 

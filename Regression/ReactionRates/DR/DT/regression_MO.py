@@ -79,6 +79,7 @@ print("Directory '%s' created" %figures)
 # Import database
 dataset_T = np.loadtxt("../data/Temperatures.csv")
 dataset_k = np.loadtxt("../data/"+folder+"/"+process+"/"+dataset+".csv")
+#dataset_k = np.loadtxt("../data/processes/"+folder+"/"+process+"/"+dataset+".csv")
 
 x = dataset_T.reshape(-1,1)
 y = dataset_k[:,:]

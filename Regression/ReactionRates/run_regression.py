@@ -30,14 +30,14 @@ import utils
 
 from termcolor import colored
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
+    HEADER    = '\033[95m'
+    OKBLUE    = '\033[94m'
+    OKCYAN    = '\033[96m'
+    OKGREEN   = '\033[92m'
+    WARNING   = '\033[93m'
+    FAIL      = '\033[91m'
+    ENDC      = '\033[0m'
+    BOLD      = '\033[1m'
     UNDERLINE = '\033[4m'
 
 
@@ -46,12 +46,12 @@ def main():
     parser = argparse.ArgumentParser(description='reaction rates regression')
 
     parser.add_argument('-p', '--process', type=str,
-                        choices=['DR', 'VT', 'VV', 'VV2', 'ZR'],
+                        choices=['DR','VT','VV','VV2','ZR'],
                         default='DR,VT,VV,VV2,ZR',
                         help='Comma-separated names of properties whose regression is performed')
 
     parser.add_argument('-a', '--algorithm', type=str,
-                        choices=['DT', 'RF', 'ET', 'GP', 'KN', 'SVM', 'KR', 'GB', 'HGB', 'MLP'],
+                        choices=['DT','RF','ET','GP','KN','SVM','KR','GB','HGB','MLP'],
                         default='DT',
                         help='regression algorithm')
 

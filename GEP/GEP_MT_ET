@@ -1,0 +1,25 @@
+graph {
+	1 [label=cos]
+	2 [label=sin]
+	3 [label="-"]
+	4 [label="+"]
+	5 [label=cos]
+	6 [label=TvCO2]
+	7 [label="-"]
+	8 [label=x_CO2]
+	9 [label=x_CO2]
+	10 [label=x_CO]
+	11 [label=x_O]
+	0 [label="+"]
+	1 -- 2
+	2 -- 3
+	3 -- 4
+	3 -- 5
+	4 -- 6
+	4 -- 7
+	5 -- 8
+	7 -- 9
+	7 -- 10
+	0 -- 1
+	0 -- 11
+}
